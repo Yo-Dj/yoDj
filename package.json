@@ -19,9 +19,11 @@
     "url": "https://github.com/boisbb18/yoDj/issues"
   },
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-dom-factories": "^1.0.2",
+    "react-phone-input-auto-format": "^0.1.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6"
