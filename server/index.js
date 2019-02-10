@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 3000
 const app = express()
 const bodyParser = require('body-parser')
 
@@ -12,4 +12,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve('public/index.html'))
 })
 
-app.listen(port)
+app.listen(port, () => {
+  console.log('Listening to port -> ', port)
+})
