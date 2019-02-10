@@ -35,7 +35,7 @@ let plugins = [
 ]
 
 module.exports = {
-    mode: 'development',
+    // mode: 'development',
     entry: paths.src + '/index.js',
     output: {
         path: path.join(__dirname, 'public'),
