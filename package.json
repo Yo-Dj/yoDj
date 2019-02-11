@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/index.js",
+    "start": "node server/server.js",
+    "start-heroku": "node server/server.js",
     "bundle": "webpack",
     "build:prod": "webpack -p --env production",
     "heroku-postbuild": "webpack -p",
