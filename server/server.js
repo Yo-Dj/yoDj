@@ -8,7 +8,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(express.static('public'))
-app.listen(PORT, '0.0.0.0')
+app.listen(PORT, '0.0.0.0', () => {
+  console.log('Listening to PORT ---> ', PORT)
+})
 
 app.get('*', (req, res) => {
   console.log('It finds home url')
