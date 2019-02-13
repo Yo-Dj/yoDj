@@ -13,7 +13,7 @@
     "start-heroku": "node server/server.js",
     "bundle": "webpack -d",
     "build:prod": "webpack -p --env production",
-    "heroku-postbuild": "webpack -p",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress",
     "serve": "webpack-dev-server"
   },
   "repository": {
@@ -33,7 +33,8 @@
     "react-phone-input-auto-format": "^0.1.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
-    "redux-logger": "^3.0.6"
+    "redux-logger": "^3.0.6",
+    "file-loader": "^1.1.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
