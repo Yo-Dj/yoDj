@@ -13,7 +13,6 @@
     "start-heroku": "node server/server.js",
     "bundle": "webpack -d",
     "build:prod": "webpack -p --env production",
-    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress",
     "serve": "webpack-dev-server"
   },
   "repository": {
