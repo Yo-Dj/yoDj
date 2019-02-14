@@ -1,19 +1,11 @@
 const express = require('express')
 const path = require('path')
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8080
 const app = express()
-const bodyParser = require('body-parser')
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+console.log('env port is', process.env.PORT)
 
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
 app.listen(PORT, '0.0.0.0', () => {
   console.log('Listening to PORT ---> ', PORT)
 })
-
-app.get('*', (req, res) => {
-  console.log('It finds home url')
-  res.sendFile(path.resolve('public/index.html'))
-})
-
