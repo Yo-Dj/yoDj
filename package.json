@@ -2,7 +2,7 @@
   "name": "yodj",
   "version": "1.0.0",
   "description": "",
-  "main": "./server/index.js",
+  "main": "index.js",
   "engines": {
     "node": "10.x"  
   },
