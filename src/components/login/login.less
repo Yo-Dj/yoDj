@@ -44,14 +44,37 @@
     justify-content: center;
     width: 33%;
   }
+
+  &__digit-button {
+    color: white !important;
+    height: 100%;
+    width: 90%;
+    padding: 10px 0;
+  }
+
+  &__action-button {
+    height: 100%;
+    width: 90%;
+  }
+
+  &__action-button {
+    height: 100%;
+    width: 90%;
+  }
+
+  &__text {
+    color: white;
+    width: 80%;
+    text-align: center !important;
+  }
 }
 
-@media screen and (max-width: 820px) {
+@media only screen and (min-device-width : 375px) and (max-device-width : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation : portrait) {
   .Login {
-    &__text {
-      color: white;
-      width: 80%;
-      text-align: center !important;
+
+    &__icon {
+      margin-bottom: 25px;
+      box-sizing: border-box;
     }
 
     &__numbers {
@@ -61,24 +84,11 @@
 
     &__digit {
       height: 50px;
-      // background: blue;
-    }
-
-    &__action-button {
-      height: 100%;
-      width: 90%;
-    }
-
-    &__digit-button {
-      color: white !important;
-      height: 100%;
-      width: 90%;
-      padding: 10px 0;
     }
   }
 }
 
-@media screen and (max-width: 667px) and (min-width: 500px) {
+@media only screen and (min-device-width : 375px) and (max-device-width : 667px) and (orientation : portrait) { 
   .Login {
     &__digit {
       height: 45px;
