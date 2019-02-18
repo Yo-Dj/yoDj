@@ -1,4 +1,9 @@
 node_modules/
 build/
 npm-debug.log*
-public/bundle.js
+# public/bundle.js
+
+# Local development
+*.env
+*.dev
+.DS_Store

@@ -4,16 +4,19 @@
   "description": "",
   "main": "./server/index.js",
   "engines": {
-    "node": "10.3.0",
-    "npm": "6.x"
+    "node": "10.x"  
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js",
-    "start-heroku": "node server/server.js",
+    "start": "node server.js",
+    "start-heroku": "node server.js",
     "bundle": "webpack -d",
     "build:prod": "webpack -p --env production",
-    "serve": "webpack-dev-server"
+    "serve": "webpack-dev-server",
+    "start:dev": "npm run dev | npm run dev-client",
+    "dev-client": "webpack-dev-server --color",
+    "dev": "nodemon server.js --ignore src/*/**",
+    "heroku-postbuild": "webpack -p --env production"
   },
   "repository": {
     "type": "git",
