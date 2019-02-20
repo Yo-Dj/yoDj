@@ -19,56 +19,80 @@
     align-items: center;
   }
 
+  &__icon {
+    @size: 200px;
+    background: transparent no-repeat center center;
+    background-image: url("../../images/yoDj-raw-2.png");
+    background-size: 100% @size;
+    width: 100%;
+    height: @size;
+  }
+
+
   &__numbers {
     flex: 0 1 40%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__digit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 33%;
+  }
+
+  &__digit-button {
+    color: white !important;
+    height: 100%;
+    width: 90%;
+    padding: 10px 0;
+  }
+
+  &__action-button {
+    height: 100%;
+    width: 90%;
+  }
+
+  &__action-button {
+    height: 100%;
+    width: 90%;
+  }
+
+  &__text {
+    color: white;
+    width: 80%;
+    text-align: center !important;
   }
 }
 
-@media screen and (max-width: 820px) {
+@media only screen and (min-device-width : 375px) and (max-device-width : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation : portrait) {
   .Login {
 
     &__icon {
-      @size: 200px;
-      background: transparent no-repeat center center;
-      background-image: url("../../images/yoDj-raw-2.png");
-      background-size: 100% @size;
-      width: 100%;
-      height: @size;
-    }
-
-    &__text {
-      color: white;
-      width: 80%;
-      text-align: center !important;
+      margin-bottom: 25px;
+      box-sizing: border-box;
     }
 
     &__numbers {
       padding-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
+      flex: 0 1 35%;
     }
 
     &__digit {
       height: 50px;
-      width: 33%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    &__action-button {
-      height: 100%;
-      width: 90%;
-    }
-
-    &__digit-button {
-      color: white !important;
-      height: 100%;
-      width: 90%;
     }
   }
-
 }
+
+@media only screen and (min-device-width : 375px) and (max-device-width : 667px) and (orientation : portrait) { 
+  .Login {
+    &__digit {
+      height: 45px;
+    }
+  }
+}
+

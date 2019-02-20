@@ -35,7 +35,7 @@ let plugins = [
 ]
 
 module.exports = {
-    mode: 'development',
+    // mode: 'development',
     entry: paths.src + '/index.js',
     output: {
         path: path.join(__dirname, 'public'),
@@ -52,7 +52,7 @@ module.exports = {
               test: /\.html$/, include: paths.public, use:'handlebars-loader'
             },
             {
-              loader: 'babel-loader',
+              loader: ['babel-loader', 'eslint-loader'],
               test: /\.js$/,
               exclude: /node_modules/
             },
