@@ -1,0 +1,35 @@
+module.exports = {
+    "plugins": [
+        "react"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "es6": true,
+        "browser": true,
+        "node": true,
+        "mocha": true
+    }, 
+    "settings": {
+        "react": {
+          "pragma": "React",
+          "version": "16.7.0"
+        }
+    },
+    "extends": [
+        "eslint:recommended", 
+        "plugin:react/recommended"
+    ],
+    "rules": {
+        "no-unused-vars": 0,
+        "singleQuote": true,
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error",
+        "quotes": [2, "single", "avoid-escape"]
+    }
+}

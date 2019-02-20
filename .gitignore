@@ -1,7 +1,6 @@
 node_modules/
 build/
 npm-debug.log*
-# public/bundle.js
 
 # Local development
 *.env
