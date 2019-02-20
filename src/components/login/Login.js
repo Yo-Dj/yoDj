@@ -1,9 +1,9 @@
 import React from 'react'
-import { MuiThemeProvider ,createMuiTheme, withStyles} from '@material-ui/core/styles'
+import {MuiThemeProvider ,createMuiTheme} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import orange from '@material-ui/core/colors/orange'
-import PhoneInput, {format} from 'react-phone-input-auto-format'
+import {format} from 'react-phone-input-auto-format'
 
 const theme = createMuiTheme({
   palette: {
@@ -44,7 +44,7 @@ class Login extends React.Component {
     this.removeNumber = this.removeNumber.bind(this)
   }
 
-  numberPressed(num, idx) {
+  numberPressed(num) {
     let {value, phone} = this.state
     value += num
     phone += num
