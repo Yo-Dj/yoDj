@@ -52,7 +52,7 @@ module.exports = {
               test: /\.html$/, include: paths.public, use:'handlebars-loader'
             },
             {
-              loader: ['babel-loader', 'eslint-loader'],
+              loader: ['babel-loader'],
               test: /\.js$/,
               exclude: /node_modules/
             },

@@ -6,7 +6,9 @@ module.exports = {
         "ecmaVersion": 6,
         "sourceType": "module",
         "ecmaFeatures": {
-            "jsx": true
+            "jsx": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
         }
     },
     "env": {
@@ -25,6 +27,7 @@ module.exports = {
         "eslint:recommended",
         "plugin:react/recommended"
     ],
+    "parser": "babel-eslint",
     "rules": {
         "no-unused-vars": 0,
         "singleQuote": true,
