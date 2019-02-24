@@ -14,9 +14,9 @@ class Homepage extends React.Component {
     fire.auth().onAuthStateChanged(user => {
       // console.log('User ---> ', user)
       if (user) {
-        // console.log('User is Logged')
+        // console.log User Signed In
       } else {
-        // console.log('User is NOT Logged IN')
+        // console.log('User is NOT Logged I
       }
     })
   }
@@ -24,7 +24,7 @@ class Homepage extends React.Component {
   render() {
     return (
       <div className="Homepage">
-        Hello From Homepage
+        Homepage 2
       </div>
     )
   }
