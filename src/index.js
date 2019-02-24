@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Login from 'src/components/login'
+import LoginWrapper from 'src/components/LoginWrapper'
 
 ReactDOM.render(
-  <Login />, document.getElementById('root')
+  <LoginWrapper />, document.getElementById('root')
 )
