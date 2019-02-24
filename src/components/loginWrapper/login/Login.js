@@ -170,11 +170,8 @@ class Login extends React.Component {
           open={this.state.isError}
           autoHideDuration={3000}
           onClose={this.handleClose}
-          classes={{message: 'Login__snackbar'}}
-          bodyStyle={{backgroundColor: 'red', color: 'white'}}
           ContentProps={{
             'aria-describedby': 'message-id',
-            backgroundColor: 'red'
           }}
           message={<span id="message-id">{this.state.errorMessage}</span>}
           action={[
