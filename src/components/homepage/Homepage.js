@@ -1,5 +1,5 @@
 import React from 'react'
-import fire from '../../config/Fire'
+import fire from 'src/config/Fire'
 
 class Homepage extends React.Component {
   constructor(props) {

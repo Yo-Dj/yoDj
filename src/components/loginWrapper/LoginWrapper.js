@@ -1,5 +1,6 @@
 import React from 'react'
 import {MuiThemeProvider} from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import theme from 'src/config/CustomStyle'
 import fire from 'src/config/Fire'
 import Login from './login'
@@ -10,20 +11,25 @@ class LoginWrapper extends React.Component {
     super(props)
     this.state = {
       userInfo: {},
-      view: 'confirmation'
+      view: ''
     }
     this.addUser = this.addUser.bind(this)
     this.renderView = this.renderView.bind(this)
   }
 
   componentDidMount() {
-    let currentUser = fire.auth().currentUser
-    if (currentUser) {
+    fire.auth().onAuthStateChanged(user => {
+      if (user) {
       this.setState({
-        userInfo: {token: currentUser.m, phone: currentUser.phoneNumber},
+        userInfo: {token: user.m, phone: user.phoneNumber},
         view: 'registration'
-      })
-    }
+        })
+      } else {
+        this.setState({
+          view: 'confirmation'
+        })
+      }
+    })
   }
 
   addUser(userInfo) {
@@ -48,7 +54,12 @@ class LoginWrapper extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className="LoginWrapper">
-          {this.renderView()}
+          { this.state.view === ''
+            ? <div className="LoginWrapper--progress">
+                <CircularProgress />
+              </div>
+            : this.renderView()
+          }
         </div>
       </MuiThemeProvider>
 
