@@ -95,8 +95,40 @@
 
 @media only screen and (min-device-width : 375px) and (max-device-width : 667px) and (orientation : portrait) {
   .Login {
+
+    &__icon {
+      background-size: 100% 150px;
+      width: 100%;
+      height: 150px;
+      box-sizing: border-box;
+    }
+
+    &__action-button {
+      font-size: 14px !important;
+    }
+
     &__digit {
       height: 45px;
+    }
+  }
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : portrait) {
+  .Login {
+
+    &__icon {
+      background-size: 100% 150px;
+      width: 100%;
+      height: 150px;
+      box-sizing: border-box;
+    }
+
+    &__action-button {
+      font-size: 14px !important;
+    }
+
+    &__digit {
+      height: 40px;
     }
   }
 }

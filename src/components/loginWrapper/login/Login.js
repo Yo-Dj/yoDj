@@ -146,7 +146,13 @@ class Login extends React.Component {
         <div ref={ref => this.phoneRef = ref} className="Login__recaptcha"/>
         <div className="Login__logo">
           <div className="Login__icon" />
-          <TextField value={this.state.value} placeholder={`${this.state.codeSent ? 'Confirmation Code' : ''}`} margin="normal" classes={{root: 'Login__text'}} InputProps={{readOnly: true, style: {textAlign: 'center'}}} />
+          <TextField
+            value={this.state.value}
+            placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
+            margin="normal"
+            classes={{root: 'Login__text'}}
+            InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
+          />
         </div>
         <div className="Login__numbers">
           {
