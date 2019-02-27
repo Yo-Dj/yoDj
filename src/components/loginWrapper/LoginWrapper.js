@@ -18,18 +18,18 @@ class LoginWrapper extends React.Component {
   }
 
   componentDidMount() {
-    fire.auth().onAuthStateChanged(user => {
-      if (user) {
-      this.setState({
-        userInfo: {token: user.m, phone: user.phoneNumber},
-        view: 'registration'
-        })
-      } else {
-        this.setState({
-          view: 'confirmation'
-        })
-      }
-    })
+    // fire.auth().onAuthStateChanged(user => {
+    //   if (user) {
+    //   this.setState({
+    //     userInfo: {token: user.m, phone: user.phoneNumber},
+    //     view: 'registration'
+    //     })
+    //   } else {
+    //     this.setState({
+    //       view: 'confirmation'
+    //     })
+    //   }
+    // })
   }
 
   addUser(userInfo) {
