@@ -11,25 +11,25 @@ class LoginWrapper extends React.Component {
     super(props)
     this.state = {
       userInfo: {},
-      view: ''
+      view: 'confirmation'
     }
     this.addUser = this.addUser.bind(this)
     this.renderView = this.renderView.bind(this)
   }
 
   componentDidMount() {
-    fire.auth().onAuthStateChanged(user => {
-      if (user) {
-      this.setState({
-        userInfo: {token: user.m, phone: user.phoneNumber},
-        view: 'registration'
-        })
-      } else {
-        this.setState({
-          view: 'confirmation'
-        })
-      }
-    })
+    // fire.auth().onAuthStateChanged(user => {
+    //   if (user) {
+    //   this.setState({
+    //     userInfo: {token: user.m, phone: user.phoneNumber},
+    //     view: 'registration'
+    //     })
+    //   } else {
+    //     this.setState({
+    //       view: 'confirmation'
+    //     })
+    //   }
+    // })
   }
 
   addUser(userInfo) {

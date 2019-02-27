@@ -32,7 +32,7 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(this.phoneRef)
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(this.phoneRef, {'size': 'invisible'})
     window.recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId)
   }
 
