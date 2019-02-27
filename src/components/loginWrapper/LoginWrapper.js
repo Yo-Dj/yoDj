@@ -11,7 +11,7 @@ class LoginWrapper extends React.Component {
     super(props)
     this.state = {
       userInfo: {},
-      view: ''
+      view: 'confirmation'
     }
     this.addUser = this.addUser.bind(this)
     this.renderView = this.renderView.bind(this)

@@ -16,6 +16,7 @@ class Registration extends React.Component {
     this.selectUser = this.selectUser.bind(this)
     this.openCondition = this.openCondition.bind(this)
     this.closeCondition = this.closeCondition.bind(this)
+    this.signUp = this.signUp.bind(this)
   }
 
   nameChange(e) {
@@ -45,6 +46,10 @@ x
     this.setState({
       openTerms: false
     })
+  }
+
+  signUp() {
+    console.log('Sign UP ---> ')
   }
 
   render() {
@@ -85,6 +90,13 @@ x
       <div className="Registration__condition" onClick={this.openCondition}>
         View YoDj terms and Privacy Policy
       </div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={this.signUp}
+        classes={{root: 'Registration__sign-up'}}
+      > Sign Up
+      </Button>
     </div>
     )
   }
