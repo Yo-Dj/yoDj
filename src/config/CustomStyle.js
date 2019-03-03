@@ -20,7 +20,7 @@ const theme = createMuiTheme({
         textAlign: 'center',
         fontWeight: 'normal',
         color: 'white',
-        fontFamily: ["Times New Roman", "Times", 'serif'],
+        fontFamily: ['Times New Roman', 'Times', 'serif'],
         fontSize: '20px',
 
         '&::placeholder': {

@@ -2,19 +2,23 @@ import React from 'react'
 import {MuiThemeProvider} from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import theme from 'src/config/CustomStyle'
-import fire from 'src/config/Fire'
+// import fire from 'src/config/Fire'
 import Login from './login'
 import Registration from './registration'
+import SocialMedia from './socialMedia'
 
 class LoginWrapper extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       userInfo: {},
-      view: 'confirmation'
+      view: 'confirmation',
+      userType: ''
     }
     this.addUser = this.addUser.bind(this)
     this.renderView = this.renderView.bind(this)
+    this.userSelected = this.userSelected.bind(this)
+    this.openSocialMedia = this.openSocialMedia.bind(this)
   }
 
   componentDidMount() {
@@ -32,6 +36,18 @@ class LoginWrapper extends React.Component {
     // })
   }
 
+  userSelected(userType) {
+    this.setState({
+      userType
+    })
+  }
+
+  openSocialMedia() {
+    this.setState({
+      view: 'socialMedia'
+    })
+  }
+
   addUser(userInfo) {
     this.setState({
       userInfo: {token: userInfo.m, phone: userInfo.phoneNumber},
@@ -44,9 +60,11 @@ class LoginWrapper extends React.Component {
       case 'confirmation':
         return (<Login onAddUser={this.addUser}/>)
       case 'registration':
-        return (<Registration user={this.state.userInfo}/>)
+        return (<Registration user={this.state.userInfo} onUserSelect={this.userSelected} userType={this.state.userType} onSignUp={this.openSocialMedia} />)
+      case 'socialMedia':
+        return (<SocialMedia />)
       default:
-      return (<Login onAddUser={this.addUser}/>)
+        return (<Login onAddUser={this.addUser}/>)
     }
   }
 

@@ -3,20 +3,30 @@ import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import ConditionPage from '../conditionPage'
-
+import Snackbar from '@material-ui/core/Snackbar'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 class Registration extends React.Component {
+  static propTypes = {
+    onUserSelect: PropTypes.func,
+    userType: PropTypes.string,
+    onSignUp: PropTypes.func,
+  }
+
   constructor(props) {
     super(props)
     this.state = {
       name: '',
-      selectedType: '',
-      openTerms: false
+      openTerms: false,
+      isError: false,
+      errorMessage: ''
     }
     this.nameChange = this.nameChange.bind(this)
     this.selectUser = this.selectUser.bind(this)
     this.openCondition = this.openCondition.bind(this)
     this.closeCondition = this.closeCondition.bind(this)
     this.signUp = this.signUp.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
 
   nameChange(e) {
@@ -29,11 +39,9 @@ class Registration extends React.Component {
       name: name
     })
   }
-x
+
   selectUser(selectedType) {
-    this.setState({
-      selectedType
-    })
+    this.props.onUserSelect(selectedType)
   }
 
   openCondition() {
@@ -48,12 +56,35 @@ x
     })
   }
 
-  signUp() {
-    console.log('Sign UP ---> ')
+  handleClose() {
+    this.setState({isError: false, errorMessage: ''})
+  }
+
+  signUp(e) {
+    e.preventDefault()
+    let {userType, onSignUp} = this.props
+    let errorMessage = ''
+    let isError = false
+    if (userType === '') {
+      errorMessage = 'Please select user type!'
+      isError = true
+    }
+    if (userType === 'Fan') {
+      errorMessage = 'Please select dj for now!'
+      isError = true
+    }
+    this.setState({
+      errorMessage,
+      isError
+    })
+    if (!isError) {
+      onSignUp()
+      return
+    }
   }
 
   render() {
-    let {selectedType} = this.state
+    let {userType} = this.props
     return (
       <div className="Registration">
         <div className="Registration__icon" />
@@ -72,7 +103,7 @@ x
             <Button
               variant="contained"
               color="primary"
-              classes={{root: `Registration__type-button${selectedType !== '' && selectedType === 'Fan' ? ' Registration--selected' : ''}`}}
+              classes={{root: `Registration__type-button${userType !== '' && userType === 'Fan' ? ' Registration--selected' : ''}`}}
               onClick={() => this.selectUser('DJ')}
             >
               DJ
@@ -80,7 +111,7 @@ x
             <Button
               variant="contained"
               color="primary"
-              classes={{root: `Registration__type-button${selectedType !== '' && selectedType === 'DJ' ? ' Registration--selected' : ''}`}}
+              classes={{root: `Registration__type-button${userType !== '' && userType === 'DJ' ? ' Registration--selected' : ''}`}}
               onClick={() => this.selectUser('Fan')}
             >
               Fan
@@ -97,6 +128,28 @@ x
         classes={{root: 'Registration__sign-up'}}
       > Sign Up
       </Button>
+      <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          open={this.state.isError}
+          autoHideDuration={3000}
+          onClose={this.handleClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{this.state.errorMessage}</span>}
+          action={[
+              <IconButton
+                key="close"
+                arial-label="Close"
+                color="inherit"
+                onClick={this.handleClose}
+              >
+                <CloseIcon />
+              </IconButton>
+          ]} />
     </div>
     )
   }
