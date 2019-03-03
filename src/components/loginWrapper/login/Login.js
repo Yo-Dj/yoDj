@@ -29,11 +29,17 @@ class Login extends React.Component {
     this.login = this.login.bind(this)
     this.verifyLoginCode = this.verifyLoginCode.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleTextChange = this.handleTextChange.bind(this)
   }
 
   componentDidMount() {
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(this.phoneRef, {'size': 'invisible'})
     window.recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId)
+  }
+
+  componentWillUnmount() {
+    window.recaptchaVerifier = null
+    window.confirmationResult = null
   }
 
   numberPressed(num) {
@@ -139,6 +145,16 @@ class Login extends React.Component {
     this.setState({isError: false, errorMessage: ''})
   }
 
+  handleTextChange(e) {
+    let {codeSent, value} = this.state
+    if (codeSent && (value.length < 6 || e.target.value.length < value.length)) {
+     this.setState({
+        value: e.target.value,
+        phone: e.target.value
+      })
+    }
+  }
+
   render() {
     let nums = [1,2,3,4,5,6,7,8,9]
     return (
@@ -151,6 +167,7 @@ class Login extends React.Component {
             placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
             margin="normal"
             classes={{root: 'Login__text'}}
+            onChange={this.handleTextChange}
             InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
           />
         </div>

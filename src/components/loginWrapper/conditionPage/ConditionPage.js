@@ -1,8 +1,14 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowBack from '@material-ui/icons/Close'
 
 class ConditionPage extends React.Component {
+  static propTypes = {
+    onClose: PropTypes.func,
+    isVisible: PropTypes.bool
+  }
+
   constructor(props) {
     super(props)
     this.close = this.close.bind(this)

@@ -12,7 +12,7 @@
     "start-heroku": "node server/server.js",
     "bundle": "webpack -d",
     "build:prod": "webpack -p --env production",
-    "serve": "webpack-dev-server -d --hot",
+    "serve": "webpack-dev-server",
     "start:dev": "npm run dev | npm run dev-client",
     "dev-client": "webpack -d --watch --progress",
     "dev": "nodemon server/server.js --ignore src/*/**",
@@ -31,6 +31,7 @@
       "server/*.js"
     ]
   },
+  "pre-commit": "lint-staged",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/boisbb18/yoDj.git"
