@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import TextField from '@material-ui/core/TextField'
 import {format} from 'react-phone-input-auto-format'
-import fire from 'src/config/Fire'
+import {fire} from 'src/config/Fire'
 
 class Login extends React.Component {
   static propTypes = {
