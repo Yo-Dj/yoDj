@@ -16,7 +16,8 @@ class LoginWrapper extends React.Component {
       view: '',
       userType: '',
       profileInfo: {},
-      loginSuccessful: false
+      loginSuccessful: false,
+      username: ''
     }
     this.addUser = this.addUser.bind(this)
     this.renderView = this.renderView.bind(this)
@@ -26,6 +27,7 @@ class LoginWrapper extends React.Component {
     this.signInTwitter = this.signInTwitter.bind(this)
     this.addToDatabase = this.addToDatabase.bind(this)
     this.verified = this.verified.bind(this)
+    this.usernameChange = this.usernameChange.bind(this)
   }
 
   componentDidMount() {
@@ -50,16 +52,16 @@ class LoginWrapper extends React.Component {
   }
 
   addToDatabase(verificationType) {
-    let {profileInfo: {name, image}} = this.state
+    let {profileInfo: {name, image}, username} = this.state
     let userId = fire.auth().currentUser.uid
     firebase.database().ref(`users/${userId}`).set({
       name: name,
       imageUrl: image,
       userId: userId,
-      verificationType: verificationType
+      verificationType: verificationType,
+      username: username
     }, error => {
       if (!error) {
-        console.log('Log Was successfull')
         this.setState({
           loginSuccessful: true
         })
@@ -80,7 +82,7 @@ class LoginWrapper extends React.Component {
         })
         this.addToDatabase('twitter')
       })
-      .catch(error => console.log('Twitter error --> ', error))
+      .catch(error => console.log('Twitter error --> ', error)) // eslint-disable-line no-console
   }
 
   signInFacebook() {
@@ -96,7 +98,7 @@ class LoginWrapper extends React.Component {
         })
         this.addToDatabase('facebook')
       })
-      .catch(error => console.log('Facebook Sign IN error --> ', error))
+      .catch(error => console.log('Facebook Sign IN error --> ', error)) // eslint-disable-line no-console
   }
 
   userSelected(userType) {
@@ -118,12 +120,29 @@ class LoginWrapper extends React.Component {
     })
   }
 
+  usernameChange(username) {
+    if (username.indexOf('@') === -1) {
+      username = '@' + username
+    }
+    if (username === '@') username = ''
+    this.setState({
+      username
+    })
+  }
+
   renderView() {
     switch (this.state.view) {
       case 'confirmation':
         return (<Login onAddUser={this.addUser}/>)
       case 'registration':
-        return (<Registration user={this.state.userInfo} onUserSelect={this.userSelected} userType={this.state.userType} onSignUp={this.openSocialMedia} />)
+        return (<Registration
+                  user={this.state.userInfo}
+                  onUserSelect={this.userSelected}
+                  userType={this.state.userType}
+                  onSignUp={this.openSocialMedia}
+                  username={this.state.username}
+                  onUsernameChange={this.usernameChange}
+                />)
       case 'socialMedia':
         return (<SocialMedia
                   onFacebookSign={this.signInFacebook}
@@ -131,7 +150,7 @@ class LoginWrapper extends React.Component {
                   profileInfo={this.state.profileInfo}
                   loginSuccessful={this.state.loginSuccessful}
                   closeLogin={this.verified}
-                  />)
+                />)
       default:
         return (<Login onAddUser={this.addUser}/>)
     }

@@ -1,10 +1,18 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import PropTypes from 'prop-types'
 import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 
 class SocialMedia extends React.Component {
+  static propTypes = {
+    closeLogin: PropTypes.func,
+    profileInfo: PropTypes.object,
+    onFacebookSign: PropTypes.func,
+    onTwitterSign: PropTypes.func,
+    loginSuccessful: PropTypes.bool
+  }
+
   constructor(props) {
     super(props)
     this.handleClose = this.handleClose.bind(this)
@@ -15,7 +23,7 @@ class SocialMedia extends React.Component {
   }
 
   render() {
-    let {profileInfo: {image, name}, onFacebookSign, onTwitterSign, loginSuccessful} = this.props
+    let {onFacebookSign, onTwitterSign, loginSuccessful} = this.props
     return (
       <div className="SocialMedia">
          <div className="SocialMedia__icon" />
