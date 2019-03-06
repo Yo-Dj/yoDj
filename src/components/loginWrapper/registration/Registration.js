@@ -12,12 +12,14 @@ class Registration extends React.Component {
     onUserSelect: PropTypes.func,
     userType: PropTypes.string,
     onSignUp: PropTypes.func,
+    onUsernameChange: PropTypes.func,
+    username: PropTypes.string
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      name: '',
+      // name: '',
       openTerms: false,
       isError: false,
       errorMessage: ''
@@ -31,14 +33,7 @@ class Registration extends React.Component {
   }
 
   nameChange(e) {
-    let name = e.target.value
-    if (name.indexOf('@') === -1) {
-      name = '@' + name
-    }
-    if (name === '@') name = ''
-    this.setState({
-      name: name
-    })
+    this.props.onUsernameChange(e.target.value)
   }
 
   selectUser(selectedType) {
@@ -63,7 +58,7 @@ class Registration extends React.Component {
 
   signUp(e) {
     e.preventDefault()
-    let {userType, onSignUp} = this.props
+    let {userType, onSignUp, username} = this.props
     let errorMessage = ''
     let isError = false
     if (userType === '') {
@@ -72,6 +67,10 @@ class Registration extends React.Component {
     }
     if (userType === 'Fan') {
       errorMessage = 'Please select dj for now!'
+      isError = true
+    }
+    if (username === '') {
+      errorMessage = 'Please enter username!'
       isError = true
     }
     this.setState({
@@ -85,13 +84,13 @@ class Registration extends React.Component {
   }
 
   render() {
-    let {userType} = this.props
+    let {userType, username} = this.props
     return (
-      <div className="Registration">
+      <div className={`Registration${this.state.openTerms ? ' Registration--dark-theme' : ''}`}>
         <div className="Registration__icon" />
         <ConditionPage isVisible={this.state.openTerms} onClose={this.closeCondition}/>
         <TextField
-          value={this.state.name}
+          value={username}
           placeholder='Enter @Name'
           margin="normal"
           classes={{root: 'Registration__text'}}
