@@ -11,13 +11,22 @@ const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       text: {
-        color: 'white'
+        color: 'white',
+        fontSize: '20px'
       }
     },
     MuiInput: {
       input: {
         textAlign: 'center',
-        color: 'white'
+        fontWeight: 'normal',
+        color: 'white',
+        fontFamily: ['Times New Roman', 'Times', 'serif'],
+        fontSize: '20px',
+
+        '&::placeholder': {
+          opacity: 1,
+          color: 'white'
+        }
       },
       underline: {
         borderBottom: '1px solid white',

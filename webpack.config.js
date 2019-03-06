@@ -1,5 +1,4 @@
 const path = require('path')
-const {URL} = require('url')
 const webpack = require('webpack')
 const HtmlWebPackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
@@ -20,7 +19,7 @@ const htmlWebpackPlugins = entry => (
       chunks: [chunk, `${chunk}.runtime`, 'vendor', 'common'],
       chunksSortMode: 'dependency',
       template: './public/index.html',
-      filename: `public/index.html`,
+      filename: 'public/index.html',
       title: 'YoDJ'
     })
   ))
@@ -35,7 +34,7 @@ let plugins = [
 ]
 
 module.exports = {
-    // mode: 'development',
+    mode: 'development',
     entry: paths.src + '/index.js',
     output: {
         path: path.join(__dirname, 'public'),

@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import TextField from '@material-ui/core/TextField'
 import {format} from 'react-phone-input-auto-format'
-import fire from 'src/config/Fire'
+import {fire} from 'src/config/Fire'
 
 class Login extends React.Component {
   static propTypes = {
@@ -29,11 +29,17 @@ class Login extends React.Component {
     this.login = this.login.bind(this)
     this.verifyLoginCode = this.verifyLoginCode.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleTextChange = this.handleTextChange.bind(this)
   }
 
   componentDidMount() {
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(this.phoneRef)
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(this.phoneRef, {'size': 'invisible'})
     window.recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId)
+  }
+
+  componentWillUnmount() {
+    window.recaptchaVerifier = null
+    window.confirmationResult = null
   }
 
   numberPressed(num) {
@@ -139,6 +145,16 @@ class Login extends React.Component {
     this.setState({isError: false, errorMessage: ''})
   }
 
+  handleTextChange(e) {
+    let {codeSent, value} = this.state
+    if (codeSent && (value.length < 6 || e.target.value.length < value.length)) {
+     this.setState({
+        value: e.target.value,
+        phone: e.target.value
+      })
+    }
+  }
+
   render() {
     let nums = [1,2,3,4,5,6,7,8,9]
     return (
@@ -146,7 +162,14 @@ class Login extends React.Component {
         <div ref={ref => this.phoneRef = ref} className="Login__recaptcha"/>
         <div className="Login__logo">
           <div className="Login__icon" />
-          <TextField value={this.state.value} placeholder={`${this.state.codeSent ? 'Confirmation Code' : ''}`} margin="normal" classes={{root: 'Login__text'}} InputProps={{readOnly: true, style: {textAlign: 'center'}}} />
+          <TextField
+            value={this.state.value}
+            placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
+            margin="normal"
+            classes={{root: 'Login__text'}}
+            onChange={this.handleTextChange}
+            InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
+          />
         </div>
         <div className="Login__numbers">
           {
@@ -170,11 +193,8 @@ class Login extends React.Component {
           open={this.state.isError}
           autoHideDuration={3000}
           onClose={this.handleClose}
-          classes={{message: 'Login__snackbar'}}
-          bodyStyle={{backgroundColor: 'red', color: 'white'}}
           ContentProps={{
             'aria-describedby': 'message-id',
-            backgroundColor: 'red'
           }}
           message={<span id="message-id">{this.state.errorMessage}</span>}
           action={[

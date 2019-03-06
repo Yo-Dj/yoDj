@@ -9,4 +9,6 @@ import firebase from 'firebase'
     messagingSenderId: '621374281161'
   }
  const fire = firebase.initializeApp(config)
- export default fire
+ const facebookProvider = new firebase.auth.FacebookAuthProvider()
+ const twitterProvider = new firebase.auth.TwitterAuthProvider()
+ export {fire, facebookProvider, twitterProvider}
