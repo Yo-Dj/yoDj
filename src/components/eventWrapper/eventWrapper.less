@@ -1,0 +1,76 @@
+.EventWrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+
+  &--disable {
+    opacity: .2;
+  }
+
+  &__address-container {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  &--address {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    min-height: 50px;
+  }
+
+  &--city {
+    margin: 10px 0;
+  }
+
+  &__icon-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 1em;
+  }
+
+  &--headset-icon {
+    font-size: 60px !important;
+  }
+
+  &--action {
+    color: white !important;
+    width: 100%;
+    opacity: 1 !important;
+  }
+
+  &__event {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &--icon {
+    background: transparent no-repeat center center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: gray;
+  }
+
+  &--requests {
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}
