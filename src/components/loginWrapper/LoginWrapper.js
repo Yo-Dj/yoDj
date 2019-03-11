@@ -1,8 +1,7 @@
 import React from 'react'
-import {MuiThemeProvider} from '@material-ui/core/styles'
+import {withRouter} from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import firebase from 'firebase'
-import theme from 'src/config/CustomStyle'
 import {fire, facebookProvider, twitterProvider} from 'src/config/Fire'
 import Login from './login'
 import Registration from './registration'
@@ -65,6 +64,7 @@ class LoginWrapper extends React.Component {
         this.setState({
           loginSuccessful: true
         })
+        this.props.history.push('/home')
       }
     })
   }
@@ -158,7 +158,6 @@ class LoginWrapper extends React.Component {
 
   render() {
     return (
-      <MuiThemeProvider theme={theme}>
         <div className="LoginWrapper">
           { this.state.view === ''
             ? <div className="LoginWrapper--progress">
@@ -167,10 +166,8 @@ class LoginWrapper extends React.Component {
             : this.renderView()
           }
         </div>
-      </MuiThemeProvider>
-
     )
   }
 }
 
-export default LoginWrapper
+export default withRouter(LoginWrapper)

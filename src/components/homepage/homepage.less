@@ -1,3 +1,119 @@
 .Homepage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #2E3336;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  align-items: center;
+  color: white;
 
+  &__header {
+    width: 100%;
+    flex: 0 1 70px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 8px 15px;
+    border-bottom: 1px solid #555
+  }
+
+  &__profile-container {
+    width: 33%;
+    display: flex;
+    align-items: center;
+  }
+
+  &__search {
+    width: 33%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  &__profile {
+    background: transparent no-repeat center center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    // box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.6);
+    box-shadow: 1px 2px 4px 1px yellow inset, 1px 1px 4px 3px yellow;
+  }
+
+  &__icon {
+    background: transparent no-repeat center center;
+    background-image: url("../../images/yoDj-raw-2.png");
+    background-size: 100% 55px;
+    width: 33%;
+    height: 55px;
+    // box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.6);
+  }
+
+  &__main-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    // background: blue;
+    width: 100%;
+  }
+
+  &__event-container {
+    width: 100%;
+    // height: 33%;
+    flex: 1;
+    // background: red;
+    position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      height: 4px;
+      bottom: 0;
+      width: 100%;
+      display: block;
+      background: #FFD700;
+      border-radius: 4px;
+      box-shadow: 1px 2px 4px 1px #FFD700 inset, 1px 1px 4px 3px #FFD700;
+    }
+  }
+
+  &__feed-container {
+    margin-top: 4px;
+    width: 100%;
+    // height: 33%;
+    flex: 1;
+    background: green;
+    position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      height: 4px;
+      bottom: 0;
+      width: 100%;
+      display: block;
+      background: #FFD700;
+      border-radius: 4px;
+      box-shadow: 1px 2px 4px 1px #FFD700 inset, 1px 1px 4px 3px #FFD700;
+    }
+  }
+
+  &__tip-container {
+    width: 100%;
+    // height: 33%;
+    flex: 1;
+    background: blue;
+  }
+}
+
+
+.MuiIcon-colorPrimary-2 {
+  font-size: 26px !important;
+  color: white !important;
 }
