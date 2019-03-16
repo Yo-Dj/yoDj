@@ -75,6 +75,7 @@ class Login extends React.Component {
     let {onAddUser} = this.props
     window.confirmationResult.confirm(this.state.phone)
       .then(result => {
+        console.log('RESULT ------> ', result)
         onAddUser(result.user)
         this.setState({
           phone: '',

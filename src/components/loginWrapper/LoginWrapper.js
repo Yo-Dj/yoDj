@@ -32,6 +32,7 @@ class LoginWrapper extends React.Component {
   componentDidMount() {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
+      console.log('USER is Logged IN ---> ', user)
       this.setState({
         userInfo: {token: user.m, phone: user.phoneNumber, uid: user.uid},
         view: 'registration'
