@@ -32,7 +32,6 @@ class LoginWrapper extends React.Component {
   componentDidMount() {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
-      console.log('USER is Logged IN ---> ', user)
       this.setState({
         userInfo: {token: user.m, phone: user.phoneNumber, uid: user.uid},
         view: 'registration'
@@ -53,7 +52,7 @@ class LoginWrapper extends React.Component {
 
   addToDatabase(verificationType) {
     let {profileInfo: {name, image}, username} = this.state
-    let userId = fire.auth().currentUser.uid
+    let userId = !this.state.userInfo.uid ? fire.auth().currentUser.uid : this.state.userInfo.uid
     firebase.database().ref(`users/${userId}`).set({
       name: name,
       imageUrl: image,
@@ -115,9 +114,25 @@ class LoginWrapper extends React.Component {
   }
 
   addUser(userInfo) {
-    this.setState({
-      userInfo: {token: userInfo.m, phone: userInfo.phoneNumber},
-      view: 'registration'
+    // usersRef.once('value', function(snapshot) {
+    //   if (snapshot.hasChild(theDataToAdd)) {
+    //     alert('exists');
+    //   }
+    // });
+  firebase.database()
+    .ref(`users/${userInfo.uid}`)
+    .once('value')
+    .then(snapshot => {
+      // console.log('SNapchot Exists ---> ', snapshot.exists())
+      // console.log('SNapchot Value --> ', snapshot.val())
+      if (snapshot.exists()) {
+        this.props.history.push('/home')
+        return
+      }
+      this.setState({
+        userInfo: {token: userInfo.m, phone: userInfo.phoneNumber, uid: userInfo.uid},
+        view: 'registration'
+      })
     })
   }
 
