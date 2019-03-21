@@ -1,4 +1,5 @@
 import React from 'react'
+import {withRouter} from 'react-router-dom'
 import Icon from '@material-ui/core/Icon'
 import fire from 'src/config/Fire'
 import EventWrapper from '../eventWrapper'
@@ -27,24 +28,16 @@ class Homepage extends React.Component {
   }
 
   activate() {
-    this.setState({
-      active: true
-    })
+    // this.setState({
+    //   active: true
+    // })
+    this.props.history.push('/new-event')
   }
 
   render() {
     let {userInfo} = this.props
     return (
       <div className="Homepage">
-        {/* <div className="Homepage__header">
-          <div className="Homepage__profile-container">
-            <div className="Homepage__profile" style={{backgroundImage: `url(${userInfo.imageUrl})`}} onClick={this.openProfile}/>
-          </div>
-          <div className="Homepage__icon" />
-          <div className="Homepage__search">
-            <Icon>search</Icon>
-          </div>
-        </div> */}
         <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} />
         <div className="Homepage__main-container">
           <div className="Homepage__event-container">
@@ -61,4 +54,4 @@ class Homepage extends React.Component {
   }
 }
 
-export default Homepage
+export default withRouter(Homepage)
