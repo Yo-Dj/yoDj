@@ -114,11 +114,6 @@ class LoginWrapper extends React.Component {
   }
 
   addUser(userInfo) {
-    // usersRef.once('value', function(snapshot) {
-    //   if (snapshot.hasChild(theDataToAdd)) {
-    //     alert('exists');
-    //   }
-    // });
   firebase.database()
     .ref(`users/${userInfo.uid}`)
     .once('value')
