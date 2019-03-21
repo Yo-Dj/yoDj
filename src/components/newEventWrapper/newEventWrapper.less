@@ -10,7 +10,7 @@
     box-sizing: border-box;
     // align-items: center;
     color: white;
-  
+
     &__subheader {
         display: flex;
         justify-content: flex-start;
@@ -68,4 +68,35 @@
         background: white;
         height: 1px;;
     }
-}
+
+    &__menu-item {
+        color: orange !important;
+    }
+
+    &--tip-title {
+        font-weight: 100;
+        font-size: 20px;
+        margin: 25px 0;
+    }
+
+    &--tip-text {
+        color: white;
+        width: 40%;
+    }
+
+    &--tip-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        input {
+            text-align: start !important;
+        }
+    }
+
+    &--create {
+        color: white !important;
+        width: 100px;
+        margin: 25px 0;
+    }
+ }

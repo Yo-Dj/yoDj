@@ -14,7 +14,8 @@ class MainPage extends React.Component {
     this.state = {
       isLogged: false,
       userId: '',
-      userInfo: {}
+      userInfo: {},
+      event: {}
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -28,12 +29,16 @@ class MainPage extends React.Component {
   authListener() {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
-        this.setState({
-          isLogged: true,
-          userId: user.uid
-        })
+        if (this.state.userID !== '') {
+          this.setState({
+            isLogged: true,
+            userId: user.uid
+          })
+        }
         this.getUserInfo(user.uid)
-      //  this.props.history.push('/login')
+      }
+      else {
+        this.logoutUser()
       }
     })
   }
@@ -51,29 +56,32 @@ class MainPage extends React.Component {
   }
 
   getUserInfo(userId) {
+    let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
-      .ref(`users/${userId}`)
-      .once('value')
-      .then(snapshot => {
+      .ref(`users/${uid}`)
+      .on('value',snapshot => {
         let data = snapshot.val()
-        // console.log('SNaphot Value on Register ---> ', data)
-        if (snapshot.exists()) {
+        if (data) {
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          let event = data.event ? data.event : {}
           this.setState({
-            userInfo
+            userInfo,
+            event
           })
-          console.log('Data ----> ', snapshot.val())
+        } else {
+          this.props.history.push('/login')
         }
       })
   }
 
   render() {
-    let {userInfo, userId} = this.state
+    let {userInfo, userId, event} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
           <Switch>
-              <Route path="/home" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
+              <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
+              <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />
           </Switch>

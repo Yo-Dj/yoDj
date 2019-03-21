@@ -50,6 +50,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-dom-factories": "^1.0.2",
+    "react-number-format": "^4.0.7",
     "react-phone-input-auto-format": "^0.1.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",

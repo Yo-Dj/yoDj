@@ -7,6 +7,7 @@
 
   &--disable {
     opacity: .2;
+    pointer-events: none;
   }
 
   &__address-container {
@@ -14,6 +15,7 @@
     flex: 1;
     align-items: center;
     flex-direction: column;
+    text-transform: capitalize;
   }
 
   &--address {
@@ -41,6 +43,10 @@
     margin-top: 1em;
   }
 
+  &--started {
+    color: #08FF00;
+  }
+
   &--headset-icon {
     font-size: 60px !important;
   }
@@ -51,11 +57,20 @@
     opacity: 1 !important;
   }
 
+  &--disable-button {
+    pointer-events: none;
+    opacity: 0.2;
+    background: #555 !important;
+  }
+
   &__event {
     display: flex;
     flex: 1;
     flex-direction: column;
     align-items: center;
+    h3 {
+      text-transform: capitalize;
+    }
   }
 
   &--icon {
