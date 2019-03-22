@@ -1,4 +1,6 @@
 import React from 'react'
+import {withRouter} from 'react-router-dom'
+import firebase from 'firebase'
 import Icon from '@material-ui/core/Icon'
 import fire from 'src/config/Fire'
 import EventWrapper from '../eventWrapper'
@@ -12,14 +14,35 @@ class Homepage extends React.Component {
     }
     this.openProfile = this.openProfile.bind(this)
     this.activate = this.activate.bind(this)
+    this.removeEvent = this.removeEvent.bind(this)
   }
 
   componentDidMount() {
+    let {event} = this.props
+    if (Object.keys(event).length > 0) {
+      this.setState({
+        active: true
+      })
+    }
     this.authListener()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    let {event} = this.props
+    if (Object.keys(prevProps.event).length !== Object.keys(event).length) {
+      this.setState({
+        active: !this.state.active
+      })
+    }
   }
 
   authListener() {
 
+  }
+
+  removeEvent() {
+    let {userId} = this.props
+    firebase.database().ref(`users/${userId}/event`).remove().then()
   }
 
   openProfile() {
@@ -27,28 +50,17 @@ class Homepage extends React.Component {
   }
 
   activate() {
-    this.setState({
-      active: true
-    })
+    this.props.history.push('/new-event')
   }
 
   render() {
-    let {userInfo} = this.props
+    let {userInfo, event} = this.props
     return (
       <div className="Homepage">
-        {/* <div className="Homepage__header">
-          <div className="Homepage__profile-container">
-            <div className="Homepage__profile" style={{backgroundImage: `url(${userInfo.imageUrl})`}} onClick={this.openProfile}/>
-          </div>
-          <div className="Homepage__icon" />
-          <div className="Homepage__search">
-            <Icon>search</Icon>
-          </div>
-        </div> */}
-        <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} />
+        <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={this.state.active} />
         <div className="Homepage__main-container">
           <div className="Homepage__event-container">
-            <EventWrapper onCreate={this.activate} active={this.state.active} />
+            <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onRemove={this.removeEvent}/>
           </div>
           <div className="Homepage__feed-container">
           </div>
@@ -61,4 +73,4 @@ class Homepage extends React.Component {
   }
 }
 
-export default Homepage
+export default withRouter(Homepage)

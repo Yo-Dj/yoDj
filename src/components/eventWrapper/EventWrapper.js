@@ -7,6 +7,7 @@ class EventWrapper extends React.Component {
   constructor(props) {
     super(props)
     this.createNewEvent = this.createNewEvent.bind(this)
+    this.openEvent = this.openEvent.bind(this)
   }
 
   createNewEvent(e) {
@@ -14,30 +15,38 @@ class EventWrapper extends React.Component {
     this.props.onCreate()
   }
 
+  openEvent(e) {
+    e.preventDefault()
+    // console.log('OpenEvent ---> ')
+    this.props.onRemove()
+  }
+
   render() {
-    let {active} = this.props
+    let {active, event: {address, placeName, tipAmount, type}, event} = this.props
+    let tip = parseFloat(tipAmount).toFixed(2)
+
     return (
       <div className="EventWrapper">
         <div className={`EventWrapper__address-container${!active ? ' EventWrapper--disable' : ''}`}>
-          <div className="EventWrapper--address">Address</div>
+          <div className="EventWrapper--address">{active ? address : "Address"}</div>
           <div className="EventWrapper--city">
             City, State
           </div>
           <div className="EventWrapper--tip">
-            min: $0.00
+            min: ${active ? tip : '0.00'}
           </div>
         </div>
         <div className="EventWrapper__icon-container">
           <div className={`EventWrapper--headset${!active ? ' EventWrapper--disable' : ''}`}>
-            <Icon classes={{root: 'EventWrapper--headset-icon'}}>headset</Icon>
+            <Icon classes={{root: `EventWrapper--headset-icon${active ? ' EventWrapper--started' : ''}`}}>headset</Icon>
           </div>
           <h3 className={!active ? 'EventWrapper--disable' : ''}>Duration</h3>
-          <Button variant="contained" color="primary" classes={{root: 'EventWrapper--action'}} onClick={this.createNewEvent}>
+          <Button variant="contained" color="primary" classes={{root: `EventWrapper--action${active ? ' EventWrapper--disable-button' : ''}`}} onClick={this.createNewEvent}>
             Create
           </Button>
         </div>
         <div className={`EventWrapper__event${!active ? ' EventWrapper--disable' : ''}`}>
-          <h3>Event</h3>
+          <h3 className={active ? 'EventWrapper--started' : ''} onClick={this.openEvent}>{active ? placeName : 'Event'}</h3>
           <div className="EventWrapper--icon" />
           <div className="EventWrapper--requests">
             0 Requests Completed
