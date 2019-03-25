@@ -1,0 +1,45 @@
+.EventView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #2E3336;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: white;
+
+
+  &__subheader {
+    display: flex;
+    justify-content: flex-start;
+    height: 30px;
+    padding: 5px 3px;
+    align-items: center;
+    color: #08FF00;
+  }
+
+  &--subtitle {
+    margin-left: 4.5em;
+    font-size: 24px;
+    color: #08FF00;
+  }
+
+  &__main-container {
+    width: 100%;
+    padding: 10px 20px;
+  }
+}
+
+@media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .EventView {
+      &--subtitle {
+        margin-left: 5.5em;
+      }
+    }
+}

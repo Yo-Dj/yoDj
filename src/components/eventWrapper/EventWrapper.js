@@ -17,8 +17,7 @@ class EventWrapper extends React.Component {
 
   openEvent(e) {
     e.preventDefault()
-    // console.log('OpenEvent ---> ')
-    this.props.onRemove()
+    this.props.onTitle()
   }
 
   render() {

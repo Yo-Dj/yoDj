@@ -7,6 +7,7 @@ import HomePage from '../homepage'
 import LoginWrapper from '../loginWrapper'
 import {fire} from 'src/config/Fire'
 import NewEventWrapper from '../newEventWrapper'
+import EventView from '../eventView'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -81,6 +82,7 @@ class MainPage extends React.Component {
         <div className="MainPage">
           <Switch>
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
+              <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser} />)} />
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />
