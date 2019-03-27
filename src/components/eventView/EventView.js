@@ -15,16 +15,14 @@ class EventView extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.startTimer = this.startTimer.bind(this)
     this.timeFormatter = this.timeFormatter.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
 
   componentDidMount() {
-    console.log('Props ----> ', this.props)
     let {event: {startDate}} = this.props
     if (startDate) {
-      console.log('STartDate ---> ', startDate)
       let now = new Date()
       let elapsedTime = now.getTime() - new Date(startDate).getTime()
-      console.log('Elapsed Time ---> ', elapsedTime)
       this.setState({
         timerTime: elapsedTime,
         timerStart: Date.now() - new Date(startDate).getTime()
@@ -38,10 +36,8 @@ class EventView extends React.Component {
     let {event: {startDate}} = this.props
 
     if (!prevProps.event.startDate && startDate) {
-      console.log('STartDate ---> ', startDate)
       let now = new Date()
       let elapsedTime = now.getTime() - new Date(startDate).getTime()
-      console.log('Elapsed Time ---> ', elapsedTime)
       this.setState({
         timerTime: elapsedTime,
         timerStart: Date.now() - new Date(startDate).getTime()
@@ -81,6 +77,10 @@ class EventView extends React.Component {
     this.props.onFinish()
   }
 
+  goBack() {
+    this.props.history.push('/home')
+  }
+
   render() {
     let {userInfo, event} = this.props
     let tip = parseFloat(event.tipAmount).toFixed(2)
@@ -89,7 +89,7 @@ class EventView extends React.Component {
       <div className="EventView">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.profileImgClicked} isActive={true} onClick={() => {}}/>
         <div className="EventView__subheader">
-          <Icon onClick ={this.handleClose}>close</Icon>
+          <Icon onClick ={this.goBack}>close</Icon>
           <div className="EventView--subtitle">{event.placeName}</div>
        </div>
        <div className="EventView__main-container">
@@ -120,5 +120,5 @@ class EventView extends React.Component {
   }
 }
 
-export default EventView
+export default withRouter(EventView)
 
