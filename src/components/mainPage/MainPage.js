@@ -21,9 +21,11 @@ class MainPage extends React.Component {
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
     this.logoutUser = this.logoutUser.bind(this)
+    this.finishEvent = this.finishEvent.bind(this)
   }
 
   componentDidMount() {
+    console.log('LOcation ---> ', this.props.location)
     this.authListener()
   }
 
@@ -65,6 +67,16 @@ class MainPage extends React.Component {
         if (data) {
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
           let event = data.event ? data.event : {}
+          let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
+          let isDayOld = new Date().getTime() >= wholeDay
+          if (isDayOld) {
+            console.log('Day old ---> ', wholeDay)
+            firebase.database().ref(`users/${uid}/event`).remove()
+            event = {}
+          }
+          if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
+            this.props.history.push('/home')
+          }
           this.setState({
             userInfo,
             event
@@ -75,6 +87,13 @@ class MainPage extends React.Component {
       })
   }
 
+  finishEvent() {
+    console.log('Finish Event')
+    let {userId} = this.state
+    firebase.database().ref(`users/${userId}/event`).remove()
+    this.props.history.push('/home')
+  }
+
   render() {
     let {userInfo, userId, event} = this.state
     return(
@@ -82,7 +101,7 @@ class MainPage extends React.Component {
         <div className="MainPage">
           <Switch>
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
-              <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser} />)} />
+              <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />

@@ -8,33 +8,83 @@ class EventView extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      time: 0
+      timerTime: 0,
+      timerStart: 0,
+
     }
     this.handleClose = this.handleClose.bind(this)
     this.startTimer = this.startTimer.bind(this)
+    this.timeFormatter = this.timeFormatter.bind(this)
+  }
+
+  componentDidMount() {
+    console.log('Props ----> ', this.props)
+    let {event: {startDate}} = this.props
+    if (startDate) {
+      console.log('STartDate ---> ', startDate)
+      let now = new Date()
+      let elapsedTime = now.getTime() - new Date(startDate).getTime()
+      console.log('Elapsed Time ---> ', elapsedTime)
+      this.setState({
+        timerTime: elapsedTime,
+        timerStart: Date.now() - new Date(startDate).getTime()
+      }, () => {
+        this.startTimer()
+      })
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    let {event: {startDate}} = this.props
+
+    if (!prevProps.event.startDate && startDate) {
+      console.log('STartDate ---> ', startDate)
+      let now = new Date()
+      let elapsedTime = now.getTime() - new Date(startDate).getTime()
+      console.log('Elapsed Time ---> ', elapsedTime)
+      this.setState({
+        timerTime: elapsedTime,
+        timerStart: Date.now() - new Date(startDate).getTime()
+      }, () => {
+        clearInterval(this.timer)
+        this.startTimer()
+      })
+    }
+
   }
 
   startTimer() {
     this.setState({
-      time: this.state.time,
-      start: Date.now() - this.state.time
+      timerTime: this.state.timerTime,
+      timerStart: Date.now() - this.state.timerTime
     })
     this.timer = setInterval(() => (
       this.setState({
-        time: Date.now() - this.state.start
+        timerTime: Date.now() - this.state.timerStart
       }),
-    1))
+    1000))
+  }
+
+  timeFormatter() {
+    let {timerTime} = this.state
+    let seconds = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2)
+    let minutes = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2)
+    let hours = ("0" + Math.floor(timerTime / 3600000)).slice(-2)
+    return `${hours} : ${minutes} : ${seconds}`
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer)
   }
 
   handleClose() {
-    console.log('Close Event --> ')
-    // this.props.history.push('/home')
+    this.props.onFinish()
   }
 
   render() {
     let {userInfo, event} = this.props
     let tip = parseFloat(event.tipAmount).toFixed(2)
-    console.log('Event --> ', event)
+    let time = this.timeFormatter()
     return (
       <div className="EventView">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.profileImgClicked} isActive={true} onClick={() => {}}/>
@@ -48,7 +98,7 @@ class EventView extends React.Component {
          </div>
         <div className="EventView--time-container">
           <div>Elapsed Time</div>
-          <div className="EventView--time">time</div>
+          <div className="EventView--time">{time}</div>
           <div className="EventView--info"> Started at 10pm</div>
         </div>
         <div className="EventView--icon" />

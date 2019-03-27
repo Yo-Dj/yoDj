@@ -66,6 +66,7 @@ class NewEventWrapper extends React.Component {
       value = value.slice(1)
     }
     if (!isNaN(value)) {
+      // value = parseFloat(value).toFixed(2)
       tipText = '$' + value
       this.setState({
         tipText,
@@ -87,6 +88,7 @@ class NewEventWrapper extends React.Component {
         startDate: now
       },  error => {
         if (!error) {
+          console.log('Push home ---> ')
           this.props.history.push('/home')
         }
       })
