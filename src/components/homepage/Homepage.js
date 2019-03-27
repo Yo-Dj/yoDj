@@ -15,6 +15,7 @@ class Homepage extends React.Component {
     this.openProfile = this.openProfile.bind(this)
     this.activate = this.activate.bind(this)
     this.removeEvent = this.removeEvent.bind(this)
+    this.openEvent = this.openEvent.bind(this)
   }
 
   componentDidMount() {
@@ -40,6 +41,10 @@ class Homepage extends React.Component {
 
   }
 
+  openEvent() {
+    this.props.history.push('/event')
+  }
+
   removeEvent() {
     let {userId} = this.props
     firebase.database().ref(`users/${userId}/event`).remove().then()
@@ -60,7 +65,7 @@ class Homepage extends React.Component {
         <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={this.state.active} />
         <div className="Homepage__main-container">
           <div className="Homepage__event-container">
-            <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onRemove={this.removeEvent}/>
+            <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onTitle={this.openEvent} />
           </div>
           <div className="Homepage__feed-container">
           </div>
