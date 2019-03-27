@@ -1,0 +1,128 @@
+.EventView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #2E3336;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: white;
+
+
+  &__subheader {
+    display: flex;
+    justify-content: flex-start;
+    height: 30px;
+    padding: 5px 3px;
+    align-items: center;
+    color: #08FF00;
+  }
+
+  &--subtitle {
+    margin-left: 4.5em;
+    font-size: 24px;
+    color: #08FF00;
+  }
+
+  &__main-container {
+    width: 100%;
+    padding: 40px 20px 10px 20px;
+    display: flex;
+    box-sizing: border-box;
+  }
+
+  &--headset {
+    display: flex;
+    align-self: center;
+    width: 60px;
+  }
+
+  &--time-container {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  &--time {
+    font-size: 24px;
+    padding: 10px 0;
+    font-weight: 500;
+  }
+
+  &--icon {
+    text-align: center;
+    background: transparent no-repeat center center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: #555;
+    border: 2px solid #08FF00;
+  }
+
+  &--address {
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    font-size: 24px;
+    align-items: center;
+    justify-content: center;
+    text-transform: capitalize;
+  }
+
+  &--headset-icon {
+    font-size: 60px !important;
+    color: #08FF00;
+  }
+
+  &__tip-container {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  &__request-container {
+    margin: 2em 0;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  &--end-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__end {
+    color: white !important;
+    width: 100px;
+  }
+}
+
+@media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .EventView {
+      &--subtitle {
+        margin-left: 5.5em;
+      }
+    }
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .EventView {
+      &__request-container {
+        margin: 3.5em 0;
+      }
+    }
+
+  }

@@ -7,6 +7,7 @@ import HomePage from '../homepage'
 import LoginWrapper from '../loginWrapper'
 import {fire} from 'src/config/Fire'
 import NewEventWrapper from '../newEventWrapper'
+import EventView from '../eventView'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -14,26 +15,33 @@ class MainPage extends React.Component {
     this.state = {
       isLogged: false,
       userId: '',
-      userInfo: {}
+      userInfo: {},
+      event: {}
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
     this.logoutUser = this.logoutUser.bind(this)
+    this.finishEvent = this.finishEvent.bind(this)
   }
 
   componentDidMount() {
+    console.log('LOcation ---> ', this.props.location)
     this.authListener()
   }
 
   authListener() {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
-        this.setState({
-          isLogged: true,
-          userId: user.uid
-        })
+        if (this.state.userID !== '') {
+          this.setState({
+            isLogged: true,
+            userId: user.uid
+          })
+        }
         this.getUserInfo(user.uid)
-      //  this.props.history.push('/login')
+      }
+      else {
+        this.logoutUser()
       }
     })
   }
@@ -51,29 +59,50 @@ class MainPage extends React.Component {
   }
 
   getUserInfo(userId) {
+    let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
-      .ref(`users/${userId}`)
-      .once('value')
-      .then(snapshot => {
+      .ref(`users/${uid}`)
+      .on('value',snapshot => {
         let data = snapshot.val()
-        // console.log('SNaphot Value on Register ---> ', data)
-        if (snapshot.exists()) {
+        if (data) {
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          let event = data.event ? data.event : {}
+          let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
+          let isDayOld = new Date().getTime() >= wholeDay
+          if (isDayOld) {
+            console.log('Day old ---> ', wholeDay)
+            firebase.database().ref(`users/${uid}/event`).remove()
+            event = {}
+          }
+          if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
+            this.props.history.push('/home')
+          }
           this.setState({
-            userInfo
+            userInfo,
+            event
           })
-          console.log('Data ----> ', snapshot.val())
+        } else {
+          this.props.history.push('/login')
         }
       })
   }
 
+  finishEvent() {
+    console.log('Finish Event')
+    let {userId} = this.state
+    firebase.database().ref(`users/${userId}/event`).remove()
+    this.props.history.push('/home')
+  }
+
   render() {
-    let {userInfo, userId} = this.state
+    let {userInfo, userId, event} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
           <Switch>
-              <Route path="/home" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
+              <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
+              <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
+              <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />
           </Switch>

@@ -32,11 +32,11 @@ class LoginWrapper extends React.Component {
   componentDidMount() {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
-      this.setState({
-        userInfo: {token: user.m, phone: user.phoneNumber, uid: user.uid},
-        view: 'registration'
+        this.setState({
+          userInfo: {token: user.m, phone: user.phoneNumber, uid: user.uid},
+          view: 'registration'
         })
-      } else {
+      } else if (!user && !this.userInfo){
         this.setState({
           view: 'confirmation'
         })
@@ -114,15 +114,11 @@ class LoginWrapper extends React.Component {
   }
 
   addUser(userInfo) {
-    // usersRef.once('value', function(snapshot) {
-    //   if (snapshot.hasChild(theDataToAdd)) {
-    //     alert('exists');
-    //   }
-    // });
   firebase.database()
     .ref(`users/${userInfo.uid}`)
     .once('value')
     .then(snapshot => {
+      console.log('Snapshot ---> ', snapshot.val())
       // console.log('SNapchot Exists ---> ', snapshot.exists())
       // console.log('SNapchot Value --> ', snapshot.val())
       if (snapshot.exists()) {
@@ -147,6 +143,7 @@ class LoginWrapper extends React.Component {
   }
 
   renderView() {
+    console.log('View ---> ', this.state.view)
     switch (this.state.view) {
       case 'confirmation':
         return (<Login onAddUser={this.addUser}/>)
