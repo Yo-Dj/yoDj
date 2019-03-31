@@ -7,6 +7,13 @@ import FeedContainer from '../feedContainer'
 import EventWrapper from '../eventWrapper'
 import Header from '../header'
 
+const requests = [
+  {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true},
+  {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true},
+  {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false},
+  {name: '@Maha', message: 'joined your event', songRequest: false}
+]
+
 class Homepage extends React.Component {
   constructor(props) {
     super(props)
@@ -69,7 +76,7 @@ class Homepage extends React.Component {
             <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onTitle={this.openEvent} />
           </div>
           <div className="Homepage__feed-container">
-            <FeedContainer active={this.state.active}/>
+            <FeedContainer active={this.state.active} requests={requests} />
           </div>
           <div className="Homepage__tip-container">
           </div>
