@@ -119,8 +119,6 @@ class LoginWrapper extends React.Component {
     .once('value')
     .then(snapshot => {
       console.log('Snapshot ---> ', snapshot.val())
-      // console.log('SNapchot Exists ---> ', snapshot.exists())
-      // console.log('SNapchot Value --> ', snapshot.val())
       if (snapshot.exists()) {
         this.props.history.push('/home')
         return
