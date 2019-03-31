@@ -16,6 +16,7 @@ class EventView extends React.Component {
     this.startTimer = this.startTimer.bind(this)
     this.timeFormatter = this.timeFormatter.bind(this)
     this.goBack = this.goBack.bind(this)
+    this.getTime = this.getTime.bind(this)
   }
 
   componentDidMount() {
@@ -77,6 +78,12 @@ class EventView extends React.Component {
     this.props.onFinish()
   }
 
+  getTime() {
+    let {event: {startDate}} = this.props
+    startDate = new Date(startDate)
+    return startDate.toLocaleString('en-US', {hour: 'numeric', hour12: true})
+  }
+
   goBack() {
     this.props.history.push('/home')
   }
@@ -99,7 +106,7 @@ class EventView extends React.Component {
         <div className="EventView--time-container">
           <div>Elapsed Time</div>
           <div className="EventView--time">{time}</div>
-          <div className="EventView--info"> Started at 10pm</div>
+          <div className="EventView--info"> Started at {this.getTime()}</div>
         </div>
         <div className="EventView--icon" />
        </div>

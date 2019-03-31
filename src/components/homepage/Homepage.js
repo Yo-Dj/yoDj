@@ -47,7 +47,7 @@ class Homepage extends React.Component {
 
   removeEvent() {
     let {userId} = this.props
-    firebase.database().ref(`users/${userId}/event`).remove().then()
+    firebase.database().ref(`users/${userId}/event`).remove()
   }
 
   openProfile() {
