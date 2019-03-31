@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom'
 import firebase from 'firebase'
 import Icon from '@material-ui/core/Icon'
 import fire from 'src/config/Fire'
+import FeedContainer from '../feedContainer'
 import EventWrapper from '../eventWrapper'
 import Header from '../header'
 
@@ -68,9 +69,9 @@ class Homepage extends React.Component {
             <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onTitle={this.openEvent} />
           </div>
           <div className="Homepage__feed-container">
+            <FeedContainer active={this.state.active}/>
           </div>
           <div className="Homepage__tip-container">
-
           </div>
         </div>
       </div>
