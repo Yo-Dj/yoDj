@@ -18,7 +18,7 @@ class FeedContainer extends React.Component {
         <div className="FeedContainer--activity-container">
           {
             requests.map((request, index) => (
-              request.songRequest ? <SongRequest /> : <Activity />
+              request.songRequest ? <SongRequest request={request} key={index} /> : <Activity key={index}/>
             ))
           }
         </div>
