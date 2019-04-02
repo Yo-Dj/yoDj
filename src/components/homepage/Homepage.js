@@ -3,8 +3,18 @@ import {withRouter} from 'react-router-dom'
 import firebase from 'firebase'
 import Icon from '@material-ui/core/Icon'
 import fire from 'src/config/Fire'
+import FeedContainer from '../feedContainer'
 import EventWrapper from '../eventWrapper'
 import Header from '../header'
+
+const requests = [
+  {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'},
+  {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png'},
+  {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png'},
+  {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png'},
+  {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png'},
+  {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'}
+]
 
 class Homepage extends React.Component {
   constructor(props) {
@@ -68,9 +78,9 @@ class Homepage extends React.Component {
             <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onTitle={this.openEvent} />
           </div>
           <div className="Homepage__feed-container">
+            <FeedContainer active={this.state.active} requests={requests} />
           </div>
           <div className="Homepage__tip-container">
-
           </div>
         </div>
       </div>
