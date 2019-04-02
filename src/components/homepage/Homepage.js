@@ -11,7 +11,9 @@ const requests = [
   {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'},
   {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png'},
   {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png'},
-  {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png'}
+  {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png'},
+  {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png'},
+  {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'}
 ]
 
 class Homepage extends React.Component {
