@@ -25,7 +25,6 @@ class MainPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log('LOcation ---> ', this.props.location)
     this.authListener()
   }
 
@@ -70,7 +69,6 @@ class MainPage extends React.Component {
           let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
           let isDayOld = new Date().getTime() >= wholeDay
           if (isDayOld) {
-            console.log('Day old ---> ', wholeDay)
             firebase.database().ref(`users/${uid}/event`).remove()
             event = {}
           }
@@ -88,7 +86,6 @@ class MainPage extends React.Component {
   }
 
   finishEvent() {
-    console.log('Finish Event')
     let {userId} = this.state
     firebase.database().ref(`users/${userId}/event`).remove()
     this.props.history.push('/home')
