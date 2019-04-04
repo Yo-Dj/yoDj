@@ -7,36 +7,35 @@ class FeedContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isOpen: false,
-      message: ''
+      selectedRequest: {}
     }
     this.handleRequest = this.handleRequest.bind(this)
     this.handleClose = this.handleClose.bind(this)
   }
 
-  handleRequest(type) {
-    let message = (type === 'accept') 
-      ? 'Are you sure you want to accept this req?'
-      : 'Are you sure you want to reject this req?'
+  handleRequest(type, selectedRequest) {
     this.setState({
-      message,
-      isOpen: true
+      selectedRequest
     })
+    this.props.onRequestOpen(true, type)
   }
-  
+
   handleClose() {
-    this.setState({
-      message: '',
-      isOpen: false
-    })
+    this.props.onRequestOpen(false)
   }
 
   render() {
-    let {active, requests} = this.props
-    let {isOpen, message} = this.state
+    let {active, requests, requestMessage, openRequestModal, onAccept} = this.props
+    let {selectedRequest} = this.state
     return (
       <div className="FeedContainer">
-        <RequestModal isVisible={isOpen} message={message} onClose={this.handleClose}/>
+        <RequestModal
+          isVisible={openRequestModal}
+          message={requestMessage}
+          onClose={this.handleClose}
+          onAccept={onAccept}
+          request={selectedRequest}
+        />
         <div className="FeedContainer__header">
           <div className="FeedContainer--title">Feed <span className={active ? 'FeedContainer--active' : ''}>></span></div>
           <div className="FeedContainer--request-num">10 reqs, 21 fans</div>

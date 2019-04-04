@@ -9,8 +9,8 @@ class SongRequest extends React.Component {
   }
 
   handleClick(type) {
-    console.log('Type --> ', type)
-    this.props.onRequest(type)
+    let {onRequest, request} = this.props
+    onRequest(type, request)
   }
 
   render() {

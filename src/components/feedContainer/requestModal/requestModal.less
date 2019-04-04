@@ -26,8 +26,30 @@
         background: orange;
         border-radius: 8px;
         display: flex;
+        flex-direction: column;
         padding: 25px;
         justify-content: center;
         box-sizing: border-box;
+    }
+
+    &--text {
+        text-align: center;
+    }
+
+    &--action-buttons {
+        margin-top: 15px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 0 25px;
+    }
+
+    &--right-button {
+        margin-left: auto;
+    }
+
+    &--button {
+        margin-right: 20px;
+        color: white !important;
     }
 }
