@@ -7,6 +7,15 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  opacity: 1;
+  pointer-events: auto;
+  transition: all .25s ease-in-out;
+
+  &--hide {
+    opacity: 0.4;
+    pointer-events: none;
+    transition: all .25s ease-in-out;
+  }
 
   &__header {
     display: flex;
