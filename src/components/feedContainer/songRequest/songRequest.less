@@ -1,0 +1,55 @@
+.SongRequest {
+    height: 32px;
+    // border-bottom: 1px solid #555;
+    display: flex;
+    align-items: center;
+
+    &__profile {
+        background: transparent no-repeat center center;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-size: 100% 100%;
+        background-color: red;
+    }
+
+    &__action-container {
+      margin-left: auto;
+      width: 60px;
+      display: flex;
+      justify-content: space-between;
+      box-sizing: border-box;
+      padding-left: 5px;
+    }
+
+    &__description {
+      flex: 1;
+      position: relative;
+      height: 100%;
+      margin: 0 0 5px 5px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &--check {
+      font-size: 12px !important;
+      height: 25px !important;
+      width: 25px !important;
+      min-height: 0 !important;
+      color: white !important;
+    }
+
+    &--times {
+      font-size: 12px !important;
+      height: 25px !important;
+      width: 25px !important;
+      min-height: 0 !important;
+      margin-right: 5px;
+      color: white !important;
+    }
+
+
+}

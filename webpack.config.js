@@ -42,7 +42,8 @@ module.exports = {
         },
         resolve: {
               alias: {
-                src: paths.src
+                src: paths.src,
+                assets: path.resolve(__dirname, '../components/images')
               }
             },
     module: {
@@ -61,7 +62,7 @@ module.exports = {
             },
             {
               test: /\.(svg|png|jpg|gif)$/i,
-              use: 'url-loader?limit=10000&name=assets/images/[name].[ext]'
+              use: 'url-loader?limit=10000'
             },
             {
               test: /\.worker\.js$/, include: [paths.src], use: 'worker-loader'

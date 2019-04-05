@@ -10,6 +10,12 @@
   box-sizing: border-box;
   align-items: center;
   color: white;
+  justify-content: flex-start;
+  pointer-events: auto;
+
+  &--hide {
+    pointer-events: none;
+  }
 
   &__header {
     width: 100%;
@@ -58,7 +64,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1;
+    flex: 1 0 33%;
     width: 100%;
   }
 
@@ -83,7 +89,7 @@
   &__feed-container {
     margin-top: 4px;
     width: 100%;
-    flex: 1;
+    flex: 2;
     position: relative;
 
     &:after {
@@ -101,7 +107,7 @@
 
   &__tip-container {
     width: 100%;
-    flex: 1;
+    flex: 1 1 300px;
   }
 }
 
