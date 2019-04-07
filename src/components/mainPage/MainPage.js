@@ -7,6 +7,7 @@ import HomePage from '../homepage'
 import LoginWrapper from '../loginWrapper'
 import {fire} from 'src/config/Fire'
 import NewEventWrapper from '../newEventWrapper'
+import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
 
 class MainPage extends React.Component {
@@ -16,7 +17,8 @@ class MainPage extends React.Component {
       isLogged: false,
       userId: '',
       userInfo: {},
-      event: {}
+      event: {},
+      isActive: false
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -65,6 +67,7 @@ class MainPage extends React.Component {
         let data = snapshot.val()
         if (data) {
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          let isActive = false
           let event = data.event ? data.event : {}
           let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
           let isDayOld = new Date().getTime() >= wholeDay
@@ -75,9 +78,13 @@ class MainPage extends React.Component {
           if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
             this.props.history.push('/home')
           }
+          if (Object.keys(event).length !==0 ) {
+            isActive = true
+          }
           this.setState({
             userInfo,
-            event
+            event,
+            isActive
           })
         } else {
           this.props.history.push('/login')
@@ -100,6 +107,7 @@ class MainPage extends React.Component {
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
+              <Route path='/accept-request' render={props => (<AcceptWrapper userInfo={userInfo} isActive={this.state.isActive} onLogout={this.logoutUser}/>)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />
           </Switch>

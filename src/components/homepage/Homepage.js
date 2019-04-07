@@ -6,7 +6,6 @@ import fire from 'src/config/Fire'
 import FeedContainer from '../feedContainer'
 import EventWrapper from '../eventWrapper'
 import Header from '../header'
-import { request } from 'http'
 
 const requests = [
   {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'},
@@ -71,7 +70,7 @@ class Homepage extends React.Component {
   }
 
   acceptSong(request) {
-    console.log('Accepted request ---> ', request)
+    this.props.history.push('/accept-request')
   }
 
   openEvent() {
