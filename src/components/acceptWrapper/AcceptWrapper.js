@@ -14,11 +14,12 @@ class AcceptWrapper extends React.Component {
   }
 
   openProfile() {
-
+    this.props.onLogout()
   }
 
   goBack() {
     console.log('GoBack Clicked')
+    this.props.onGoBack()
   }
 
   accept() {
@@ -30,20 +31,22 @@ class AcceptWrapper extends React.Component {
   }
 
   render() {
-    let {isActive, userInfo} = this.props
+    let {isActive, userInfo, request} = this.props
+    console.log('This props ---> ', this.props)
+    let tip = parseFloat(request.tip).toFixed(2)
     return (
       <div className="AcceptWrapper">
-        <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={isActive} />
+        <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true} />
         <div className="AcceptWrapper__subheader">
-          <Icon onClick ={this.close}>close</Icon>
+          <Icon onClick ={this.goBack}>close</Icon>
           <div className="AcceptWrapper--subtitle">TIP</div>
        </div>
        <div className="AcceptWrapper__request-container">
           <div className="AcceptWrapper__profile-container">
               <div className="AcceptWrapper--request-icon" />
-              <div className="AcceptWrapper--username">@Hamz</div>
+              <div className="AcceptWrapper--username">{request.name}</div>
           </div>
-          <div className="AcceptWrapper--tip">$ 2.00</div>
+          <div className="AcceptWrapper--tip">$ {tip}</div>
           <div className="AcceptWrapper--clock-container">
             <div className="AcceptWrapper--clock-out">
               <div className="AcceptWrapper--needle" />
@@ -56,7 +59,7 @@ class AcceptWrapper extends React.Component {
         <div className="AcceptWrapper__song-container">
           <div className="AcceptWrapper--song-icon" />
           <div className="AcceptWrapper--song-name">
-            Mobb Deep - Shook Ones
+            {request.song}
           </div>
         </div>
         <div className="AcceptWrapper__action-buttons">

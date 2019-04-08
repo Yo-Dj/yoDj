@@ -70,7 +70,11 @@ class Homepage extends React.Component {
   }
 
   acceptSong(request) {
-    this.props.history.push('/accept-request')
+    console.log('Accept New Request ---> ', request)
+    this.props.history.push({
+      pathname:'/accept-request',
+      state: {request: request}
+    })
   }
 
   openEvent() {

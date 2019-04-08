@@ -139,14 +139,15 @@
     padding: 10px 0;
     box-sizing: border-box;
     display: flex;
-    align-items: center;
-    justify-content: center;
+  }
+
+  &--button {
+    margin: 0 2em;
   }
 
   &--song-button {
     color: white !important;
     width: 90%;
-    // height: 40px;
     font-size: 18px !important;
     text-transform: capitalize !important;
   }
@@ -182,6 +183,18 @@ and (orientation: portrait) {
     &--subtitle {
         margin-left: 7em;
     }
+
+    &__request-container {
+      margin: 0;
+    }
+
+    &__action-container {
+      padding: 0 25px;
+    }
+
+    &--button {
+      margin: 1em;
+    }
   }
 }
 
@@ -194,6 +207,13 @@ and (orientation: portrait) {
     &--subtitle {
         margin-left: 9em;
     }
+
+    &__request-container {
+      margin-top: 10%;
+    }
+    &--button {
+      margin: 1em 2em;
+    }
   }
 }
 
@@ -204,6 +224,10 @@ and (-webkit-min-device-pixel-ratio: 3) {
   .AcceptWrapper {
     &--subtitle {
         margin-left: 9em;
+    }
+
+    &__request-container {
+      margin: 15% 0;
     }
   }
 }
