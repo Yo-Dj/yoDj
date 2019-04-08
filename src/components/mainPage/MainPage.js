@@ -7,6 +7,7 @@ import HomePage from '../homepage'
 import LoginWrapper from '../loginWrapper'
 import {fire} from 'src/config/Fire'
 import NewEventWrapper from '../newEventWrapper'
+import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
 
 class MainPage extends React.Component {
@@ -16,16 +17,37 @@ class MainPage extends React.Component {
       isLogged: false,
       userId: '',
       userInfo: {},
-      event: {}
+      event: {},
+      isActive: false,
+      newRequest: {}
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
     this.logoutUser = this.logoutUser.bind(this)
     this.finishEvent = this.finishEvent.bind(this)
+    this.goBackHome = this.goBackHome.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
+  }
+
+  componentDidUpdate(prevProps) {
+    let {location} = this.props
+      if (prevProps.location.state && Object.keys(this.state.newRequest).length === 0) {
+        this.props.history.push('/home')
+        this.setState({
+          newRequest: {}
+        })
+        return
+      }
+
+      if (!prevProps.location.state && location.state) {
+        this.setState({
+          newRequest: location.state.request
+        })
+        return
+      }
   }
 
   authListener() {
@@ -65,6 +87,7 @@ class MainPage extends React.Component {
         let data = snapshot.val()
         if (data) {
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          let isActive = false
           let event = data.event ? data.event : {}
           let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
           let isDayOld = new Date().getTime() >= wholeDay
@@ -75,9 +98,13 @@ class MainPage extends React.Component {
           if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
             this.props.history.push('/home')
           }
+          if (Object.keys(event).length !==0 ) {
+            isActive = true
+          }
           this.setState({
             userInfo,
-            event
+            event,
+            isActive
           })
         } else {
           this.props.history.push('/login')
@@ -91,8 +118,12 @@ class MainPage extends React.Component {
     this.props.history.push('/home')
   }
 
+  goBackHome() {
+    this.props.history.push('/home')
+  }
+
   render() {
-    let {userInfo, userId, event} = this.state
+    let {userInfo, userId, event, newRequest} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -100,6 +131,14 @@ class MainPage extends React.Component {
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
+              <Route path='/accept-request' render={props =>
+                  (<AcceptWrapper
+                    userInfo={userInfo}
+                    isActive={this.state.isActive}
+                    onLogout={this.logoutUser}
+                    onGoBack={this.goBackHome}
+                    request={newRequest}
+                  />)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />
           </Switch>
