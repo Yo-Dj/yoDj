@@ -18,21 +18,17 @@ class AcceptWrapper extends React.Component {
   }
 
   goBack() {
-    console.log('GoBack Clicked')
     this.props.onGoBack()
   }
 
   accept() {
-    console.log('Accept is Clicked')
   }
 
   decline() {
-    console.log('Decline is clicked')
   }
 
   render() {
     let {isActive, userInfo, request} = this.props
-    console.log('This props ---> ', this.props)
     let tip = parseFloat(request.tip).toFixed(2)
     return (
       <div className="AcceptWrapper">

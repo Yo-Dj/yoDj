@@ -34,8 +34,6 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     let {location} = this.props
-    console.log('PRvProps Location ---> ', prevProps.location.state)
-    // if (!prevProps.location.state || (prevProps.location.state > 0 && Object.keys(this.state.newRequest).length === 0) || (prevProps.location.state.request.name !==  location.state.request.name)) {
       if (prevProps.location.state && Object.keys(this.state.newRequest).length === 0) {
         this.props.history.push('/home')
         this.setState({
@@ -45,7 +43,6 @@ class MainPage extends React.Component {
       }
 
       if (!prevProps.location.state && location.state) {
-        console.log('Props New Request ---> ', location.state.request)
         this.setState({
           newRequest: location.state.request
         })
