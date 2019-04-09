@@ -13,6 +13,7 @@ class DeliverPage extends React.Component {
 
   render() {
     let {request} = this.props
+    let tip = parseFloat(request.tip).toFixed(2)
     return (
     <div className="DeliverPage">
        <div className="DeliverPage__subheader">
@@ -27,7 +28,18 @@ class DeliverPage extends React.Component {
           <div className="DeliverPage--clock-container">
             <div className="DeliverPage--clock-out"/>
           </div>
+          Tap start to begin recording
+          <div className="DeliverPage--deliver-time">
+            Deliver by <span className="DeliverPage--time">11:19 PM</span>
+          </div>
        </div>
+      <div className="DeliverPage__request-info">
+        <div className="DeliverPage--tip">Tip <span className="DeliverPage--time">$ {tip}</span></div>
+        <div className="DeliverPage--user">
+          <div className="DeliverPage--user-icon" />
+          <div className="DeliverPage--user-name">{request.name}</div>
+        </div>
+      </div>
     </div>
     )
   }
