@@ -36,7 +36,6 @@ class DeliverPage extends React.Component {
         startClicked: true
       })
     }
-    console.log('IS On ---> ', isOn)
     !isOn ? this.startTimer() : this.stopTimer()
   }
 
