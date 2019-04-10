@@ -80,14 +80,21 @@
     position: relative;
     display: flex;
     align-items: center;
+  }
 
-    &:after {
-      content: "Start";
-      height: 32px;
-      margin: auto;
-      font-size: 20px;
-      font-weight: bold;
-    }
+  &--started {
+    background: #F1C232;
+  }
+
+  &--completed {
+    background: #08FF00;
+  }
+
+  &--action {
+    height: 32px;
+    margin: auto;
+    font-size: 20px;
+    font-weight: bold;
   }
 
   &__request-info {
@@ -118,6 +125,21 @@
 
   &--user-name {
     padding-top: 5px;
+  }
+
+  &--check {
+    font-size: 18px !important;
+    height: 40px !important;
+    width: 40px !important;
+    min-height: 0 !important;
+    color: white !important;
+  }
+
+  &__completed-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
   }
 }
 
@@ -169,5 +191,5 @@ and (-webkit-min-device-pixel-ratio: 3) {
       margin-left: 6em;
   }
 
-}
+  }
 }
