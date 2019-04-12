@@ -55,10 +55,6 @@ class Homepage extends React.Component {
     let requestMessage = (type === 'accept')
       ? 'Are you sure you want to accept this req?'
       : 'Are you sure you want to reject this req?'
-    // this.setState({
-    //   message,
-    //   isOpen: true
-    // })
     this.setState({
       requestOpen: open,
       requestMessage
@@ -70,7 +66,6 @@ class Homepage extends React.Component {
   }
 
   acceptSong(request) {
-    console.log('Accept New Request ---> ', request)
     this.props.history.push({
       pathname:'/accept-request',
       state: {request: request}
@@ -107,6 +102,7 @@ class Homepage extends React.Component {
           <div className="Homepage__feed-container">
             <FeedContainer
               active={this.state.active}
+              event={event}
               requests={requests}
               onRequestOpen={this.requestOpen}
               openRequestModal={requestOpen}

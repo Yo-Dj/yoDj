@@ -97,7 +97,7 @@ class EventWrapper extends React.Component {
     let {active, event: {address, placeName, tipAmount, type}, event} = this.props
     let tip = parseFloat(tipAmount).toFixed(2)
     let time = active ? this.timeFormatter() : "Duration"
-
+    let completed = event.completed ? Object.keys(event.completed).length : 0
     return (
       <div className="EventWrapper">
         <div className={`EventWrapper__address-container${!active ? ' EventWrapper--disable' : ''}`}>
@@ -122,7 +122,7 @@ class EventWrapper extends React.Component {
           <h3 className={active ? 'EventWrapper--started' : ''} onClick={this.openEvent}>{active ? placeName : 'Event'}</h3>
           <div className="EventWrapper--icon" />
           <div className="EventWrapper--requests">
-            0 Requests Completed
+            {completed} Requests Completed
           </div>
         </div>
       </div>
