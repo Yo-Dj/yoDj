@@ -13,6 +13,7 @@ class AcceptWrapper extends React.Component {
     this.decline = this.decline.bind(this)
     this.renderView = this.renderView.bind(this)
     this.goBackRequest = this.goBackRequest.bind(this)
+    this.addToFirebase = this.addToFirebase.bind(this)
   }
 
   accept() {
@@ -30,13 +31,17 @@ class AcceptWrapper extends React.Component {
   decline() {
   }
 
+  addToFirebase() {
+    this.props.onAddRequest(this.props.request)
+  }
+
   renderView() {
     let {userInfo, request, onLogout, onGoBack} = this.props
     switch (this.state.view) {
       case 'requestPage':
         return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} onAccept={this.accept} />)
       case 'deliverPage':
-        return (<DeliverPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={this.goBackRequest} />)
+        return (<DeliverPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={this.goBackRequest} onCompleteRequest={this.addToFirebase} onCompleteGoBack={onGoBack}/>)
       default:
         return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} />)
     }

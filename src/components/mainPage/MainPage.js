@@ -26,6 +26,7 @@ class MainPage extends React.Component {
     this.logoutUser = this.logoutUser.bind(this)
     this.finishEvent = this.finishEvent.bind(this)
     this.goBackHome = this.goBackHome.bind(this)
+    this.addRequestToFirebase = this.addRequestToFirebase.bind(this)
   }
 
   componentDidMount() {
@@ -112,9 +113,20 @@ class MainPage extends React.Component {
       })
   }
 
+  addRequestToFirebase(request) {
+    let {userId} = this.state
+    let ref = firebase.database().ref(`users/${userId}/event/completed`)
+    ref.push(request)
+  }
+
   finishEvent() {
     let {userId} = this.state
-    firebase.database().ref(`users/${userId}/event`).remove()
+    let ref = firebase.database().ref(`users/${userId}/event`)
+    ref.on('value', snapshot => {
+      let eventData = snapshot.val()
+      firebase.database().ref(`events/${userId}`).push(eventData)
+      ref.remove()
+    })
     this.props.history.push('/home')
   }
 
@@ -138,6 +150,7 @@ class MainPage extends React.Component {
                     onLogout={this.logoutUser}
                     onGoBack={this.goBackHome}
                     request={newRequest}
+                    onAddRequest={this.addRequestToFirebase}
                   />)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Redirect to="/home" />

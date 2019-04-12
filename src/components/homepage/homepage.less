@@ -91,6 +91,7 @@
     width: 100%;
     flex: 2;
     position: relative;
+    min-height: 170px;
 
     &:after {
       content: "";
@@ -115,4 +116,40 @@
 .MuiIcon-colorPrimary-2 {
   font-size: 26px !important;
   color: white !important;
+}
+
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) {
+.Homepage {
+  &__feed-container {
+    min-height: 170px;
+  }
+}
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 667px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) {
+  .Homepage {
+    &__feed-container {
+      min-height: 200px;
+    }
+  }
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 812px)
+and (-webkit-min-device-pixel-ratio: 3) {
+  .Homepage {
+    &__feed-container {
+      min-height: 300px;
+    }
+  }
 }

@@ -18,10 +18,12 @@ class DeliverPage extends React.Component {
     this.resetTimer = this.resetTimer.bind(this)
     this.startClick = this.startClick.bind(this)
     this.timeFormatter = this.timeFormatter.bind(this)
+    this.clickOnComplete = this.clickOnComplete.bind(this)
   }
 
   componentDidUpdate() {
-    if (this.state.time === 60000 && !this.state.completed) {
+    if ((this.state.time >= 60000 && this.state.time <= 61000) && !this.state.completed) {
+      this.props.onCompleteRequest()
       this.stopTimer()
       this.setState({
         completed: true
@@ -70,6 +72,10 @@ class DeliverPage extends React.Component {
     })
   }
 
+  clickOnComplete() {
+    this.props.onCompleteGoBack()
+  }
+
   componentWillUnmount() {
     clearInterval(this.timer)
   }
@@ -103,7 +109,7 @@ class DeliverPage extends React.Component {
             (completed)
             ? <div className="DeliverPage__completed-container">
                 You've done the minimum
-                <Fab color="primary" aria-label="Edit" classes={{root: 'DeliverPage--check'}} size="small">
+                <Fab color="primary" aria-label="Edit" classes={{root: 'DeliverPage--check'}} size="small" onClick={this.clickOnComplete}>
                   <Icon>check</Icon>
                 </Fab>
               </div>
