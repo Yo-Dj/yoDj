@@ -47,7 +47,6 @@
     height: 50px;
     border-radius: 50%;
     background-size: 100% 100%;
-    // box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.6);
     box-shadow: 1px 2px 4px 1px yellow inset, 1px 1px 4px 3px yellow;
   }
 
@@ -57,7 +56,6 @@
     background-size: 100% 55px;
     width: 33%;
     height: 55px;
-    // box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.6);
   }
 
   &__main-container{
@@ -72,18 +70,16 @@
     width: 100%;
     flex: 1;
     position: relative;
+  }
 
-    &:after {
-      content: "";
-      position: absolute;
-      height: 4px;
-      bottom: 0;
-      width: 100%;
-      display: block;
-      background: #FFD700;
-      border-radius: 4px;
-      box-shadow: 1px 2px 4px 1px #FFD700 inset, 1px 1px 4px 3px #FFD700;
-    }
+  &--border {
+    content: "";
+    position: absolute;
+    height: 4px;
+    bottom: 0;
+    width: 100%;
+    display: block;
+    border-radius: 4px;
   }
 
   &__feed-container {
@@ -92,18 +88,6 @@
     flex: 2;
     position: relative;
     min-height: 170px;
-
-    &:after {
-      content: "";
-      position: absolute;
-      height: 4px;
-      bottom: 0;
-      width: 100%;
-      display: block;
-      background: #FFD700;
-      border-radius: 4px;
-      box-shadow: 1px 2px 4px 1px #FFD700 inset, 1px 1px 4px 3px #FFD700;
-    }
   }
 
   &__tip-container {
