@@ -91,13 +91,16 @@ class Homepage extends React.Component {
 
   render() {
     let {userInfo, event} = this.props
-    let {requestOpen, requestMessage} = this.state
+    let {requestOpen, requestMessage, active} = this.state
+    let boxShadowColor = active ? '#08FF00' : 'yellow'
+    let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
     return (
       <div className={`Homepage${requestOpen ? ' Homepage--hide' : ''}`}>
         <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={this.state.active} />
         <div className="Homepage__main-container">
           <div className="Homepage__event-container">
             <EventWrapper onCreate={this.activate} active={this.state.active} event={event} onTitle={this.openEvent} />
+            <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>
           <div className="Homepage__feed-container">
             <FeedContainer
@@ -109,6 +112,7 @@ class Homepage extends React.Component {
               requestMessage={requestMessage}
               onAccept={this.acceptSong}
             />
+            <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>
           <div className="Homepage__tip-container">
           </div>
