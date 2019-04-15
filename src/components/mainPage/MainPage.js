@@ -37,7 +37,6 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     let {location} = this.props
-    console.log('Location ----> ', location)
       if (prevProps.location.state && location.pathname ==='/new-event' && Object.keys(this.state.newRequest).length === 0) {
         this.props.history.push('/home')
         this.setState({
@@ -46,7 +45,7 @@ class MainPage extends React.Component {
         return
       }
 
-      if (location.pathname ==='/new-event' && location.state && (!this.state.newRequest.id || this.state.newRequest.id !==location.state.request.id)) {
+      if (location.pathname ==='/accept-request' && location.state && (!this.state.newRequest.id || (this.state.newRequest.id !== location.state.request.id))) {
         this.setState({
           newRequest: location.state.request
         })
@@ -62,7 +61,6 @@ class MainPage extends React.Component {
       }
 
       if (Object.keys(this.state.requests).length === 0 && location.pathname === '/feed' && location.state) {
-        console.log('Set Requests -----> ', location.state.requests)
         this.setState({
           requests: location.state.requests
         })
