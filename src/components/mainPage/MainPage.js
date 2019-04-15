@@ -46,7 +46,7 @@ class MainPage extends React.Component {
         return
       }
 
-      if (!prevProps.location.state && location.pathname ==='/new-event' && location.state) {
+      if (location.pathname ==='/new-event' && location.state && (!this.state.newRequest.id || this.state.newRequest.id !==location.state.request.id)) {
         this.setState({
           newRequest: location.state.request
         })
@@ -61,9 +61,10 @@ class MainPage extends React.Component {
         return
       }
 
-      if (location.pathname === '/feed' && location.state) {
+      if (Object.keys(this.state.requests).length === 0 && location.pathname === '/feed' && location.state) {
+        console.log('Set Requests -----> ', location.state.requests)
         this.setState({
-          requests: location.sate.requests
+          requests: location.state.requests
         })
         return
       }

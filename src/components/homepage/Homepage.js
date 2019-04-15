@@ -8,12 +8,12 @@ import EventWrapper from '../eventWrapper'
 import Header from '../header'
 
 const requests = [
-  {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'},
-  {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png'},
-  {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png'},
-  {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png'},
-  {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png'},
-  {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png'}
+  {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 1},
+  {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png', id: 2},
+  {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png', id: 3},
+  {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png', id: 4},
+  {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png', id: 5},
+  {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 6}
 ]
 
 class Homepage extends React.Component {
