@@ -30,6 +30,7 @@ class Homepage extends React.Component {
     this.openEvent = this.openEvent.bind(this)
     this.requestOpen = this.requestOpen.bind(this)
     this.acceptSong = this.acceptSong.bind(this)
+    this.forwardFeedPage = this.forwardFeedPage.bind(this)
   }
 
   componentDidMount() {
@@ -72,6 +73,13 @@ class Homepage extends React.Component {
     })
   }
 
+  forwardFeedPage() {
+    this.props.history.push({
+      pathname: '/feed',
+      state: {requests: requests}
+    })
+  }
+
   openEvent() {
     this.props.history.push('/event')
   }
@@ -111,6 +119,7 @@ class Homepage extends React.Component {
               openRequestModal={requestOpen}
               requestMessage={requestMessage}
               onAccept={this.acceptSong}
+              onForward={this.forwardFeedPage}
             />
             <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>

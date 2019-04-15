@@ -11,6 +11,7 @@ class FeedContainer extends React.Component {
     }
     this.handleRequest = this.handleRequest.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.forwardToFeed = this.forwardToFeed.bind(this)
   }
 
   handleRequest(type, selectedRequest) {
@@ -22,6 +23,10 @@ class FeedContainer extends React.Component {
 
   handleClose() {
     this.props.onRequestOpen(false)
+  }
+
+  forwardToFeed() {
+    this.props.onForward()
   }
 
   render() {
@@ -41,7 +46,7 @@ class FeedContainer extends React.Component {
           request={selectedRequest}
         />
         <div className="FeedContainer__header">
-          <div className="FeedContainer--title">Feed <span className={active ? 'FeedContainer--active' : ''}>></span></div>
+          <div className="FeedContainer--title" onClick={this.forwardToFeed}>Feed <span className={active ? 'FeedContainer--active' : ''}>></span></div>
           <div className="FeedContainer--request-num">{requestNum} reqs, {fanNum} fans</div>
         </div>
         <div className="FeedContainer--activity-container">

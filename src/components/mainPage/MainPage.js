@@ -9,6 +9,7 @@ import {fire} from 'src/config/Fire'
 import NewEventWrapper from '../newEventWrapper'
 import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
+import FeedPage from '../feedPage'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -19,7 +20,8 @@ class MainPage extends React.Component {
       userInfo: {},
       event: {},
       isActive: false,
-      newRequest: {}
+      newRequest: {},
+      requests: []
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -35,7 +37,8 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     let {location} = this.props
-      if (prevProps.location.state && Object.keys(this.state.newRequest).length === 0) {
+    console.log('Location ----> ', location)
+      if (prevProps.location.state && location.pathname ==='/new-event' && Object.keys(this.state.newRequest).length === 0) {
         this.props.history.push('/home')
         this.setState({
           newRequest: {}
@@ -43,9 +46,24 @@ class MainPage extends React.Component {
         return
       }
 
-      if (!prevProps.location.state && location.state) {
+      if (!prevProps.location.state && location.pathname ==='/new-event' && location.state) {
         this.setState({
           newRequest: location.state.request
+        })
+        return
+      }
+
+      if (prevProps.location.state && location.pathname ==='/feed' && Object.keys(this.state.requests).length === 0) {
+        this.props.history.push('/home')
+        this.setState({
+          requests: []
+        })
+        return
+      }
+
+      if (location.pathname === '/feed' && location.state) {
+        this.setState({
+          requests: location.sate.requests
         })
         return
       }
@@ -135,7 +153,7 @@ class MainPage extends React.Component {
   }
 
   render() {
-    let {userInfo, userId, event, newRequest} = this.state
+    let {userInfo, userId, event, newRequest, requests, isActive} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -143,10 +161,16 @@ class MainPage extends React.Component {
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
+              <Route path="/feed" render={props =>
+                (<FeedPage
+                  userInfo={userInfo}
+                  isActive={this.state.isActive}
+                  requests={requests}
+                  />)} />
               <Route path='/accept-request' render={props =>
                   (<AcceptWrapper
                     userInfo={userInfo}
-                    isActive={this.state.isActive}
+                    isActive={isActive}
                     onLogout={this.logoutUser}
                     onGoBack={this.goBackHome}
                     request={newRequest}
