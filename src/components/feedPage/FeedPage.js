@@ -20,12 +20,11 @@ class FeedPage extends React.Component {
   }
 
   render() {
-    console.log('This Props ---> ', this.props)
     let {userInfo, requests} = this.props
     let requestNum = requests.reduce((acc,el) => acc +  (el.songRequest), 0)
     let fanNum = requests.reduce((acc, el) => ({...acc, [el.name]: true}), {})
     fanNum = Object.keys(fanNum).length
-    requests = requests.length > 0 ? requests.slice(0, 1) : []
+    requests = requests.length > 0 ? requests : []
     return (
       <div className="FeedPage">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true} />
@@ -37,7 +36,7 @@ class FeedPage extends React.Component {
        <div className="FeedPage__container">
           {
             requests.map((request, index) => (
-              request.songRequest ? <SongContainer request={request}/> : <ActivityContainer />
+              request.songRequest ? <SongContainer request={request} key={index}/> : <ActivityContainer request={request} key={index}/>
             ))
           }
        </div>

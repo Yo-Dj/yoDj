@@ -23,12 +23,14 @@ class SongContainer extends React.Component {
         <div className="SongContainer__main">
           <div className="SongContainer--song">{request.song}</div>
           <div className="SongContainer__action-container">
-            <Fab color="primary" aria-label="Edit" classes={{root: 'SongContainer--times'}} size="small" onClick={() => this.handleClick('cancel')}>
-              <Icon>close</Icon>
-            </Fab>
-            <Fab color="primary" aria-label="Edit" classes={{root: 'SongContainer--check'}} size="small" onClick={() => this.handleClick('accept')}>
-              <Icon>check</Icon>
-            </Fab>
+            <div className="SongContainer__buttons">
+              <Fab color="primary" aria-label="Edit" classes={{root: 'SongContainer--times'}} size="small" onClick={() => this.handleClick('cancel')}>
+                <Icon>close</Icon>
+              </Fab>
+              <Fab color="primary" aria-label="Edit" classes={{root: 'SongContainer--check'}} size="small" onClick={() => this.handleClick('accept')}>
+                <Icon>check</Icon>
+              </Fab>
+            </div>
             <div className="SongContainer--time">11 : 11 PM</div>
           </div>
         </div>
