@@ -9,7 +9,8 @@ class SongContainer extends React.Component {
   }
 
   handleClick(type) {
-    console.log('Typ Clicked ---> ', type)
+    let {onRequest, request} = this.props
+    onRequest(type, request)
   }
 
   render() {

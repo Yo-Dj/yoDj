@@ -8,7 +8,19 @@ import ActivityContainer from './activityContainer';
 class FeedPage extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      selectedRequest: {}
+    }
     this.openProfile = this.openProfile.bind(this)
+    this.handleRequest = this.handleRequest.bind(this)
+  }
+
+  handleRequest(type, selectedRequest) {
+    this.setState({
+      selectedRequest
+    })
+    console.log('Handle Request is invoked')
+    // this.props.onRequestOpen(true, type)
   }
 
   componentDidMount() {
@@ -36,7 +48,7 @@ class FeedPage extends React.Component {
        <div className="FeedPage__container">
           {
             requests.map((request, index) => (
-              request.songRequest ? <SongContainer request={request} key={index}/> : <ActivityContainer request={request} key={index}/>
+              request.songRequest ? <SongContainer request={request} key={index} onRequest={this.handleRequest}/> : <ActivityContainer request={request} key={index}/>
             ))
           }
        </div>
