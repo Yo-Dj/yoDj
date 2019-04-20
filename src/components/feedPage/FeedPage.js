@@ -13,14 +13,29 @@ class FeedPage extends React.Component {
     }
     this.openProfile = this.openProfile.bind(this)
     this.handleRequest = this.handleRequest.bind(this)
+    this.close = this.close.bind(this)
   }
 
   handleRequest(type, selectedRequest) {
     this.setState({
       selectedRequest
     })
-    console.log('Handle Request is invoked')
-    // this.props.onRequestOpen(true, type)
+    if (type === 'accept') {
+      this.props.history.push({
+        pathname:'/accept-request',
+        state: {request: selectedRequest}
+      })
+      return
+    }
+    console.log('Cancel should be invoked')
+    this.props.history.push({
+      pathname: '/feed',
+      deletingRequest: selectedRequest
+    })
+  }
+
+  close() {
+    this.props.onGoBack()
   }
 
   componentDidMount() {
@@ -57,4 +72,4 @@ class FeedPage extends React.Component {
   }
 }
 
-export default FeedPage
+export default withRouter(FeedPage)

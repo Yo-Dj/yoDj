@@ -52,7 +52,7 @@ class MainPage extends React.Component {
         return
       }
 
-      if (prevProps.location.state && location.pathname ==='/feed' && Object.keys(this.state.requests).length === 0) {
+      if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' && Object.keys(this.state.requests).length === 0) {
         this.props.history.push('/home')
         this.setState({
           requests: []
@@ -60,12 +60,24 @@ class MainPage extends React.Component {
         return
       }
 
-      if (Object.keys(this.state.requests).length === 0 && location.pathname === '/feed' && location.state) {
+      if (Object.keys(this.state.requests).length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
         this.setState({
           requests: location.state.requests
         })
         return
       }
+
+      if (Object.keys(this.state.requests).length !== 0 && location.pathname === '/feed' && location.state && location.state.deletingRequest) {
+        let requests = this.state.requests.filter(request => request.id !== location.state.deletingRequest.id)
+        this.setState({
+          requests
+        })
+        console.log('Deleteting Request ---> ', requests)
+        return 
+      }
+      console.log('PrevProps Location ---> ', prevProps.location)
+      console.log('Props Locatation ---> ', location)
+      console.log('Current STate ---> ', this.state)
   }
 
   authListener() {
@@ -165,6 +177,7 @@ class MainPage extends React.Component {
                   userInfo={userInfo}
                   isActive={this.state.isActive}
                   requests={requests}
+                  onGoBack={this.goBackHome}
                   />)} />
               <Route path='/accept-request' render={props =>
                   (<AcceptWrapper
