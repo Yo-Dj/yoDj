@@ -30,7 +30,7 @@ class FeedPage extends React.Component {
     console.log('Cancel should be invoked')
     this.props.history.push({
       pathname: '/feed',
-      deletingRequest: selectedRequest
+      state: {deletingRequest: selectedRequest}
     })
   }
 

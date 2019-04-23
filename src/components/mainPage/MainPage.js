@@ -52,32 +52,30 @@ class MainPage extends React.Component {
         return
       }
 
-      if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' && Object.keys(this.state.requests).length === 0) {
+      if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' &&  this.state.requests.length === 0 && (!location.state || (location.state && location.state.requests === 0))) {
         this.props.history.push('/home')
         this.setState({
           requests: []
         })
-        return
+        return 
       }
 
-      if (Object.keys(this.state.requests).length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
+      if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
         this.setState({
           requests: location.state.requests
         })
         return
       }
 
-      if (Object.keys(this.state.requests).length !== 0 && location.pathname === '/feed' && location.state && location.state.deletingRequest) {
+      if (this.state.requests.length !== 0 && location.pathname === '/feed' && location.state && location.state.deletingRequest) {
         let requests = this.state.requests.filter(request => request.id !== location.state.deletingRequest.id)
         this.setState({
           requests
+        }, () => {
+          this.props.history.push('/home')
         })
-        console.log('Deleteting Request ---> ', requests)
         return 
       }
-      console.log('PrevProps Location ---> ', prevProps.location)
-      console.log('Props Locatation ---> ', location)
-      console.log('Current STate ---> ', this.state)
   }
 
   authListener() {
