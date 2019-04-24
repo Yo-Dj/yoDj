@@ -26,7 +26,10 @@ class FeedContainer extends React.Component {
   }
 
   forwardToFeed() {
-    this.props.onForward()
+    let {onForward, active} = this.props
+    if (active) {
+      onForward()
+    }
   }
 
   render() {
