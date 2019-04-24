@@ -11,6 +11,7 @@ class FeedContainer extends React.Component {
     }
     this.handleRequest = this.handleRequest.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.forwardToFeed = this.forwardToFeed.bind(this)
   }
 
   handleRequest(type, selectedRequest) {
@@ -24,9 +25,20 @@ class FeedContainer extends React.Component {
     this.props.onRequestOpen(false)
   }
 
+  forwardToFeed() {
+    let {onForward, active} = this.props
+    if (active) {
+      onForward()
+    }
+  }
+
   render() {
     let {active, requests, requestMessage, openRequestModal, onAccept} = this.props
     let {selectedRequest} = this.state
+    requests = active ? requests : []
+    let requestNum = requests.reduce((acc,el) => acc +  (el.songRequest), 0)
+    let fanNum = requests.reduce((acc, el) => ({...acc, [el.name]: true}), {})
+    fanNum = Object.keys(fanNum).length
     return (
       <div className="FeedContainer">
         <RequestModal
@@ -37,8 +49,8 @@ class FeedContainer extends React.Component {
           request={selectedRequest}
         />
         <div className="FeedContainer__header">
-          <div className="FeedContainer--title">Feed <span className={active ? 'FeedContainer--active' : ''}>></span></div>
-          <div className="FeedContainer--request-num">10 reqs, 21 fans</div>
+          <div className="FeedContainer--title" onClick={this.forwardToFeed}>Feed <span className={active ? 'FeedContainer--active' : ''}>></span></div>
+          <div className="FeedContainer--request-num">{requestNum} reqs, {fanNum} fans</div>
         </div>
         <div className="FeedContainer--activity-container">
           {
