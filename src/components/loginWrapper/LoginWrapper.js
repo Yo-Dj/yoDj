@@ -118,7 +118,6 @@ class LoginWrapper extends React.Component {
     .ref(`users/${userInfo.uid}`)
     .once('value')
     .then(snapshot => {
-      console.log('Snapshot ---> ', snapshot.val())
       if (snapshot.exists()) {
         this.props.history.push('/home')
         return
@@ -141,7 +140,6 @@ class LoginWrapper extends React.Component {
   }
 
   renderView() {
-    console.log('View ---> ', this.state.view)
     switch (this.state.view) {
       case 'confirmation':
         return (<Login onAddUser={this.addUser}/>)
