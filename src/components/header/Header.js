@@ -6,14 +6,14 @@ class Header extends React.Component {
     let {imageUrl, iconClick, isActive} = this.props
     let boxShadowColor = isActive ? '#08FF00' : 'yellow'
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
-    let image = !isActive ? 'assets/images/yellow-logo.png' : 'assets/images/green-logo.png'
+    // let imageClass = !isActive ? 'assets/images/yellow-logo.png' : 'assets/images/green-logo.png'
 
     return (
       <div className="Header">
         <div className="Header__profile-container">
           <div className="Header__profile" style={{backgroundImage: `url(${imageUrl})`, boxShadow: boxShadow}} onClick={iconClick}/>
         </div>
-        <div className="Header__icon" style={{backgroundImage: `url(${image})`}} />
+        <div className={isActive ? 'Header--active-icon' : 'Header--offline-icon'} />
         <div className="Header__search">
           <Icon>search</Icon>
         </div>
