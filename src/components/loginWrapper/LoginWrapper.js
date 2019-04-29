@@ -27,6 +27,7 @@ class LoginWrapper extends React.Component {
     this.addToDatabase = this.addToDatabase.bind(this)
     this.verified = this.verified.bind(this)
     this.usernameChange = this.usernameChange.bind(this)
+    this.fanSignUp = this.fanSignUp.bind(this)
   }
 
   componentDidMount() {
@@ -113,6 +114,39 @@ class LoginWrapper extends React.Component {
     })
   }
 
+  fanSignUp() {
+    console.log('User STate ---> ', this.state)
+    // firebase.database()
+    //   .ref(`users/${userInfo.uid}`)
+    //   .once('value')
+    //   .then(snapshot => {
+    //     if (snapshot.exists()) {
+    //       this.props.history.push('/fan-home')
+    //       return
+    //     }
+    //     this.setState({
+    //       userInfo: {token: userInfo.m, phone: userInfo.phoneNumber, uid: userInfo.uid},
+    //       view: 'registration'
+    //     })
+    //   })
+    let {userType, username, userInfo: {phone}} = this.state
+    let userId = !this.state.userInfo.uid ? fire.auth().currentUser.uid : this.state.userInfo.uid
+    firebase.database().ref(`users/${userId}`).set({
+      userId: userId,
+      userType: userType,
+      username: username,
+      phone: phone,
+      imageUrl: "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }, error => {
+      if (!error) {
+        this.setState({
+          loginSuccessful: true
+        })
+        this.props.history.push('/fan-home')
+      }
+    })
+  }
+
   addUser(userInfo) {
   firebase.database()
     .ref(`users/${userInfo.uid}`)
@@ -151,6 +185,7 @@ class LoginWrapper extends React.Component {
                   onSignUp={this.openSocialMedia}
                   username={this.state.username}
                   onUsernameChange={this.usernameChange}
+                  onFanSignUp={this.fanSignUp}
                 />)
       case 'socialMedia':
         return (<SocialMedia

@@ -10,6 +10,7 @@ import NewEventWrapper from '../newEventWrapper'
 import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
 import FeedPage from '../feedPage'
+import FanHomepage from '../fanHomepage'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class MainPage extends React.Component {
         this.setState({
           requests: []
         })
-        return 
+        return
       }
 
       if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
@@ -74,7 +75,7 @@ class MainPage extends React.Component {
         }, () => {
           this.props.history.push('/home')
         })
-        return 
+        return
       }
   }
 
@@ -114,6 +115,13 @@ class MainPage extends React.Component {
       .on('value',snapshot => {
         let data = snapshot.val()
         if (data) {
+          if (data.userType && data.userType === 'Fan') {
+            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl}
+            this.setState({
+              userInfo
+            })
+            return
+          }
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
           let isActive = false
           let event = data.event ? data.event : {}
@@ -170,6 +178,14 @@ class MainPage extends React.Component {
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
+              <Route path="/fan-home" render={props =>
+                (
+                  <FanHomepage
+                  userInfo={userInfo}
+                  userId={userId}
+                  event={event}
+                  onLogout={this.logoutUser}/>
+                )}/>
               <Route path="/feed" render={props =>
                 (<FeedPage
                   userInfo={userInfo}
