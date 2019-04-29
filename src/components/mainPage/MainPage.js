@@ -11,6 +11,7 @@ import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
 import FeedPage from '../feedPage'
 import FanHomepage from '../fanHomepage'
+import { throws } from 'assert'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -22,7 +23,8 @@ class MainPage extends React.Component {
       event: {},
       isActive: false,
       newRequest: {},
-      requests: []
+      requests: [],
+      allDjs: []
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -30,6 +32,7 @@ class MainPage extends React.Component {
     this.finishEvent = this.finishEvent.bind(this)
     this.goBackHome = this.goBackHome.bind(this)
     this.addRequestToFirebase = this.addRequestToFirebase.bind(this)
+    this.getDjs = this.getDjs.bind(this)
   }
 
   componentDidMount() {
@@ -108,6 +111,20 @@ class MainPage extends React.Component {
     })
   }
 
+  getDjs() {
+    firebase.database()
+      .ref('users')
+      .on('value', snapshot => {
+        let data = snapshot.val()
+        if (data) {
+          let djs = []
+          Object.keys(data).forEach(user => {
+            if (user.)
+          })
+        }
+      })
+  }
+
   getUserInfo(userId) {
     let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
@@ -119,6 +136,8 @@ class MainPage extends React.Component {
             let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl}
             this.setState({
               userInfo
+            }, () => {
+              this.getDjs()
             })
             return
           }
