@@ -34,7 +34,11 @@ class Homepage extends React.Component {
   }
 
   componentDidMount() {
-    let {event} = this.props
+    let {event, userInfo} = this.props
+    if (userInfo.type && userInfo.type === 'fan') {
+      this.props.history.push('/fan-home')
+      return
+    }
     if (Object.keys(event).length > 0) {
       this.setState({
         active: true
@@ -44,11 +48,15 @@ class Homepage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let {event} = this.props
+    let {event, userInfo} = this.props
     if (Object.keys(prevProps.event).length !== Object.keys(event).length) {
       this.setState({
         active: !this.state.active
       })
+    }
+    if (userInfo.type && userInfo.type === 'fan') {
+      this.props.history.push('/fan-home')
+      return
     }
   }
 

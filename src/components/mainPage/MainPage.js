@@ -117,9 +117,14 @@ class MainPage extends React.Component {
       .on('value', snapshot => {
         let data = snapshot.val()
         if (data) {
-          let djs = []
-          Object.keys(data).forEach(user => {
-            if (user.)
+          let allDjs = Object.values(data).reduce((acc, user) => {
+            if (!user.userType && user.userType !== 'Fan') {
+              acc.push(user)
+            }
+            return acc
+          },[])
+          this.setState({
+            allDjs
           })
         }
       })
@@ -189,7 +194,7 @@ class MainPage extends React.Component {
   }
 
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive} = this.state
+    let {userInfo, userId, event, newRequest, requests, isActive, allDjs} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -203,7 +208,9 @@ class MainPage extends React.Component {
                   userInfo={userInfo}
                   userId={userId}
                   event={event}
-                  onLogout={this.logoutUser}/>
+                  onLogout={this.logoutUser}
+                  djs={allDjs}
+                  />
                 )}/>
               <Route path="/feed" render={props =>
                 (<FeedPage
