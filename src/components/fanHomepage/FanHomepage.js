@@ -9,7 +9,7 @@ class FanHomepage extends React.Component {
     }
 
     openProfile() {
-        console.log('LogOut ---> ')
+        this.props.onLogout()
     }
 
     render() {
