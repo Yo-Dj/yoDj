@@ -35,7 +35,6 @@ class Homepage extends React.Component {
 
   componentDidMount() {
     let {event, userInfo} = this.props
-    console.log('DID MOUNt ----> ', userInfo)
     if (userInfo.type && userInfo.type === 'fan') {
       this.props.history.push('/fan-home')
       return
@@ -50,7 +49,6 @@ class Homepage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let {event, userInfo} = this.props
-    console.log('Did Update UserInfo ---> ', userInfo)
     if (Object.keys(prevProps.event).length !== Object.keys(event).length) {
       this.setState({
         active: !this.state.active
