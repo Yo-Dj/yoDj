@@ -58,15 +58,11 @@ class Registration extends React.Component {
 
   signUp(e) {
     e.preventDefault()
-    let {userType, onSignUp, username} = this.props
+    let {userType, onSignUp, username, onFanSignUp} = this.props
     let errorMessage = ''
     let isError = false
     if (userType === '') {
       errorMessage = 'Please select user type!'
-      isError = true
-    }
-    if (userType === 'Fan') {
-      errorMessage = 'Please select dj for now!'
       isError = true
     }
     if (username === '') {
@@ -77,6 +73,11 @@ class Registration extends React.Component {
       errorMessage,
       isError
     })
+    if (userType === 'Fan') {
+      console.log('Fan Signup is on --->')
+      onFanSignUp()
+      return
+    }
     if (!isError) {
       onSignUp()
       return

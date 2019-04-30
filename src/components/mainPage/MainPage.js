@@ -10,6 +10,8 @@ import NewEventWrapper from '../newEventWrapper'
 import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
 import FeedPage from '../feedPage'
+import FanHomepage from '../fanHomepage'
+import { throws } from 'assert'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -21,7 +23,8 @@ class MainPage extends React.Component {
       event: {},
       isActive: false,
       newRequest: {},
-      requests: []
+      requests: [],
+      allDjs: []
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -29,6 +32,7 @@ class MainPage extends React.Component {
     this.finishEvent = this.finishEvent.bind(this)
     this.goBackHome = this.goBackHome.bind(this)
     this.addRequestToFirebase = this.addRequestToFirebase.bind(this)
+    this.getDjs = this.getDjs.bind(this)
   }
 
   componentDidMount() {
@@ -57,7 +61,7 @@ class MainPage extends React.Component {
         this.setState({
           requests: []
         })
-        return 
+        return
       }
 
       if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
@@ -74,7 +78,7 @@ class MainPage extends React.Component {
         }, () => {
           this.props.history.push('/home')
         })
-        return 
+        return
       }
   }
 
@@ -107,6 +111,25 @@ class MainPage extends React.Component {
     })
   }
 
+  getDjs() {
+    firebase.database()
+      .ref('users')
+      .on('value', snapshot => {
+        let data = snapshot.val()
+        if (data) {
+          let allDjs = Object.values(data).reduce((acc, user) => {
+            if (!user.userType && user.userType !== 'Fan') {
+              acc.push(user)
+            }
+            return acc
+          },[])
+          this.setState({
+            allDjs
+          })
+        }
+      })
+  }
+
   getUserInfo(userId) {
     let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
@@ -114,6 +137,15 @@ class MainPage extends React.Component {
       .on('value',snapshot => {
         let data = snapshot.val()
         if (data) {
+          if (data.userType && data.userType === 'Fan') {
+            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl}
+            this.setState({
+              userInfo
+            }, () => {
+              this.getDjs()
+            })
+            return
+          }
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
           let isActive = false
           let event = data.event ? data.event : {}
@@ -162,7 +194,7 @@ class MainPage extends React.Component {
   }
 
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive} = this.state
+    let {userInfo, userId, event, newRequest, requests, isActive, allDjs} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -170,6 +202,16 @@ class MainPage extends React.Component {
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
+              <Route path="/fan-home" render={props =>
+                (
+                  <FanHomepage
+                  userInfo={userInfo}
+                  userId={userId}
+                  event={event}
+                  onLogout={this.logoutUser}
+                  djs={allDjs}
+                  />
+                )}/>
               <Route path="/feed" render={props =>
                 (<FeedPage
                   userInfo={userInfo}
