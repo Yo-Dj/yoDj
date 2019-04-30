@@ -9,7 +9,7 @@ class FanHomepage extends React.Component {
     }
 
     openProfile() {
-        console.log('LogOut ---> ')
+        this.props.onLogout()
     }
 
     render() {
@@ -33,10 +33,12 @@ class FanHomepage extends React.Component {
                         {
                             djs.map(dj => (
                                 <div className="FanHomepage--dj" key={dj.userId}>
-                                    <div className="FanHomepage--headset">
-                                        <Icon classes={{root: `FanHomepage--headset-icon ${onlineDjs[dj.userId] ? 'FanHomepage--headset-online' : 'FanHomepage--headset-offline'}`}}>headset</Icon>
+                                    <div className="FanHomepage--icon-container">
+                                        <div className="FanHomepage--headset">
+                                            <Icon classes={{root: `FanHomepage--headset-icon ${onlineDjs[dj.userId] ? 'FanHomepage--headset-online' : 'FanHomepage--headset-offline'}`}}>headset</Icon>
+                                        </div>
+                                        <div className="FanHomepage--dj-icon" style={{backgroundImage: `url(${dj.imageUrl})`}}/>
                                     </div>
-                                    <div className="FanHomepage--dj-icon" style={{backgroundImage: `url(${dj.imageUrl})`, marginTop: '8px'}}/>
                                     <div className="FanHomepage--dj-name">{dj.username}</div>
                                     <div className="FanHomepage--dj-club">{onlineDjs[dj.userId] ? dj.event.placeName : 'Club Z'}</div>
                                 </div>
