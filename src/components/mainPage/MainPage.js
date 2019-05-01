@@ -11,7 +11,7 @@ import AcceptWrapper from '../acceptWrapper'
 import EventView from '../eventView'
 import FeedPage from '../feedPage'
 import FanHomepage from '../fanHomepage'
-import { throws } from 'assert'
+import SelectDj from '../selectDJ'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -33,6 +33,7 @@ class MainPage extends React.Component {
     this.goBackHome = this.goBackHome.bind(this)
     this.addRequestToFirebase = this.addRequestToFirebase.bind(this)
     this.getDjs = this.getDjs.bind(this)
+    this.goFanPage = this.goFanPage.bind(this)
   }
 
   componentDidMount() {
@@ -41,6 +42,7 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     let {location} = this.props
+
       if (prevProps.location.state && location.pathname ==='/new-event' && Object.keys(this.state.newRequest).length === 0) {
         this.props.history.push('/home')
         this.setState({
@@ -193,6 +195,10 @@ class MainPage extends React.Component {
     this.props.history.push('/home')
   }
 
+  goFanPage() {
+    this.props.history.push('/fan-home')
+  }
+
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs} = this.state
     return(
@@ -204,7 +210,7 @@ class MainPage extends React.Component {
               <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} onLogout={this.logoutUser}/>)} />
               <Route path="/fan-home" render={props =>
                 (
-                  <FanHomepage
+                <FanHomepage
                   userInfo={userInfo}
                   userId={userId}
                   event={event}
@@ -229,6 +235,14 @@ class MainPage extends React.Component {
                     onAddRequest={this.addRequestToFirebase}
                   />)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
+              <Route path="/dj-page" render={props => (
+                <SelectDj
+                  userInfo={userInfo}
+                  onLogout={this.logoutUser}
+                  djs={allDjs}
+                  onGoBack={this.goFanPage}
+                />
+              )} />
               <Redirect to="/home" />
           </Switch>
         </div>

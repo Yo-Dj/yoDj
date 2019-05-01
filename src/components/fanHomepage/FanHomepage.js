@@ -1,11 +1,17 @@
 import React from 'react'
 import Icon from '@material-ui/core/Icon'
+import {withRouter} from 'react-router-dom'
 import Header from '../header'
 
 class FanHomepage extends React.Component {
     constructor(props) {
         super(props)
         this.openProfile =this.openProfile.bind(this)
+        this.gotoSelect = this.gotoSelect.bind(this)
+    }
+
+    gotoSelect() {
+        this.props.history.push('/dj-page')
     }
 
     openProfile() {
@@ -26,7 +32,7 @@ class FanHomepage extends React.Component {
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={false}/>
                 <div className="FanHomepage__main-container">
                     <div className='FanHomepage--subtitle'>
-                        <div className="FanHomepage--text">Select a DJ <span className={'FanHomepage--online-arrow'}>></span></div>
+                        <div className="FanHomepage--text" onClick={this.gotoSelect}>Select a DJ <span className={'FanHomepage--online-arrow'}>></span></div>
                         <div className="FanHomepage--online"> {Object.keys(onlineDjs).length} online</div>
                     </div>
                     <div className="FanHomepage--djs-container">
@@ -51,4 +57,4 @@ class FanHomepage extends React.Component {
     }
 }
 
-export default FanHomepage
+export default withRouter(FanHomepage)
