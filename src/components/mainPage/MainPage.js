@@ -33,6 +33,7 @@ class MainPage extends React.Component {
     this.goBackHome = this.goBackHome.bind(this)
     this.addRequestToFirebase = this.addRequestToFirebase.bind(this)
     this.getDjs = this.getDjs.bind(this)
+    this.goFanPage = this.goFanPage.bind(this)
   }
 
   componentDidMount() {
@@ -194,6 +195,10 @@ class MainPage extends React.Component {
     this.props.history.push('/home')
   }
 
+  goFanPage() {
+    this.props.history.push('/fan-home')
+  }
+
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs} = this.state
     return(
@@ -235,6 +240,7 @@ class MainPage extends React.Component {
                   userInfo={userInfo}
                   onLogout={this.logoutUser}
                   djs={allDjs}
+                  onGoBack={this.goFanPage}
                 />
               )} />
               <Redirect to="/home" />
