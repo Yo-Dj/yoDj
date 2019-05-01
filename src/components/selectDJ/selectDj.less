@@ -11,4 +11,94 @@
   color: white;
   overflow-y: auto;
   background-image: url("../../images/fractal-background.png");
+
+    &__subheader {
+      display: flex;
+      justify-content: flex-start;
+      // height: 30px;
+      flex: 0 0 30px;
+      padding: 5px 3px;
+      align-items: center;
+      // margin-bottom: 10px;
+      box-sizing: border-box;
+  }
+
+  &--subtitle {
+      margin-left: 7em;
+      font-weight: bold;
+      font-size: 20px;
+      margin-right: auto;
+  }
+
+  &--onlines{
+      margin-left: auto;
+  }
+
+  &__container {
+    flex: 1;
+    box-sizing: border-box;
+    padding-bottom: 10px;
+    overflow-y: auto;
+  }
+
+  &__dj-wrapper {
+  
+  }
+
+  &--headset {
+
+  }
+
+  &__icon-container {
+
+  }
+
+  &__icon {
+
+  }
 }
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .SelectDj {
+      &--subtitle {
+        margin-left: 4em;
+      }
+    }
+  }
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .SelectDj {
+      &--subtitle {
+        margin-left: 5em;
+      }
+    }
+  }
+
+@media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .SelectDj {
+      &--subtitle {
+        margin-left: 6em;
+      }
+    }
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .SelectDj{
+      &--subtitle {
+        margin-left: 5em;
+      }
+    }
+  }
