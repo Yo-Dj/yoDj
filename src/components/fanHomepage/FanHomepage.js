@@ -8,6 +8,7 @@ class FanHomepage extends React.Component {
         super(props)
         this.openProfile =this.openProfile.bind(this)
         this.gotoSelect = this.gotoSelect.bind(this)
+        this.selectEvent = this.selectEvent.bind(this)
     }
 
     gotoSelect() {
@@ -16,6 +17,12 @@ class FanHomepage extends React.Component {
 
     openProfile() {
         this.props.onLogout()
+    }
+
+    selectEvent(fanEvent, online) {
+        if (online) {
+            this.props.onFanSelect(fanEvent)
+        }
     }
 
     render() {
@@ -38,7 +45,7 @@ class FanHomepage extends React.Component {
                     <div className="FanHomepage--djs-container">
                         {
                             djs.map(dj => (
-                                <div className="FanHomepage--dj" key={dj.userId}>
+                                <div className="FanHomepage--dj" key={dj.userId} onClick={() => this.selectEvent(dj,onlineDjs[dj.userId])}>
                                     <div className="FanHomepage--icon-container">
                                         <div className="FanHomepage--headset">
                                             <Icon classes={{root: `FanHomepage--headset-icon ${onlineDjs[dj.userId] ? 'FanHomepage--headset-online' : 'FanHomepage--headset-offline'}`}}>headset</Icon>
