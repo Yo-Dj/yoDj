@@ -12,6 +12,7 @@ class SelectDj extends React.Component {
     this.close = this.close.bind(this)
     this.convertTime = this.convertTime.bind(this)
     this.getTip = this.getTip.bind(this)
+    this.selectEvent = this.selectEvent.bind(this)
   }
 
   close() {
@@ -24,11 +25,15 @@ class SelectDj extends React.Component {
 
   convertTime(time) {
     let newDate = new Date(time)
-    return moment(newDate).format('hh:mm a')
+    return moment(newDate).format('h:mm a')
   }
 
   getTip(tipAmount) {
     return parseFloat(tipAmount).toFixed(2)
+  }
+
+  selectEvent(fanEvent) {
+    this.props.onFanSelect(fanEvent)
   }
 
   render() {
@@ -58,7 +63,7 @@ class SelectDj extends React.Component {
               <div className="SelectDj--time">{this.convertTime(dj.event.startDate)}</div>
               <div className="SelectDj--tip">Request minimum ${this.getTip(dj.event.tipAmount)}</div>
             </div>
-          <div className="SelectDj--forward">
+          <div className="SelectDj--forward" onClick={() => this.selectEvent(dj)}>
             <svg className="SelectDj--forward" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/></svg>          </div>
           </div>
          ))

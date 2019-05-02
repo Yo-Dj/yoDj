@@ -12,6 +12,7 @@ import EventView from '../eventView'
 import FeedPage from '../feedPage'
 import FanHomepage from '../fanHomepage'
 import SelectDj from '../selectDJ'
+import FanEvent from '../fanEvent'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -24,7 +25,8 @@ class MainPage extends React.Component {
       isActive: false,
       newRequest: {},
       requests: [],
-      allDjs: []
+      allDjs: [],
+      fanEvent: {}
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -34,6 +36,7 @@ class MainPage extends React.Component {
     this.addRequestToFirebase = this.addRequestToFirebase.bind(this)
     this.getDjs = this.getDjs.bind(this)
     this.goFanPage = this.goFanPage.bind(this)
+    this.addFanEvent = this.addFanEvent.bind(this)
   }
 
   componentDidMount() {
@@ -42,6 +45,11 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     let {location} = this.props
+
+      if (Object.keys(this.state.fanEvent).length === 0 && location.pathname === '/fan-event') {
+        this.props.history.push('/fan-home')
+        return
+      }
 
       if (prevProps.location.state && location.pathname ==='/new-event' && Object.keys(this.state.newRequest).length === 0) {
         this.props.history.push('/home')
@@ -199,8 +207,16 @@ class MainPage extends React.Component {
     this.props.history.push('/fan-home')
   }
 
+  addFanEvent(fanEvent) {
+    this.setState({
+      fanEvent
+    }, () => {
+      this.props.history.push('/fan-event')
+    })
+  }
+
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive, allDjs} = this.state
+    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -216,6 +232,7 @@ class MainPage extends React.Component {
                   event={event}
                   onLogout={this.logoutUser}
                   djs={allDjs}
+                  onFanSelect={this.addFanEvent}
                   />
                 )}/>
               <Route path="/feed" render={props =>
@@ -241,6 +258,13 @@ class MainPage extends React.Component {
                   onLogout={this.logoutUser}
                   djs={allDjs}
                   onGoBack={this.goFanPage}
+                  onFanSelect={this. addFanEvent}
+                />
+              )} />
+              <Route path="/fan-event" render={props => (
+                <FanEvent
+                  userInfo={userInfo}
+                  fanEvent={fanEvent}
                 />
               )} />
               <Redirect to="/home" />
