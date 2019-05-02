@@ -1,0 +1,171 @@
+.FanEvent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #2E3336;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: white;
+  background-image: url("../../images/fractal-background.png");
+
+  &__subheader {
+    display: flex;
+    justify-content: flex-start;
+    height: 30px;
+    padding: 5px 3px;
+    align-items: center;
+    color: #08FF00;
+  }
+
+  &--subtitle {
+    margin-left: 4.5em;
+    font-size: 24px;
+    color: #08FF00;
+    text-transform: capitalize;
+  }
+
+  &--attendees {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  &--dj-name {
+    box-sizing: border-box;
+    margin: 10px 0;
+    font-size: 12px;
+  }
+
+  &--headset {
+    height: 16px;
+    z-index: 1;
+    color: #08FF00;
+    font-size: 30px !important;
+  }
+
+  &__icon-container {
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    align-items: center;
+    width: 60px;
+    box-sizing: border-box;
+  }
+
+  &--dj-icon {
+    background: transparent no-repeat center center;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: red;
+  }
+
+  &__main-container {
+    width: 100%;
+    padding: 40px 20px 10px 20px;
+    display: flex;
+    box-sizing: border-box;
+  }
+
+  &--time-container {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  &--time {
+    font-size: 24px;
+    padding: 10px 0;
+    font-weight: 500;
+  }
+
+  &--icon {
+    text-align: center;
+    background: transparent no-repeat center center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: #555;
+    border: 2px solid #08FF00;
+  }
+
+  &--requests {
+    text-align: center;
+    margin: 10px 0;
+    box-sizing: border-box;
+  }
+
+  &--address {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+
+  &--join {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+  }
+
+  &--join-button {
+    color: white !important;
+    border-radius: 8px !important;
+    width: 80px !important;
+  }
+}
+
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .FanEvent {
+      &--join {
+        padding-bottom: 20px;
+      }
+    }
+  }
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .FanEvent {
+      &--join {
+        padding-bottom: 20px;
+      }
+    }
+  }
+
+@media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .FanEvent {
+      &--join {
+        padding-bottom: 40px;
+      }
+    }
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .FanEvent {
+      &--join {
+        padding-bottom: 40px;
+      }
+    }
+  }
