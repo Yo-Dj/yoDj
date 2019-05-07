@@ -80,16 +80,21 @@ class NewEventWrapper extends React.Component {
     let {userId} = this.props
     if (placeName !== '' && location !== '' && type !== '' && tipAmount !== '' ) {
       let now = new Date().getTime()
-      firebase.database().ref(`users/${userId}/event`).set({
+      let newRequest = {
         placeName,
         address: location,
         type,
         tipAmount,
         startDate: now
-      },  error => {
+      }
+      let venue = firebase.database.ref('venues').push({...newRequest, dj: userId})
+      console.log('Venues ---> ', venue)
+      console.log('Venues Key ---> ', venue.key)
+      newRequest[requestId] = venue.key
+      firebase.database().ref(`users/${userId}/event`).set(newRequest,  error => {
         if (!error) {
-          console.log('Push home ---> ')
           this.props.history.push('/home')
+          // let firebase.database.ref('venues').push({...newRequest, dj: )
         }
       })
     }
