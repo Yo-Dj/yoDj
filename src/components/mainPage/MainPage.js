@@ -37,6 +37,7 @@ class MainPage extends React.Component {
     this.getDjs = this.getDjs.bind(this)
     this.goFanPage = this.goFanPage.bind(this)
     this.addFanEvent = this.addFanEvent.bind(this)
+    this.joinEvent = this.joinEvent.bind(this)
   }
 
   componentDidMount() {
@@ -215,6 +216,14 @@ class MainPage extends React.Component {
     })
   }
 
+  joinEvent(venue) {
+    let {event} = venue
+    let {userId} = this.state
+    firebase.database().ref(`venues/${event.requestId}/joiners/${userId}`).set(true)
+    firebase.database().ref(`users/${userId}/venue/id`).set(event.requestId)  
+      .then(() => console.log('Pushed up --->', event.requestId))
+  }
+
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
     return(
@@ -265,6 +274,7 @@ class MainPage extends React.Component {
                 <FanEvent
                   userInfo={userInfo}
                   fanEvent={fanEvent}
+                  onJoin={this.joinEvent}
                 />
               )} />
               <Redirect to="/home" />
