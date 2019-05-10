@@ -149,7 +149,8 @@ class MainPage extends React.Component {
         let data = snapshot.val()
         if (data) {
           if (data.userType && data.userType === 'Fan') {
-            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl}
+            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
+            console.log('USERINFO invoked ----> ', data)
             this.setState({
               userInfo
             }, () => {
@@ -218,9 +219,9 @@ class MainPage extends React.Component {
 
   joinEvent(venue) {
     let {event} = venue
-    let {userId} = this.state
+    let {userId, userInfo} = this.state
     firebase.database().ref(`venues/${event.requestId}/joiners/${userId}`).set(true)
-    firebase.database().ref(`users/${userId}/venue/id`).set(event.requestId)  
+    firebase.database().ref(`users/${userId}/venue/id`).set(event.requestId)
       .then(() => console.log('Pushed up --->', event.requestId))
   }
 
