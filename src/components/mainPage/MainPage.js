@@ -157,9 +157,17 @@ class MainPage extends React.Component {
   }
 
  async getEvent(venue) {
-   const snapshot = await firebase.database().ref(`/venues/${venue}`).once('value')
-   console.log('Snapshot ---> ', snapshot.val())
-   return snapshot.val()
+   return new Promise(resolve => {
+      const snapshot = await firebase.database().ref(`/venues/${venue}`).once('value')
+
+   })
+  //  const snapshot = await firebase.database().ref(`/venues/${venue}`).once('value')
+  //  console.log('Snapshot ---> ', snapshot.val())
+  //  return snapshot.val()
+  // return new Promise(resolve => {
+  //     return firebase.database().ref(`/venues/${venue}`).once('value').then(snapshot => resolve(snapshot))
+  //     // resolve(snapshot.val())
+  //   })
   }
 
   getUserInfo(userId) {
@@ -175,9 +183,7 @@ class MainPage extends React.Component {
             let fanEvent = {}
             if (data.venue) {
               try {
-                fanEvent = async () =>  {
-                 return await this.getEvent(data.venue.id)
-                }
+                fanEvent = this.getEvent(data.venue.id).then(snap => console.log('SnapBefore ---> ', snap))
                 console.log('Inside of If ---> ', fanEvent)
               } catch(e) {
                 console.log('Error ---> ', e)
