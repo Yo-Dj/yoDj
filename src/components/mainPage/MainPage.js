@@ -52,7 +52,7 @@ class MainPage extends React.Component {
 
       if ((!prevState.joined && this.state.joined) && Object.keys(this.state.fanEvent).length !== 0) {
         console.log('User State is Updated ---> ', this.state)
-      } 
+      }
 
       if (Object.keys(this.state.fanEvent).length === 0 && location.pathname === '/fan-event') {
         this.props.history.push('/fan-home')
@@ -157,8 +157,9 @@ class MainPage extends React.Component {
   }
 
  async getEvent(venue) {
-    // console.log('Venue ---> ', venue)
-   return firebase.database().ref(`/venues/${venue}`).once('value')
+   const snapshot = await firebase.database().ref(`/venues/${venue}`).once('value')
+   console.log('Snapshot ---> ', snapshot.val())
+   return snapshot.val()
   }
 
   getUserInfo(userId) {
@@ -171,12 +172,18 @@ class MainPage extends React.Component {
           if (data.userType && data.userType === 'Fan') {
             let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
             let joined = data.venue ? true : false
-            console.log('Joined should be updated ---> ', joined)
             let fanEvent = {}
             if (data.venue) {
-              fanEvent = await this.getEvent(data.venue.id)
-              console.log('EVent FOund ---> ', fanEvent)
+              try {
+                fanEvent = async () =>  {
+                 return await this.getEvent(data.venue.id)
+                }
+                console.log('Inside of If ---> ', fanEvent)
+              } catch(e) {
+                console.log('Error ---> ', e)
+              }
             }
+            console.log('Fan Event ---> ', fanEvent)
             this.setState({
               userInfo,
               joined
