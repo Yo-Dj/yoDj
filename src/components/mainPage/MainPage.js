@@ -50,8 +50,9 @@ class MainPage extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
 
-      if ((!prevState.joined && this.state.joined) && Object.keys(this.state.fanEvent).length !== 0) {
-        console.log('User State is Updated ---> ', this.state)
+      if (location.pathname !== '/fan-tip' && this.state.joined && Object.keys(this.state.fanEvent).length !== 0 && this.state.allDjs !== 0) {
+        this.props.history.push('/fan-tip')
+        return
       }
 
       if (Object.keys(this.state.fanEvent).length === 0 && location.pathname === '/fan-event') {
@@ -156,18 +157,13 @@ class MainPage extends React.Component {
       })
   }
 
- async getEvent(venue) {
-   return new Promise(resolve => {
-      const snapshot = await firebase.database().ref(`/venues/${venue}`).once('value')
-
+ getEvent(venue) {
+   firebase.database().ref(`/venues/${venue}`).on('value', snapshot => {
+     this.setState({
+       fanEvent: snapshot.val()
+     })
    })
-  //  const snapshot = await firebase.database().ref(`/venues/${venue}`).once('value')
-  //  console.log('Snapshot ---> ', snapshot.val())
-  //  return snapshot.val()
-  // return new Promise(resolve => {
-  //     return firebase.database().ref(`/venues/${venue}`).once('value').then(snapshot => resolve(snapshot))
-  //     // resolve(snapshot.val())
-  //   })
+
   }
 
   getUserInfo(userId) {
@@ -181,20 +177,14 @@ class MainPage extends React.Component {
             let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
             let joined = data.venue ? true : false
             let fanEvent = {}
-            if (data.venue) {
-              try {
-                fanEvent = this.getEvent(data.venue.id).then(snap => console.log('SnapBefore ---> ', snap))
-                console.log('Inside of If ---> ', fanEvent)
-              } catch(e) {
-                console.log('Error ---> ', e)
-              }
-            }
-            console.log('Fan Event ---> ', fanEvent)
             this.setState({
               userInfo,
               joined
             }, () => {
               this.getDjs()
+              if (data.venue) {
+                this.getEvent(data.venue.id)
+              }
             })
             return
           }
@@ -270,6 +260,7 @@ class MainPage extends React.Component {
 
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
+    console.log('All DJS Main ---> ', allDjs)
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -325,6 +316,7 @@ class MainPage extends React.Component {
                 <TippingPage
                     userInfo={userInfo}
                     fanEvent={fanEvent}
+                    allDjs={allDjs}
                 />
               )} />
               <Redirect to="/home" />
