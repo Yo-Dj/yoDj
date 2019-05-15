@@ -17,6 +17,16 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        &:after {
+            content: "";
+            height: 4px;
+            width: 100%;
+            display: block;
+            border-radius: 4px;
+            background: #08FF00;
+            box-shadow: 1px 2px 4px 1px #08FF00;
+        }
     }
 
     &--icon-container {
@@ -78,5 +88,121 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    &__tip-container {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-sizing: border-box;
+        padding-top: 0;
+    }
+
+    &--amount {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &--subtitle {
+        font-size: 20px;
+    }
+
+    &--subtitle-icon {
+        color: #08FF00;
+        box-sizing: border-box;
+        margin: 0 10px;
+
+    }
+
+    &--input-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 20px;
+        font-size: 20px;
+        margin-left: 0;
+    }
+
+    &--input {
+        width: 35%;
+        input  {
+            text-align: start !important;
+        }
+    }
+
+    &--tip-text {
+        color: white;
+        width: 100%;
+        // text-align: start !important;
+    }
+
+    &--user-icon {
+        margin: 0 8px;
+        box-sizing: border-box;
+        height: 100%;
+        display: flex;
+        align-items: center; 
+        justify-content: center;
+    }
+
+    &--sample-user {
+        font-size: 20px;
+        // background: red;
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    &--sample-user {
+        width: 30px;
+        height: 30px;
+        // background: white;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        fill: white;
+    }  
+    
+    &--minimum {
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+
+    &--tip-amount {
+        font-weight: bold;
+        font-size: 20px;
+        margin-right: 5px;
+    }
+
+    &--search-container {
+        display: flex;
+        align-items: center;
+    }
+
+    &--music-icon {
+        background: transparent no-repeat center center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-size: 100% 100%;
+        background-color: red;
+    }
+
+    &--search-input {
+        width: 75%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        input  {
+            text-align: start !important;
+        }
+    }
+
+    &--search-text {
+        color: white;
+        width: 100%;
+        margin: 0 20px;
     }
 }
