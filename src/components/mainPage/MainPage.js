@@ -41,6 +41,7 @@ class MainPage extends React.Component {
     this.addFanEvent = this.addFanEvent.bind(this)
     this.joinEvent = this.joinEvent.bind(this)
     this.getEvent = this.getEvent.bind(this)
+    this.leaveEvent = this.leaveEvent.bind(this)
   }
 
   componentDidMount() {
@@ -160,7 +161,7 @@ class MainPage extends React.Component {
  getEvent(venue) {
    firebase.database().ref(`/venues/${venue}`).on('value', snapshot => {
      this.setState({
-       fanEvent: snapshot.val()
+        fanEvent: {...snapshot.val(), fanId: venue}
      })
    })
 
@@ -258,9 +259,19 @@ class MainPage extends React.Component {
     })
   }
 
+  leaveEvent() {
+    let {fanEvent, userInfo, userId} = this.state
+    firebase.database().ref(`venues/${fanEvent.fanId}/joiners/${userId}`).remove()
+    firebase.database().ref(`users/${userId}/venue`).remove()
+    this.setState({
+      fanEvent: {}
+    }, () => {
+      this.props.history.push('/fan-home')
+    })
+  }
+
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
-    console.log('All DJS Main ---> ', allDjs)
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -317,6 +328,7 @@ class MainPage extends React.Component {
                     userInfo={userInfo}
                     fanEvent={fanEvent}
                     allDjs={allDjs}
+                    onLeave={this.leaveEvent}
                 />
               )} />
               <Redirect to="/home" />
