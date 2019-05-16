@@ -86,7 +86,7 @@ class FanEvent extends React.Component {
   }
 
   join() {
-    console.log('Join ')
+    this.props.onJoin(this.props.fanEvent)
   }
 
   render() {

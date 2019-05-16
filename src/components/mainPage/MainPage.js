@@ -13,6 +13,7 @@ import FeedPage from '../feedPage'
 import FanHomepage from '../fanHomepage'
 import SelectDj from '../selectDJ'
 import FanEvent from '../fanEvent'
+import TippingPage from '../tippingPage'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -26,7 +27,8 @@ class MainPage extends React.Component {
       newRequest: {},
       requests: [],
       allDjs: [],
-      fanEvent: {}
+      fanEvent: {},
+      joined: false
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -37,14 +39,22 @@ class MainPage extends React.Component {
     this.getDjs = this.getDjs.bind(this)
     this.goFanPage = this.goFanPage.bind(this)
     this.addFanEvent = this.addFanEvent.bind(this)
+    this.joinEvent = this.joinEvent.bind(this)
+    this.getEvent = this.getEvent.bind(this)
+    this.leaveEvent = this.leaveEvent.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
+
+      if (location.pathname !== '/fan-tip' && this.state.joined && Object.keys(this.state.fanEvent).length !== 0 && this.state.allDjs !== 0) {
+        this.props.history.push('/fan-tip')
+        return
+      }
 
       if (Object.keys(this.state.fanEvent).length === 0 && location.pathname === '/fan-event') {
         this.props.history.push('/fan-home')
@@ -87,6 +97,14 @@ class MainPage extends React.Component {
           requests
         }, () => {
           this.props.history.push('/home')
+        })
+        return
+      }
+
+      if (Object.keys(this.state.fanEvent).length === 0 && location.pathname === '/fan-tip') {
+        this.props.history.push('/fan-home')
+        this.setState({
+          joined: false
         })
         return
       }
@@ -140,6 +158,15 @@ class MainPage extends React.Component {
       })
   }
 
+ getEvent(venue) {
+   firebase.database().ref(`/venues/${venue}`).on('value', snapshot => {
+     this.setState({
+        fanEvent: {...snapshot.val(), fanId: venue}
+     })
+   })
+
+  }
+
   getUserInfo(userId) {
     let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
@@ -148,11 +175,17 @@ class MainPage extends React.Component {
         let data = snapshot.val()
         if (data) {
           if (data.userType && data.userType === 'Fan') {
-            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl}
+            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
+            let joined = data.venue ? true : false
+            let fanEvent = {}
             this.setState({
-              userInfo
+              userInfo,
+              joined
             }, () => {
               this.getDjs()
+              if (data.venue) {
+                this.getEvent(data.venue.id)
+              }
             })
             return
           }
@@ -215,6 +248,28 @@ class MainPage extends React.Component {
     })
   }
 
+  joinEvent(venue) {
+    let {event} = venue
+    let {userId, userInfo} = this.state
+    firebase.database().ref(`venues/${event.requestId}/joiners/${userId}`).set(true)
+    firebase.database().ref(`users/${userId}/venue/id`).set(event.requestId)
+      .then(() => console.log('Pushed up --->', event.requestId))
+    this.setState({
+      join: true
+    })
+  }
+
+  leaveEvent() {
+    let {fanEvent, userInfo, userId} = this.state
+    firebase.database().ref(`venues/${fanEvent.fanId}/joiners/${userId}`).remove()
+    firebase.database().ref(`users/${userId}/venue`).remove()
+    this.setState({
+      fanEvent: {}
+    }, () => {
+      this.props.history.push('/fan-home')
+    })
+  }
+
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
     return(
@@ -265,6 +320,15 @@ class MainPage extends React.Component {
                 <FanEvent
                   userInfo={userInfo}
                   fanEvent={fanEvent}
+                  onJoin={this.joinEvent}
+                />
+              )} />
+              <Route path="/fan-tip" render={props => (
+                <TippingPage
+                    userInfo={userInfo}
+                    fanEvent={fanEvent}
+                    allDjs={allDjs}
+                    onLeave={this.leaveEvent}
                 />
               )} />
               <Redirect to="/home" />

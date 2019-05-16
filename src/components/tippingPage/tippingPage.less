@@ -1,0 +1,309 @@
+.TippingPage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: #2E3336;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    color: white;
+    background-image: url("../../images/fractal-background.png");
+
+    &__fan-container {
+        padding: 20px 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &:after {
+            content: "";
+            height: 4px;
+            width: 100%;
+            display: block;
+            border-radius: 4px;
+            background: #08FF00;
+            box-shadow: 1px 2px 4px 1px #08FF00;
+        }
+    }
+
+    &--icon-container {
+        display: flex;
+        flex-direction: column;
+        height: 100px;
+        align-items: center;
+        width: 65px;
+        box-sizing: border-box;
+
+    }
+
+    &--dj-icon {
+        background: transparent no-repeat center center;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-size: 100% 100%;
+        background-color: red;
+        box-sizing: border-box;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    &--headset {
+        height: 10px;
+        z-index: 1;
+    }
+
+    &--headset-icon {
+        font-size: 30px !important;
+        color: #08FF00;
+    }
+
+    &--place {
+        font-size: 24px;
+        color: #08FF00;
+        text-transform: capitalize;
+        box-sizing: border-box;
+        margin: 20px 0;
+    }
+
+    &--leave-event {
+        box-sizing: border-box;
+        margin: 25px 0;
+    }
+
+    &--button {
+        color: white !important;
+        width: 90px;
+        height: 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    &--button-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__tip-container {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-sizing: border-box;
+        padding-top: 0;
+    }
+
+    &--amount {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &--subtitle {
+        font-size: 20px;
+    }
+
+    &--subtitle-icon {
+        color: #08FF00;
+        box-sizing: border-box;
+        margin: 0 10px;
+
+    }
+
+    &--input-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 20px;
+        font-size: 20px;
+        margin-left: 0;
+    }
+
+    &--input {
+        width: 35%;
+        input  {
+            text-align: start !important;
+        }
+    }
+
+    &--tip-text {
+        color: white;
+        width: 100%;
+        // text-align: start !important;
+    }
+
+    &--user-icon {
+        margin: 0 8px;
+        box-sizing: border-box;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &--sample-user {
+        font-size: 20px;
+        // background: red;
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    &--sample-user {
+        width: 30px;
+        height: 30px;
+        // background: white;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        fill: white;
+    }
+
+    &--minimum {
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+
+    &--tip-amount {
+        font-weight: bold;
+        font-size: 20px;
+        margin-right: 5px;
+    }
+
+    &--search-container {
+        display: flex;
+        align-items: center;
+    }
+
+    &--music-icon {
+        background: transparent no-repeat center center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-size: 100% 100%;
+        background-color: red;
+    }
+
+    &--search-input {
+        width: 75%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        input  {
+            text-align: start !important;
+        }
+    }
+
+    &--search-text {
+        color: white;
+        width: 100%;
+        margin: 0 20px;
+    }
+
+    &--submit-button {
+        box-sizing: border-box;
+        margin: 10px 0;
+        text-align: center;
+    }
+}
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) {
+
+  .TippingPage {
+
+    &--icon-container {
+        height: 75px;
+        width: 40px;
+    }
+
+    &--headset-icon {
+        font-size: 20px !important;
+    }
+
+    &--place {
+        font-size: 20px;
+        margin: 10px 0;
+    }
+
+    &--button {
+        height: 40px;
+    }
+
+    &--button-label {
+        font-size: 12px;
+    }
+  }
+}
+
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .TippingPage {
+
+        &--icon-container {
+            height: 75px;
+            width: 40px;
+        }
+
+        &--headset-icon {
+            font-size: 20px !important;
+        }
+
+        &--place {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        &--button {
+            height: 40px;
+        }
+
+        &--button-label {
+            font-size: 12px;
+        }
+      }
+  }
+
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .TippingPage {
+
+        &--icon-container {
+            height: 100px;
+            width: 65px;
+        }
+
+        &--headset-icon {
+            font-size: 30px !important;
+        }
+
+        &--place {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        &--button {
+            height: 50px;
+        }
+
+        &--button-label {
+            font-size: 16px;
+        }
+      }
+  }
