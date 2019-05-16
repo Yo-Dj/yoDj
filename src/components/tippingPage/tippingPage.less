@@ -142,7 +142,7 @@
         box-sizing: border-box;
         height: 100%;
         display: flex;
-        align-items: center; 
+        align-items: center;
         justify-content: center;
     }
 
@@ -163,8 +163,8 @@
         align-items: center;
         justify-content: center;
         fill: white;
-    }  
-    
+    }
+
     &--minimum {
         margin: 10px 0;
         box-sizing: border-box;
@@ -205,4 +205,105 @@
         width: 100%;
         margin: 0 20px;
     }
+
+    &--submit-button {
+        box-sizing: border-box;
+        margin: 10px 0;
+        text-align: center;
+    }
 }
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) {
+
+  .TippingPage {
+
+    &--icon-container {
+        height: 75px;
+        width: 40px;
+    }
+
+    &--headset-icon {
+        font-size: 20px !important;
+    }
+
+    &--place {
+        font-size: 20px;
+        margin: 10px 0;
+    }
+
+    &--button {
+        height: 40px;
+    }
+
+    &--button-label {
+        font-size: 12px;
+    }
+  }
+}
+
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .TippingPage {
+
+        &--icon-container {
+            height: 75px;
+            width: 40px;
+        }
+
+        &--headset-icon {
+            font-size: 20px !important;
+        }
+
+        &--place {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        &--button {
+            height: 40px;
+        }
+
+        &--button-label {
+            font-size: 12px;
+        }
+      }
+  }
+
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .TippingPage {
+
+        &--icon-container {
+            height: 100px;
+            width: 65px;
+        }
+
+        &--headset-icon {
+            font-size: 30px !important;
+        }
+
+        &--place {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        &--button {
+            height: 50px;
+        }
+
+        &--button-label {
+            font-size: 16px;
+        }
+      }
+  }
