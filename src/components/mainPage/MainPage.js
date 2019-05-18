@@ -42,6 +42,7 @@ class MainPage extends React.Component {
     this.joinEvent = this.joinEvent.bind(this)
     this.getEvent = this.getEvent.bind(this)
     this.leaveEvent = this.leaveEvent.bind(this)
+    this.submitSongRequest = this.submitSongRequest.bind(this)
   }
 
   componentDidMount() {
@@ -270,6 +271,11 @@ class MainPage extends React.Component {
     })
   }
 
+  submitSongRequest(info) {
+    console.log('SUbmit is Requested')
+
+  }
+
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
     return(
@@ -329,6 +335,7 @@ class MainPage extends React.Component {
                     fanEvent={fanEvent}
                     allDjs={allDjs}
                     onLeave={this.leaveEvent}
+                    onSubmit={this.submitSongRequest}
                 />
               )} />
               <Redirect to="/home" />

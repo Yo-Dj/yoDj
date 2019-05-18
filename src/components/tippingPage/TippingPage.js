@@ -2,6 +2,9 @@ import React from 'react'
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
 import Header from '../header'
 
@@ -10,12 +13,15 @@ class TippingPage extends React.Component {
         super(props)
         this.state = {
             tipText: '',
-            searchText: ''
+            searchText: '',
+            isError: false,
+            errorMessage: ''
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
         this.search = this.search.bind(this)
         this.submit = this.submit.bind(this)
+        this.closeError = this.closeError.bind(this)
     }
 
     leaveEvent() {
@@ -36,6 +42,17 @@ class TippingPage extends React.Component {
 
     submit() {
         console.log('Submit ---> ')
+        this.setState({
+            isError: true,
+            errorMessage: 'Submit is clicked'
+        })
+    }
+
+    closeError() {
+        this.setState({
+            isError: false,
+            errorMessage: ''
+        })
     }
 
     render() {
@@ -107,8 +124,31 @@ class TippingPage extends React.Component {
                             Submit
                         </Button>
                     </div>
-
                 </div>
+                <Snackbar
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                  }}
+                  open={this.state.isError}
+                  autoHideDuration={3000}
+                  onClose={this.closeError}
+                  ContentProps={{
+                    'aria-describedby': 'message-id'
+                }}
+                variant="error"
+
+                  message={<span id="message-id">{this.state.errorMessage}</span>}
+                  action={[
+                      <IconButton
+                        key="close"
+                        arial-label="Close"
+                        color="inherit"
+                        onClick={this.closeError}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                  ]} />
             </div>
         )
     }
