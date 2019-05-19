@@ -41,11 +41,27 @@ class TippingPage extends React.Component {
     }
 
     submit() {
-        console.log('Submit ---> ')
+        let {fanEvent, onSubmit} = this.props
+        let tipAmount = parseFloat(this.state.tipText)
+        let eventTip = parseFloat(fanEvent.tipAmount)
+        let errorMessage = ''
+        let isError = false
+        if (eventTip > tipAmount) {
+            errorMessage = 'Tip Amount is below Minimum'
+            isError = true
+        }
+        if (this.state.searchText === '') {
+            errorMessage = 'Enter music or an album!'
+            isError = true
+        }
+
         this.setState({
-            isError: true,
-            errorMessage: 'Submit is clicked'
+            isError,
+            errorMessage
         })
+        if (isError) return
+        onSubmit({tipAmount, music: this.state.searchText})
+
     }
 
     closeError() {
