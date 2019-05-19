@@ -59,7 +59,7 @@ class TippingPage extends React.Component {
         let {fanEvent, userInfo, allDjs} = this.props
         let eventDj = allDjs.reduce((acc, dj) => {
             if (dj.userId === fanEvent.dj) {
-                acc ={...dj}
+                acc = {...dj}
             }
             return acc
         }, {})

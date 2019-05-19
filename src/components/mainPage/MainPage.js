@@ -273,7 +273,10 @@ class MainPage extends React.Component {
 
   submitSongRequest(info) {
     console.log('SUbmit is Requested')
-
+    let {fanEvent, userId, userInfo} = this.state
+    let request = {user} 
+    let ref = firebase.database().ref(`venues/${fanEvent.fanId}/requests`)
+    ref.push({})
   }
 
   render() {
