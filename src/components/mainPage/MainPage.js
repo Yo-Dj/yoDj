@@ -208,7 +208,7 @@ class MainPage extends React.Component {
     let joinedArr = Object.keys(joined)
     let lastJoiner = joinedArr[joinedArr.length - 1]
     let requestsArr = requests.map(request => request.id)
-    if (activities[activities.length - 1] !== lastJoiner && requestsArr.indexOf(lastJoiner) === -1) {
+    if (activities[activities.length - 1] !== lastJoiner) {
       activities.push(lastJoiner)
       requests.push({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl})
       console.log('REQUESTS ----> ', requests)
