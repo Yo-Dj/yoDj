@@ -88,6 +88,7 @@ class NewEventWrapper extends React.Component {
         startDate: now
       }
       let venue = firebase.database().ref('venues').push({...newRequest, dj: userId})
+      newRequest.requestId = venue.key
       firebase.database().ref(`users/${userId}/event`).set(newRequest,  error => {
         if (!error) {
           this.props.history.push('/home')

@@ -6,7 +6,7 @@ class ActivityContainer extends React.Component {
     return (
       <div className="ActivityContainer">
         <div className="ActivityContainer__profile-cont">
-          <div className="ActivityContainer--icon" />
+          <div className="ActivityContainer--icon" style={{backgroundImage: `url(${request.img})`}}/>
           <div className="ActivityContainer--name">{request.name}</div>
         </div>
         <div className="ActivityContainer__main">

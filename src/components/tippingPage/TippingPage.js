@@ -2,6 +2,9 @@ import React from 'react'
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
 import Header from '../header'
 
@@ -10,12 +13,16 @@ class TippingPage extends React.Component {
         super(props)
         this.state = {
             tipText: '',
-            searchText: ''
+            searchText: '',
+            isError: false,
+            errorMessage: ''
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
         this.search = this.search.bind(this)
         this.submit = this.submit.bind(this)
+        this.closeError = this.closeError.bind(this)
+        this.openProfile = this.openProfile.bind(this)
     }
 
     leaveEvent() {
@@ -35,14 +42,45 @@ class TippingPage extends React.Component {
     }
 
     submit() {
-        console.log('Submit ---> ')
+        let {fanEvent, onSubmit} = this.props
+        let tipAmount = parseFloat(this.state.tipText)
+        let eventTip = parseFloat(fanEvent.tipAmount)
+        let errorMessage = ''
+        let isError = false
+        if (eventTip > tipAmount) {
+            errorMessage = 'Tip Amount is below Minimum'
+            isError = true
+        }
+        if (this.state.searchText === '') {
+            errorMessage = 'Enter music or an album!'
+            isError = true
+        }
+
+        this.setState({
+            isError,
+            errorMessage
+        })
+        if (isError) return
+        onSubmit({tipAmount, music: this.state.searchText})
+
+    }
+
+    openProfile() {
+        this.props.onLogout()
+    }
+
+    closeError() {
+        this.setState({
+            isError: false,
+            errorMessage: ''
+        })
     }
 
     render() {
         let {fanEvent, userInfo, allDjs} = this.props
         let eventDj = allDjs.reduce((acc, dj) => {
             if (dj.userId === fanEvent.dj) {
-                acc ={...dj}
+                acc = {...dj}
             }
             return acc
         }, {})
@@ -107,8 +145,31 @@ class TippingPage extends React.Component {
                             Submit
                         </Button>
                     </div>
-
                 </div>
+                <Snackbar
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                  }}
+                  open={this.state.isError}
+                  autoHideDuration={3000}
+                  onClose={this.closeError}
+                  ContentProps={{
+                    'aria-describedby': 'message-id'
+                }}
+                variant="error"
+
+                  message={<span id="message-id">{this.state.errorMessage}</span>}
+                  action={[
+                      <IconButton
+                        key="close"
+                        arial-label="Close"
+                        color="inherit"
+                        onClick={this.closeError}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                  ]} />
             </div>
         )
     }
