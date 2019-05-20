@@ -22,6 +22,7 @@ class TippingPage extends React.Component {
         this.search = this.search.bind(this)
         this.submit = this.submit.bind(this)
         this.closeError = this.closeError.bind(this)
+        this.openProfile = this.openProfile.bind(this)
     }
 
     leaveEvent() {
@@ -62,6 +63,10 @@ class TippingPage extends React.Component {
         if (isError) return
         onSubmit({tipAmount, music: this.state.searchText})
 
+    }
+
+    openProfile() {
+        this.props.onLogout()
     }
 
     closeError() {

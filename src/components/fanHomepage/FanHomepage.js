@@ -28,7 +28,7 @@ class FanHomepage extends React.Component {
     render() {
         let {userInfo, event, djs} = this.props
         let onlineDjs = djs.reduce((acc, el) => {
-            if (el.event) {
+            if (el.eventId) {
                 acc[el.userId] = el
             }
             return acc
@@ -37,7 +37,7 @@ class FanHomepage extends React.Component {
         return (
             <div className="FanHomepage">
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={false}/>
-                <div className="FanHomepage__main-container">
+                {/* <div className="FanHomepage__main-container">
                     <div className='FanHomepage--subtitle'>
                         <div className="FanHomepage--text" onClick={this.gotoSelect}>Select a DJ <span className={'FanHomepage--online-arrow'}>></span></div>
                         <div className="FanHomepage--online"> {Object.keys(onlineDjs).length} online</div>
@@ -58,7 +58,7 @@ class FanHomepage extends React.Component {
                             ))
                         }
                     </div>
-                </div>
+                </div> */}
             </div>
         )
     }

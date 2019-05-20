@@ -43,6 +43,7 @@ class MainPage extends React.Component {
     this.getEvent = this.getEvent.bind(this)
     this.leaveEvent = this.leaveEvent.bind(this)
     this.submitSongRequest = this.submitSongRequest.bind(this)
+    this.getDjEvent = this.getDjEvent.bind(this)
   }
 
   componentDidMount() {
@@ -52,12 +53,20 @@ class MainPage extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
 
+      if (location.pathname === '/event' &&  Object.keys(this.state.event).length === 0) 
+      {
+        this.props.history.push('/home')
+        return
+      }
+
       if (location.pathname !== '/fan-tip' && this.state.joined && Object.keys(this.state.fanEvent).length !== 0 && this.state.allDjs !== 0) {
+        console.log('IF 1 ----> ', this.state)
         this.props.history.push('/fan-tip')
         return
       }
 
       if (Object.keys(this.state.fanEvent).length === 0 && location.pathname === '/fan-event') {
+        console.log('IF 2 ---> ', this.state)
         this.props.history.push('/fan-home')
         return
       }
@@ -129,6 +138,7 @@ class MainPage extends React.Component {
   }
 
   logoutUser() {
+    console.log('Logout')
     fire.auth().signOut()
     .then(() => {
       this.setState({
@@ -161,11 +171,41 @@ class MainPage extends React.Component {
 
  getEvent(venue) {
    firebase.database().ref(`/venues/${venue}`).on('value', snapshot => {
-     this.setState({
-        fanEvent: {...snapshot.val(), fanId: venue}
-     })
+     if (snapshot.val()) {
+       this.setState({
+          fanEvent: {...snapshot.val(), fanId: venue}
+       })
+     }
    })
 
+  }
+
+  getDjEvent(venue, uid) {
+    firebase.database().ref(`/venues/${venue}`).on('value', snapshot => {
+      let event = snapshot.val()
+      if (event) {
+        event.eventId = venue
+        let isActive = false
+        let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
+        let isDayOld = new Date().getTime() >= wholeDay
+        if (isDayOld) {
+          firebase.database().ref(`users/${uid}/event`).remove()
+          firebase.database().ref(`venues/${venue}`).remove()
+          event = {}
+        }
+        if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
+          this.props.history.push('/home')
+        }
+        if (Object.keys(event).length !==0 ) {
+          isActive = true
+        }
+  
+        this.setState({
+          event,
+          isActive
+        })
+      }
+    })
   }
 
   getUserInfo(userId) {
@@ -192,24 +232,13 @@ class MainPage extends React.Component {
           }
           let userInfo = {imageUrl: data.imageUrl, name: data.name}
           let isActive = false
-          let event = data.event ? data.event : {}
-          let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
-          let isDayOld = new Date().getTime() >= wholeDay
-          if (isDayOld) {
-            firebase.database().ref(`users/${uid}/event`).remove()
-            event = {}
-          }
-          if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
-            this.props.history.push('/home')
-          }
-          if (Object.keys(event).length !==0 ) {
-            isActive = true
-          }
+          let {event} = data
           this.setState({
-            userInfo,
-            event,
-            isActive
+            userInfo
           })
+          if (event && event.requestId) {
+            this.getDjEvent(event.requestId, uid)
+          }
         } else {
           this.props.history.push('/login')
         }
@@ -223,14 +252,15 @@ class MainPage extends React.Component {
   }
 
   finishEvent() {
-    let {userId} = this.state
-    let ref = firebase.database().ref(`users/${userId}/event`)
-    ref.on('value', snapshot => {
-      let eventData = snapshot.val()
-      firebase.database().ref(`events/${userId}`).push(eventData)
-      ref.remove()
+    let {userId, event} = this.state
+    firebase.database().ref(`users/${userId}/event`).remove()
+    firebase.database().ref(`venues/${event.eventId}`).remove()
+    this.setState({
+      isActive: false,
+      event: {}
+    }, () => {
+      this.props.history.push('/home')
     })
-    this.props.history.push('/home')
   }
 
   goBackHome() {
@@ -272,11 +302,18 @@ class MainPage extends React.Component {
   }
 
   submitSongRequest(info) {
-    console.log('SUbmit is Requested')
     let {fanEvent, userId, userInfo} = this.state
-    let request = {user} 
-    let ref = firebase.database().ref(`venues/${fanEvent.fanId}/requests`)
-    ref.push({})
+    let now = new Date().getTime()
+    let request = {...info, user: userId, time: now} 
+    let myRef = firebase.database().ref(`venues/${fanEvent.fanId}/requests`)
+    let key = myRef.push().key
+    request.requestId = key
+    myRef.child(`/${key}`).set(request)
+    firebase.database().ref(`users/${userId}/venue/requests/${key}`).set(true, error => {
+      if (!error) {
+        console.log('Its added to firebase')
+      }
+    })
   }
 
   render() {
@@ -339,6 +376,7 @@ class MainPage extends React.Component {
                     allDjs={allDjs}
                     onLeave={this.leaveEvent}
                     onSubmit={this.submitSongRequest}
+                    onLogout={this.logoutUser}/>)}
                 />
               )} />
               <Redirect to="/home" />
