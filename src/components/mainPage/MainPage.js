@@ -30,7 +30,8 @@ class MainPage extends React.Component {
       fanEvent: {},
       joined: false,
       activities: [],
-      fans: []
+      fans: [],
+      acceptedSongs: []
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -49,6 +50,7 @@ class MainPage extends React.Component {
     this.updateActivities = this.updateActivities.bind(this)
     this.updateRequests = this.updateRequests.bind(this)
     this.getFans = this.getFans.bind(this)
+    this.acceptingSong = this.acceptingSong.bind(this)
   }
 
   componentDidMount() {
@@ -83,6 +85,7 @@ class MainPage extends React.Component {
       }
 
       if (location.pathname ==='/accept-request' && location.state && (!this.state.newRequest.id || (this.state.newRequest.id !== location.state.request.id))) {
+        console.log('LOCATION STATE ----> ', location.state)
         this.setState({
           newRequest: location.state.request
         })
@@ -227,7 +230,7 @@ class MainPage extends React.Component {
     let lastAdded = requestedArr[requestedArr.length - 1]
     let requestedUser = fans[requested[lastAdded].user]
     if (requestIds.indexOf(lastAdded) === -1) {
-      requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip:requested[lastAdded].tip, time: requested[lastAdded].time, img: requestedUser.imageUrl})
+      requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl})
       console.log('REquested ----> ', requested)
       console.log('REquests ----> ', requests)
     }
@@ -347,6 +350,25 @@ class MainPage extends React.Component {
     })
   }
 
+  acceptingSong(request) {
+    let {event, acceptedSongs, requests} = this.state
+    console.log('FanEvent ---> ', event)
+    firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).set(request, error => {
+      if (!error) {
+        let index = requests.map(req => req.requestId).indexOf(request.id)
+        requests.splice(index, 1)
+        acceptedSongs.push(request)
+        firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
+        this.setState({
+          acceptedSongs, requests
+        }, () => {
+          console.log('Updated Requests ---> ', this.state.requests)
+        })
+        console.log('Successfuly added to pending')
+      }
+    })
+  }
+
   joinEvent(venue) {
     console.log('Join EVent is invoked')
     let {event} = venue
@@ -418,6 +440,7 @@ class MainPage extends React.Component {
                     onLogout={this.logoutUser}
                     onGoBack={this.goBackHome}
                     request={newRequest}
+                    onAccepted={this.acceptingSong}
                     onAddRequest={this.addRequestToFirebase}
                   />)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />

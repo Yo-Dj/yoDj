@@ -39,7 +39,7 @@ class RequestPage extends React.Component {
        </div>
        <div className="RequestPage__request-container">
           <div className="RequestPage__profile-container">
-              <div className="RequestPage--request-icon" />
+              <div className="RequestPage--request-icon" style={{backgroundImage: `url(${request.img})`}}/>
               <div className="RequestPage--username">{request.name}</div>
           </div>
           <div className="RequestPage--tip">$ {tip}</div>
