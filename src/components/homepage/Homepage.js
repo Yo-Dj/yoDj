@@ -75,9 +75,11 @@ class Homepage extends React.Component {
   }
 
   acceptSong(request) {
+    let {requests} = this.props
+    console.log('Accepted Request ---> ', request)
     this.props.history.push({
       pathname:'/accept-request',
-      state: {request: request}
+      state: {request: {...request}}
     })
   }
 
@@ -94,8 +96,9 @@ class Homepage extends React.Component {
   }
 
   removeEvent() {
-    let {userId} = this.props
-    firebase.database().ref(`users/${userId}/event`).remove()
+    // let {userId} = this.props
+    // firebase.database().ref(`users/${userId}/event`).remove()
+    this.props.onFinish()
   }
 
   openProfile() {

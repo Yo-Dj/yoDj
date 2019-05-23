@@ -30,7 +30,8 @@ class MainPage extends React.Component {
       fanEvent: {},
       joined: false,
       activities: [],
-      fans: []
+      fans: [],
+      acceptedSongs: []
     }
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
@@ -49,6 +50,8 @@ class MainPage extends React.Component {
     this.updateActivities = this.updateActivities.bind(this)
     this.updateRequests = this.updateRequests.bind(this)
     this.getFans = this.getFans.bind(this)
+    this.acceptingSong = this.acceptingSong.bind(this)
+    this.updateAcceptedSongs = this.updateAcceptedSongs.bind(this)
   }
 
   componentDidMount() {
@@ -87,6 +90,12 @@ class MainPage extends React.Component {
           newRequest: location.state.request
         })
         return
+      }
+
+      if (location.pathname === '/accept-request' && !location.state && (!this.state.newRequest.id && this.state.acceptedSongs.length > 0)) {
+        this.setState({
+          newRequest: {...this.state.acceptedSongs[0], accepted: true}
+        })
       }
 
       if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' &&  this.state.requests.length === 0 && (!location.state || (location.state && location.state.requests === 0))) {
@@ -211,7 +220,6 @@ class MainPage extends React.Component {
     if (activities[activities.length - 1] !== lastJoiner) {
       activities.push(lastJoiner)
       requests.push({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl})
-      console.log('REQUESTS ----> ', requests)
     }
     this.setState({
       activities, requests
@@ -227,9 +235,7 @@ class MainPage extends React.Component {
     let lastAdded = requestedArr[requestedArr.length - 1]
     let requestedUser = fans[requested[lastAdded].user]
     if (requestIds.indexOf(lastAdded) === -1) {
-      requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip:requested[lastAdded].tip, time: requested[lastAdded].time, img: requestedUser.imageUrl})
-      console.log('REquested ----> ', requested)
-      console.log('REquests ----> ', requests)
+      requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl})
     }
     this.setState({
       requests
@@ -238,18 +244,27 @@ class MainPage extends React.Component {
     })
   }
 
+  updateAcceptedSongs(updated) {
+
+  }
+
   getDjEvent(venue, uid) {
     firebase.database().ref(`/venues/${venue}`).on('value', snapshot => {
       let event = snapshot.val()
       if (event) {
         event.eventId = venue
         let isActive = false
-        let wholeDay = new Date(event.startDate).getTime() + (24 * 60 * 60 * 1000)
+        let wholeDay = new Date(event.startDate).getTime() +(24 * 60 * 60 * 1000)
         let isDayOld = new Date().getTime() >= wholeDay
         if (isDayOld) {
-          firebase.database().ref(`users/${uid}/event`).remove()
-          firebase.database().ref(`venues/${venue}`).remove()
-          event = {}
+          let joiners = event.joiners ? Object.keys(event.joiners) : []
+          this.setState({
+            event,
+            activities: joiners
+          }, () => {
+            this.finishEvent()
+          })
+          return
         }
         if (Object.keys(event).length === 0 && this.props.location.pathname === '/event') {
           this.props.history.push('/home')
@@ -265,10 +280,12 @@ class MainPage extends React.Component {
         if (event.requests) {
           this.updateRequests(event.requests)
         }
-  
+        
         this.setState({
           event,
           isActive
+        }, () => {
+          console.log('EVENT IS UPDATED --> ', this.state.event)
         })
       }
     })
@@ -320,9 +337,17 @@ class MainPage extends React.Component {
   }
 
   finishEvent() {
-    let {userId, event} = this.state
+    let {userId, event, activities} = this.state
     firebase.database().ref(`users/${userId}/event`).remove()
     firebase.database().ref(`venues/${event.eventId}`).remove()
+    activities.forEach(user => {
+      firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
+      let completedEvent = snapshot.val()
+      let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
+      firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
+      firebase.database().ref(`users/${user}/venue`).remove()
+      })
+    })
     this.setState({
       isActive: false,
       event: {}
@@ -347,8 +372,25 @@ class MainPage extends React.Component {
     })
   }
 
+  acceptingSong(request) {
+    let {event, acceptedSongs, requests, newRequest} = this.state
+    firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).set(request, error => {
+      if (!error) {
+        let index = requests.map(req => req.requestId).indexOf(request.id)
+        requests.splice(index, 1)
+        acceptedSongs.push(request)
+        newRequest.accepted = true
+        firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
+        this.setState({
+          acceptedSongs, requests, newRequest
+        }, () => {
+          console.log('Updated Requests ---> ', this.state.requests)
+        })
+      }
+    })
+  }
+
   joinEvent(venue) {
-    console.log('Join EVent is invoked')
     let {event} = venue
     let {userId, userInfo} = this.state
     firebase.database().ref(`venues/${event.requestId}/joiners/${userId}`).set(true)
@@ -392,7 +434,17 @@ class MainPage extends React.Component {
           <Switch>
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
-              <Route path="/home" render={props => (<HomePage userInfo={userInfo} userId={userId} event={event} requests={requests} onLogout={this.logoutUser}/>)} />
+              <Route path="/home" render={props => 
+                (
+                  <HomePage 
+                    userInfo={userInfo} 
+                    userId={userId} 
+                    event={event} 
+                    requests={requests} 
+                    onLogout={this.logoutUser}
+                    onFinish={this.finishEvent}
+                  />
+                )} />
               <Route path="/fan-home" render={props =>
                 (
                 <FanHomepage
@@ -418,6 +470,7 @@ class MainPage extends React.Component {
                     onLogout={this.logoutUser}
                     onGoBack={this.goBackHome}
                     request={newRequest}
+                    onAccepted={this.acceptingSong}
                     onAddRequest={this.addRequestToFirebase}
                   />)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
