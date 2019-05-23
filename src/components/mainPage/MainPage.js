@@ -217,7 +217,6 @@ class MainPage extends React.Component {
     let joinedArr = Object.keys(joined)
     let lastJoiner = joinedArr[joinedArr.length - 1]
     let requestsArr = requests.map(request => request.id)
-    console.log('USER ADded ----> ', joined)
     if (activities[activities.length - 1] !== lastJoiner) {
       activities.push(lastJoiner)
       requests.push({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl})
@@ -255,7 +254,7 @@ class MainPage extends React.Component {
       if (event) {
         event.eventId = venue
         let isActive = false
-        let wholeDay = new Date(event.startDate).getTime() + 200000 /*(24 * 60 * 60 * 1000)*/
+        let wholeDay = new Date(event.startDate).getTime() +(24 * 60 * 60 * 1000)
         let isDayOld = new Date().getTime() >= wholeDay
         if (isDayOld) {
           let joiners = event.joiners ? Object.keys(event.joiners) : []
@@ -275,8 +274,6 @@ class MainPage extends React.Component {
         }
 
         if (event.joiners) {
-          console.log('Update Activities Event ---> ', event)
-          console.log('IS ACTIEVE -----> ', isActive)
           this.updateActivities(event.joiners)
         }
 
@@ -394,7 +391,6 @@ class MainPage extends React.Component {
   }
 
   joinEvent(venue) {
-    console.log('Join EVent is invoked')
     let {event} = venue
     let {userId, userInfo} = this.state
     firebase.database().ref(`venues/${event.requestId}/joiners/${userId}`).set(true)
