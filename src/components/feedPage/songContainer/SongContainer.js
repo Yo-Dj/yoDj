@@ -18,7 +18,7 @@ class SongContainer extends React.Component {
     return (
       <div className="SongContainer">
         <div className="SongContainer__profile-cont">
-          <div className="SongContainer--icon" />
+          <div className="SongContainer--icon" style={{backgroundImage: `url(${request.img})`}}/>
           <div className="SongContainer--name">{request.name}</div>
         </div>
         <div className="SongContainer__main">

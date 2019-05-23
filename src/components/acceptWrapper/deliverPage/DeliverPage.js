@@ -96,7 +96,7 @@ class DeliverPage extends React.Component {
           <div className="DeliverPage--subtitle">Request Delivery</div>
        </div>
        <div className="DeliverPage__song-container">
-          <div className="DeliverPage--song-icon" />
+          <div className="DeliverPage--song-icon" style={{backgroundImage: `url(${request.img})`}}/>
           <div className="DeliverPage--song-name">{request.song}</div>
        </div>
        <div className="DeliverPage--song-info">

@@ -7,14 +7,14 @@ import FeedContainer from '../feedContainer'
 import EventWrapper from '../eventWrapper'
 import Header from '../header'
 
-const requests = [
-  {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 1},
-  {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png', id: 3},
-  {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png', id: 2},
-  {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png', id: 4},
-  {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png', id: 5},
-  {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 6}
-]
+// const requests = [
+//   {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 1},
+//   {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png', id: 3},
+//   {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png', id: 2},
+//   {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png', id: 4},
+//   {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png', id: 5},
+//   {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 6}
+// ]
 
 class Homepage extends React.Component {
   constructor(props) {
@@ -34,7 +34,11 @@ class Homepage extends React.Component {
   }
 
   componentDidMount() {
-    let {event} = this.props
+    let {event, userInfo} = this.props
+    if (userInfo.type && userInfo.type === 'fan') {
+      this.props.history.push('/fan-home')
+      return
+    }
     if (Object.keys(event).length > 0) {
       this.setState({
         active: true
@@ -44,11 +48,15 @@ class Homepage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let {event} = this.props
+    let {event, userInfo} = this.props
     if (Object.keys(prevProps.event).length !== Object.keys(event).length) {
       this.setState({
         active: !this.state.active
       })
+    }
+    if (userInfo.type && userInfo.type === 'fan') {
+      this.props.history.push('/fan-home')
+      return
     }
   }
 
@@ -67,13 +75,16 @@ class Homepage extends React.Component {
   }
 
   acceptSong(request) {
+    let {requests} = this.props
+    console.log('Accepted Request ---> ', request)
     this.props.history.push({
       pathname:'/accept-request',
-      state: {request: request}
+      state: {request: {...request}}
     })
   }
 
   forwardFeedPage() {
+    let {requests} = this.props
     this.props.history.push({
       pathname: '/feed',
       state: {requests: requests}
@@ -85,8 +96,9 @@ class Homepage extends React.Component {
   }
 
   removeEvent() {
-    let {userId} = this.props
-    firebase.database().ref(`users/${userId}/event`).remove()
+    // let {userId} = this.props
+    // firebase.database().ref(`users/${userId}/event`).remove()
+    this.props.onFinish()
   }
 
   openProfile() {
@@ -98,7 +110,7 @@ class Homepage extends React.Component {
   }
 
   render() {
-    let {userInfo, event} = this.props
+    let {userInfo, event, requests} = this.props
     let {requestOpen, requestMessage, active} = this.state
     let boxShadowColor = active ? '#08FF00' : 'yellow'
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
