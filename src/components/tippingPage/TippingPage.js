@@ -62,6 +62,12 @@ class TippingPage extends React.Component {
         })
         if (isError) return
         onSubmit({tipAmount, music: this.state.searchText})
+        this.setState({
+            isError: true,
+            errorMessage: 'Your request successfully submitted',
+            tipText: '',
+            searchText: ''
+        })
 
     }
 
