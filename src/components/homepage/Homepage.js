@@ -75,11 +75,14 @@ class Homepage extends React.Component {
   }
 
   acceptSong(request) {
-    let {requests} = this.props
-    this.props.history.push({
-      pathname:'/accept-request',
-      state: {request: {...request}}
-    })
+    let {requests, acceptedSongs} = this.props
+    if (acceptedSongs.length < 6) {
+      this.props.history.push({
+        pathname:'/accept-request',
+        state: {request: {...request}}
+      })
+    }
+  
   }
 
   forwardFeedPage() {
@@ -107,7 +110,7 @@ class Homepage extends React.Component {
   }
 
   render() {
-    let {userInfo, event, requests} = this.props
+    let {userInfo, event, requests, acceptedSongs} = this.props
     let {requestOpen, requestMessage, active} = this.state
     let boxShadowColor = active ? '#08FF00' : 'yellow'
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
@@ -133,6 +136,10 @@ class Homepage extends React.Component {
             <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>
           <div className="Homepage__tip-container">
+            <div className="Homepage--queue-title">Queue</div>
+            <div className="Homepage--queue-subtitle">
+              {acceptedSongs.length} songs are in a queue
+            </div>
           </div>
         </div>
       </div>

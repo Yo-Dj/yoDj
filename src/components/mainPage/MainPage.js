@@ -244,29 +244,74 @@ class MainPage extends React.Component {
     }
     this.setState({
       activities, requests
-    }, () => {
-      console.log('ACtivities ---> ', this.state.requests)
     })
   }
 
   updateRequests(requested) {
-    let {requests, fans} = this.state
+    let {requests, fans, activities} = this.state
     let requestIds = requests.map(request => request.id)
     let requestedArr = Object.keys(requested)
+    let songsArr = Object.values(requested)
     let lastAdded = requestedArr[requestedArr.length - 1]
-    let requestedUser = fans[requested[lastAdded].user]
-    if (requestIds.indexOf(lastAdded) === -1) {
+    let requestedUser = requestedArr.length > 0 ? fans[requested[lastAdded].user] : ''
+    let songRequests = requests.length - activities.length
+    if (requestedArr.length === 0) {
+      requests = requests.filter(request => {
+        if (!request.songRequest) {
+          return request
+        }
+      })
+    }
+    else if (requestedArr.length > 0 && songRequests === 0) {
+     songsArr.forEach((request, idx) => {
+       if (fans[request.user]) {
+         requests.push({name: fans[request.user].username, songRequest: true, id: requestIds[idx], song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl})
+       }
+      })
+    }
+   else if (requestedArr.length < songRequests) {
+     requests = requests.filter(request => {
+       if (!request.songRequest) {
+         return request
+       }
+       if (requestedArr.indexOf(request.id) !== -1 && request.songRequest) {
+         return request
+       }
+     })
+   } 
+   else if (requestIds.indexOf(lastAdded) === -1) {
       requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl})
     }
     this.setState({
       requests
-    }, () => {
-      console.log('Set REquests ---> ', this.state.requests)
     })
   }
 
-  updateAcceptedSongs(updated) {
-
+  updateAcceptedSongs(pendingSongs = {}) {
+    let {requests, fans, activities, acceptedSongs} = this.state
+    let acceptedIds = acceptedSongs.map(song => song.id)
+    let pendingIds = Object.keys(pendingSongs)
+    let pendingSongArr = Object.values(pendingSongs)
+    if (pendingIds.length === 0) {
+      acceptedSongs = []
+    } else if (acceptedSongs.length > pendingSongs.length) {
+      acceptedSongs = acceptedSongs.filter(song => {
+        if (pendingIds.indexOf(song.id) !== -1) {
+          return song
+        }
+      })
+    } else if (acceptedSongs.length === 0 && pendingIds.length > 0) {
+      pendingSongArr.forEach((request, idx) => {
+          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.music, tip: request.tipAmount, time: request.time, img: request.img})
+      })
+      console.log('PendingSOng Arr ----> ', pendingSongArr)
+    } else if (acceptedIds.indexOf(pendingIds[pendingIds.length - 1]) === -1) {
+      let lastRequest = pendingSongArr[pendingSongs.length - 1]
+        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.music, tip: lastRequest.tipAmount, time: lastRequest.time, img: lastRequest.img})
+    }
+    this.setState({
+      acceptedSongs
+    })
   }
 
   getDjEvent(venue, uid) {
@@ -274,6 +319,8 @@ class MainPage extends React.Component {
       let event = snapshot.val()
       if (event) {
         event.eventId = venue
+        let {activities, requests, acceptedSongs} = this.state
+        let songRequests = requests.length - activities.length
         let isActive = false
         let wholeDay = new Date(event.startDate).getTime() +(24 * 60 * 60 * 1000)
         let isDayOld = new Date().getTime() >= wholeDay
@@ -299,8 +346,14 @@ class MainPage extends React.Component {
           this.updateActivities(joiners)
         }
 
-        if (event.requests) {
-          this.updateRequests(event.requests)
+        if (event.requests || songRequests !== 0) {
+          let newSongRequests = event.requests ? event.requests : {}
+          this.updateRequests(newSongRequests)
+        }
+
+        if (event.pending || acceptedSongs.length !== 0) {
+          let allAccepted = event.pending ? event.pending  : {}
+          this.updateAcceptedSongs(allAccepted)
         }
 
         this.setState({
@@ -403,8 +456,6 @@ class MainPage extends React.Component {
         firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
         this.setState({
           acceptedSongs, requests, newRequest
-        }, () => {
-          console.log('Updated Requests ---> ', this.state.requests)
         })
       }
     })
@@ -447,7 +498,7 @@ class MainPage extends React.Component {
   }
 
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent} = this.state
+    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -464,6 +515,7 @@ class MainPage extends React.Component {
                     onLogout={this.logoutUser}
                     onFinish={this.finishEvent}
                     isActive={isActive}
+                    acceptedSongs={acceptedSongs}
                   />
                 )} />
               <Route path="/fan-home" render={props =>
