@@ -35,6 +35,7 @@ class FeedContainer extends React.Component {
   render() {
     let {active, requests, requestMessage, openRequestModal, onAccept} = this.props
     let {selectedRequest} = this.state
+    requests = requests.reverse()
     requests = active ? requests : []
     let requestNum = requests.reduce((acc,el) => acc +  (el.songRequest), 0)
     let fanNum = requests.reduce((acc, el) => ({...acc, [el.name]: true}), {})
