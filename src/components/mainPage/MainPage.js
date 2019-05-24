@@ -60,8 +60,7 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
-
-      if (location.pathname === '/event' &&  Object.keys(this.state.event).length === 0) 
+      if (location.pathname === '/event' &&  Object.keys(this.state.event).length === 0)
       {
         this.props.history.push('/home')
         return
@@ -194,6 +193,7 @@ class MainPage extends React.Component {
           }
           return acc
         },{})
+        console.log('Data ---> ')
         this.setState({
           fans
         })
@@ -212,12 +212,33 @@ class MainPage extends React.Component {
 
   }
 
-  updateActivities(joined) {
+  updateActivities(joined = {}) {
     let {activities, requests, fans} = this.state
     let joinedArr = Object.keys(joined)
     let lastJoiner = joinedArr[joinedArr.length - 1]
     let requestsArr = requests.map(request => request.id)
-    if (activities[activities.length - 1] !== lastJoiner) {
+    if (activities.length === 0 && Object.keys(fans).length !== 0) {
+      joinedArr.forEach(user => {
+        if (fans[user]) {
+          activities.push(user)
+          requests.push({name: fans[user].username, songRequest: false, id: user, message: 'joined your event', img: fans[user].imageUrl})
+        }
+      })
+      console.log('Get All Joined Users')
+    }
+
+    else if (activities.length > joinedArr.length) {
+      activities = activities.filter(user => {
+        if (joinedArr.indexOf(user) === -1 ) {
+          requests.push({name: fans[user].username, songRequest: false, id: user, message: 'left your event', img: fans[user].imageUrl})
+        }
+        else {
+          return user
+        }
+      })
+    }
+
+   else if (activities[activities.length - 1] !== lastJoiner && fans[lastJoiner]) {
       activities.push(lastJoiner)
       requests.push({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl})
     }
@@ -273,19 +294,18 @@ class MainPage extends React.Component {
           isActive = true
         }
 
-        if (event.joiners) {
-          this.updateActivities(event.joiners)
+        if (event.joiners || this.state.activities.length > 0) {
+          let joiners = event.joiners ? event.joiners : {}
+          this.updateActivities(joiners)
         }
 
         if (event.requests) {
           this.updateRequests(event.requests)
         }
-        
+
         this.setState({
           event,
           isActive
-        }, () => {
-          console.log('EVENT IS UPDATED --> ', this.state.event)
         })
       }
     })
@@ -319,7 +339,7 @@ class MainPage extends React.Component {
           this.setState({
             userInfo
           }, () => {
-            this.getFans()            
+            this.getFans()
             if (event && event.requestId) {
               this.getDjEvent(event.requestId, uid)
             }
@@ -414,7 +434,7 @@ class MainPage extends React.Component {
   submitSongRequest(info) {
     let {fanEvent, userId, userInfo} = this.state
     let now = new Date().getTime()
-    let request = {...info, user: userId, time: now} 
+    let request = {...info, user: userId, time: now}
     let myRef = firebase.database().ref(`venues/${fanEvent.fanId}/requests`)
     let key = myRef.push().key
     request.requestId = key
@@ -434,15 +454,16 @@ class MainPage extends React.Component {
           <Switch>
               <Route path="/new-event" render={props => (<NewEventWrapper userInfo={userInfo} userId={userId} onLogout={this.logoutUser}/>)} />
               <Route path="/event" render={props => (<EventView userInfo={userInfo} userId={userId} event={event} onFinish={this.finishEvent}  onLogout={this.logoutUser} />)}/>
-              <Route path="/home" render={props => 
+              <Route path="/home" render={props =>
                 (
-                  <HomePage 
-                    userInfo={userInfo} 
-                    userId={userId} 
-                    event={event} 
-                    requests={requests} 
+                  <HomePage
+                    userInfo={userInfo}
+                    userId={userId}
+                    event={event}
+                    requests={requests}
                     onLogout={this.logoutUser}
                     onFinish={this.finishEvent}
+                    isActive={isActive}
                   />
                 )} />
               <Route path="/fan-home" render={props =>

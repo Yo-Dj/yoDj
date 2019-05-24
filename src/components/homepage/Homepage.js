@@ -48,8 +48,8 @@ class Homepage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let {event, userInfo} = this.props
-    if (Object.keys(prevProps.event).length !== Object.keys(event).length) {
+    let {event, userInfo, isActive} = this.props
+    if ((Object.keys(prevProps.event).length !== Object.keys(event).length) && (isActive !== prevProps.isActive) ) {
       this.setState({
         active: !this.state.active
       })
@@ -76,7 +76,6 @@ class Homepage extends React.Component {
 
   acceptSong(request) {
     let {requests} = this.props
-    console.log('Accepted Request ---> ', request)
     this.props.history.push({
       pathname:'/accept-request',
       state: {request: {...request}}
@@ -96,8 +95,6 @@ class Homepage extends React.Component {
   }
 
   removeEvent() {
-    // let {userId} = this.props
-    // firebase.database().ref(`users/${userId}/event`).remove()
     this.props.onFinish()
   }
 
