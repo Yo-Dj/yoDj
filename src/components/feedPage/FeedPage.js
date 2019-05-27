@@ -43,12 +43,11 @@ class FeedPage extends React.Component {
   }
 
   openProfile() {
-    console.log('Open Profile ---> ')
+    this.props.onLogout()
   }
 
   render() {
     let {userInfo, requests} = this.props
-    requests = requests.reverse()
     let requestNum = requests.reduce((acc,el) => acc +  (el.songRequest), 0)
     let fanNum = requests.reduce((acc, el) => ({...acc, [el.name]: true}), {})
     fanNum = Object.keys(fanNum).length

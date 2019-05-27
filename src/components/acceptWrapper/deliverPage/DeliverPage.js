@@ -22,7 +22,7 @@ class DeliverPage extends React.Component {
   }
 
   componentDidUpdate() {
-    if ((this.state.time >= 60000 && this.state.time <= 61000) && !this.state.completed) {
+    if ((this.state.time >= 6000 && this.state.time <= 6100) && !this.state.completed) {
       this.props.onCompleteRequest()
       this.stopTimer()
       this.setState({
@@ -96,7 +96,7 @@ class DeliverPage extends React.Component {
           <div className="DeliverPage--subtitle">Request Delivery</div>
        </div>
        <div className="DeliverPage__song-container">
-          <div className="DeliverPage--song-icon" style={{backgroundImage: `url(${request.img})`}}/>
+          <div className="DeliverPage--song-icon" />
           <div className="DeliverPage--song-name">{request.song}</div>
        </div>
        <div className="DeliverPage--song-info">
@@ -124,7 +124,7 @@ class DeliverPage extends React.Component {
       <div className="DeliverPage__request-info">
         <div className="DeliverPage--tip">Tip <span className="DeliverPage--time">$ {tip}</span></div>
         <div className="DeliverPage--user">
-          <div className="DeliverPage--user-icon" />
+          <div className="DeliverPage--user-icon" style={{backgroundImage: `url(${request.img})`}}/>
           <div className="DeliverPage--user-name">{request.name}</div>
         </div>
       </div>
