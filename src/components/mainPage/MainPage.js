@@ -193,7 +193,6 @@ class MainPage extends React.Component {
           }
           return acc
         },{})
-        console.log('Data ---> ')
         this.setState({
           fans
         })
@@ -224,7 +223,6 @@ class MainPage extends React.Component {
           requests.push({name: fans[user].username, songRequest: false, id: user, message: 'joined your event', img: fans[user].imageUrl})
         }
       })
-      console.log('Get All Joined Users')
     }
 
     else if (activities.length > joinedArr.length) {
@@ -265,7 +263,7 @@ class MainPage extends React.Component {
     else if (requestedArr.length > 0 && songRequests === 0) {
      songsArr.forEach((request, idx) => {
        if (fans[request.user]) {
-         requests.push({name: fans[request.user].username, songRequest: true, id: requestIds[idx], song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl})
+         requests.push({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl})
        }
       })
     }
@@ -278,9 +276,11 @@ class MainPage extends React.Component {
          return request
        }
      })
+     console.log('Remove ELement UPDATE Requests  ----> ', requests)
    } 
    else if (requestIds.indexOf(lastAdded) === -1) {
-      requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl})
+     requests.push({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl})
+     console.log('Last Added ----> ', requests)
     }
     this.setState({
       requests
@@ -294,7 +294,7 @@ class MainPage extends React.Component {
     let pendingSongArr = Object.values(pendingSongs)
     if (pendingIds.length === 0) {
       acceptedSongs = []
-    } else if (acceptedSongs.length > pendingSongs.length) {
+    } else if (acceptedSongs.length > pendingSongArr.length) {
       acceptedSongs = acceptedSongs.filter(song => {
         if (pendingIds.indexOf(song.id) !== -1) {
           return song
@@ -302,12 +302,11 @@ class MainPage extends React.Component {
       })
     } else if (acceptedSongs.length === 0 && pendingIds.length > 0) {
       pendingSongArr.forEach((request, idx) => {
-          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.music, tip: request.tipAmount, time: request.time, img: request.img})
+          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.song, tip: request.tipAmount, time: request.time, img: request.img})
       })
-      console.log('PendingSOng Arr ----> ', pendingSongArr)
     } else if (acceptedIds.indexOf(pendingIds[pendingIds.length - 1]) === -1) {
-      let lastRequest = pendingSongArr[pendingSongs.length - 1]
-        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.music, tip: lastRequest.tipAmount, time: lastRequest.time, img: lastRequest.img})
+      let lastRequest = pendingSongArr[pendingSongArr.length - 1]
+        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.song, tip: lastRequest.tipAmount, time: lastRequest.time, img: lastRequest.img})
     }
     this.setState({
       acceptedSongs
@@ -449,9 +448,10 @@ class MainPage extends React.Component {
     let {event, acceptedSongs, requests, newRequest} = this.state
     firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).set(request, error => {
       if (!error) {
-        let index = requests.map(req => req.requestId).indexOf(request.id)
-        requests.splice(index, 1)
-        acceptedSongs.push(request)
+        let index = requests.map(req => req.id).indexOf(request.id)
+        if (index !== -1) {
+          requests.splice(index, 1)
+        }
         newRequest.accepted = true
         firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
         this.setState({
