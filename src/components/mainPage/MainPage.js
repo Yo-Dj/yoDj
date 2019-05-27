@@ -216,34 +216,49 @@ class MainPage extends React.Component {
 
   }
 
-  updateActivities(joined = {}) {
-    let {activities, requests, fans} = this.state
+  updateActivities(joined = {}, eventUpdated) {
+    let {activities, requests, fans, event} = this.state
     let joinedArr = Object.keys(joined)
     let lastJoiner = joinedArr.length > 0 ? joinedArr[0] : joinedArr[joinedArr.length ]
     let requestsArr = requests.map(request => request.id)
+    let now = new Date()
+    now = now.getTime()
     if (activities.length === 0 && Object.keys(fans).length !== 0) {
       joinedArr.forEach(user => {
         if (fans[user]) {
           activities.push(user)
-          requests.unshift({name: fans[user].username, songRequest: false, id: user, message: 'joined your event', img: fans[user].imageUrl})
+          requests.unshift({name: fans[user].username, songRequest: false, id: user, message: 'joined your event', img: fans[user].imageUrl, time: now})
         }
       })
     }
 
     else if (activities.length > joinedArr.length) {
+      let leftUsers = []
       activities = activities.filter(user => {
         if (joinedArr.indexOf(user) === -1 ) {
-          requests.unshift({name: fans[user].username, songRequest: false, id: user, message: 'left your event', img: fans[user].imageUrl})
+          leftUsers.push(user)
+          requests.unshift({name: fans[user].username, songRequest: false, id: user, message: 'left your event', img: fans[user].imageUrl, time: now})
         }
         else {
           return user
         }
       })
+      let findIds = []
+      leftUsers.forEach(user => {
+        findIds = requests.filter(req => (req.songRequest && req.fanId === user))
+      })
+      this.setState({
+        activities, requests, event: eventUpdated
+      }, () => {
+        findIds.forEach(request => {
+          firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
+        })
+      })
     }
 
    else if (activities[activities.length - 1] !== lastJoiner && fans[lastJoiner]) {
       activities.push(lastJoiner)
-      requests.unshift({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl})
+      requests.unshift({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl, time: now})
     }
     this.setState({
       activities, requests
@@ -259,6 +274,12 @@ class MainPage extends React.Component {
     let requestedUser = requestedArr.length > 0 ? fans[requested[lastAdded].user] : ''
     let songRequests = requests.length - activities.length
     if (requestedArr.length === 0) {
+      requests = requests.filter(req => !req.songRequest)
+      this.setState({
+        requests
+      })
+    } 
+    else if (requestedArr.length === 0) {
       requests = requests.filter(request => {
         if (!request.songRequest) {
           return request
@@ -273,11 +294,12 @@ class MainPage extends React.Component {
       })
     }
    else if (requestedArr.length < songRequests) {
+
      requests = requests.filter(request => {
        if (!request.songRequest) {
          return request
        }
-       if (requestedArr.indexOf(request.id) !== -1 && request.songRequest) {
+       if (request.songRequest && requestedArr.indexOf(request.id) !== -1 && requestedArr.length > 0) {
          return request
        }
      })
@@ -342,13 +364,12 @@ class MainPage extends React.Component {
         if (Object.keys(event).length !==0 ) {
           isActive = true
         }
-
         if (event.joiners || this.state.activities.length > 0) {
           let joiners = event.joiners ? event.joiners : {}
-          this.updateActivities(joiners)
+          this.updateActivities(joiners, event)
         }
-
         if (event.requests || songRequests !== 0) {
+
           let newSongRequests = event.requests ? event.requests : {}
           this.updateRequests(newSongRequests)
         }

@@ -97,6 +97,8 @@ class FanEvent extends React.Component {
       event.time = moment(event.startDate).format('h:mm a')
     }
     let time = this.timeFormatter()
+    let completed = fanEvent.completed ? Object.keys(fanEvent.completed) : 0
+    let attending = fanEvent.joiners ? Object.keys(fanEvent.joiners).length : 0
     return(
       <div className="FanEvent">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.onProfile} isActive={false} onClick={() => {}}/>
@@ -105,7 +107,7 @@ class FanEvent extends React.Component {
           <div className="FanEvent--subtitle">{event.placeName}</div>
        </div>
        <div className="FanEvent--attendees">
-          21 fans attending, 9 requests pending
+          {attending} fans attending, {completed} requests pending
         </div>
         <div className="FanEvent__main-container">
         <div className="FanEvent__icon-container">
@@ -129,7 +131,7 @@ class FanEvent extends React.Component {
           {event.address}
         </div>
         <div className="FanEvent--join">
-        <Button variant="contained" color="primary" classes={{root: 'FanEvent--join-button'}} onClick={this.join}>Join</Button>
+          <Button variant="contained" color="primary" classes={{root: 'FanEvent--join-button'}} onClick={this.join}>Join</Button>
         </div>
       </div>
     )

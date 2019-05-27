@@ -18,7 +18,6 @@ class AcceptWrapper extends React.Component {
 
   componentDidMount() {
     let {request} = this.props
-    console.log('REQUEST ----> ', this.props)
     if (Object.keys(request).length === 0) {
       this.props.onGoBack()
       return

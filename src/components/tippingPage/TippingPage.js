@@ -91,6 +91,7 @@ class TippingPage extends React.Component {
             return acc
         }, {})
         let tip = parseFloat(fanEvent.tipAmount).toFixed(2)
+        let completed = fanEvent.completed ? Object.keys(fanEvent.completed) : 0
         return (
             <div className="TippingPage">
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
@@ -103,7 +104,7 @@ class TippingPage extends React.Component {
                         <div className="TippingPage--dj-name">{eventDj.username}</div>
                     </div>
                     <div className="TippingPage--place">{fanEvent.placeName}</div>
-                    <div className="TippingPage--requests">9 Requests Completed</div>
+                    <div className="TippingPage--requests">{completed} Requests Completed</div>
                     <div className="TippingPage--leave-event">
                         <Button variant="contained" color="primary" classes={{root: 'TippingPage--button', label: 'TippingPage--button-label'}} onClick={this.leaveEvent}>
                             Leave Event
