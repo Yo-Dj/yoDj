@@ -612,6 +612,7 @@ class MainPage extends React.Component {
                   userInfo={userInfo}
                   fanEvent={fanEvent}
                   onJoin={this.joinEvent}
+                  onLogout={this.logoutUser}
                 />
               )} />
               <Route path="/fan-tip" render={props => (
@@ -621,7 +622,8 @@ class MainPage extends React.Component {
                     allDjs={allDjs}
                     onLeave={this.leaveEvent}
                     onSubmit={this.submitSongRequest}
-                    onLogout={this.logoutUser}/>)}
+                    onLogout={this.logoutUser}
+                  />)}
                 />
               )} />
               <Redirect to="/home" />

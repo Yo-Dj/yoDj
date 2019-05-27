@@ -91,7 +91,7 @@ class TippingPage extends React.Component {
             return acc
         }, {})
         let tip = parseFloat(fanEvent.tipAmount).toFixed(2)
-        let completed = fanEvent.completed ? Object.keys(fanEvent.completed) : 0
+        let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
         return (
             <div className="TippingPage">
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
