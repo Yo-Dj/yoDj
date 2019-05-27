@@ -31,6 +31,7 @@ class Homepage extends React.Component {
     this.requestOpen = this.requestOpen.bind(this)
     this.acceptSong = this.acceptSong.bind(this)
     this.forwardFeedPage = this.forwardFeedPage.bind(this)
+    this.openDeliverPage = this.openDeliverPage.bind(this)
   }
 
   componentDidMount() {
@@ -109,6 +110,11 @@ class Homepage extends React.Component {
     this.props.history.push('/new-event')
   }
 
+  openDeliverPage() {
+    console.log('OPen Deliver page ---> ')
+    this.props.onDeliver()
+  }
+
   render() {
     let {userInfo, event, requests, acceptedSongs} = this.props
     let {requestOpen, requestMessage, active} = this.state
@@ -136,7 +142,7 @@ class Homepage extends React.Component {
             <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>
           <div className="Homepage__tip-container">
-            <div className="Homepage--queue-title">Queue</div>
+            <div className="Homepage--queue-title" onClick={this.openDeliverPage}>Queue</div>
             <div className="Homepage--queue-subtitle">
               {acceptedSongs.length} songs are in a queue
             </div>

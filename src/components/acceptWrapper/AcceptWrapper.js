@@ -16,9 +16,29 @@ class AcceptWrapper extends React.Component {
     this.addToFirebase = this.addToFirebase.bind(this)
   }
 
+  componentDidMount() {
+    let {request} = this.props
+    console.log('REQUEST ----> ', this.props)
+    if (Object.keys(request).length === 0) {
+      this.props.onGoBack()
+      return
+    }
+    if (request.accepted) {
+      this.setState({
+        view: 'deliverPage'
+      })
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     let {request} = this.props
-    if (prevState ==='requestPage' && request.accepted) {
+    if (this.state.view ==='requestPage' && request.accepted) {
+      this.setState({
+        view: 'deliverPage'
+      })
+    }
+
+    if (prevState.view === 'requestPage' && request.accepted) {
       this.setState({
         view: 'deliverPage'
       })
@@ -27,15 +47,10 @@ class AcceptWrapper extends React.Component {
 
   accept() {
     this.props.onAccepted(this.props.request)
-    // this.setState({
-    //   view: 'deliverPage'
-    // })
   }
 
   goBackRequest() {
-    this.setState({
-      view: 'requestPage'
-    })
+    this.props.onGoBack()
   }
 
   decline() {

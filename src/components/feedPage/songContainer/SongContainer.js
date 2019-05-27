@@ -1,6 +1,7 @@
 import React from 'react'
 import Fab from '@material-ui/core/Fab'
 import Icon from '@material-ui/core/Icon'
+import moment from 'moment'
 
 class SongContainer extends React.Component {
   constructor(props) {
@@ -15,6 +16,8 @@ class SongContainer extends React.Component {
 
   render() {
     let {request} = this.props
+    let date = new Date(request.time)
+    let eventTime = moment(date).format('h:mm a')
     return (
       <div className="SongContainer">
         <div className="SongContainer__profile-cont">
@@ -32,7 +35,7 @@ class SongContainer extends React.Component {
                 <Icon>check</Icon>
               </Fab>
             </div>
-            <div className="SongContainer--time">11 : 11 PM</div>
+            <div className="SongContainer--time">{eventTime}</div>
           </div>
         </div>
       </div>
