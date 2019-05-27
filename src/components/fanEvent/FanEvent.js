@@ -97,6 +97,9 @@ class FanEvent extends React.Component {
       event.time = moment(event.startDate).format('h:mm a')
     }
     let time = this.timeFormatter()
+    let pending = fanEvent.pending ? Object.keys(fanEvent.pending).length : 0
+    let attending = fanEvent.joiners ? Object.keys(fanEvent.joiners).length : 0
+    let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
     return(
       <div className="FanEvent">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.onProfile} isActive={false} onClick={() => {}}/>
@@ -105,7 +108,7 @@ class FanEvent extends React.Component {
           <div className="FanEvent--subtitle">{event.placeName}</div>
        </div>
        <div className="FanEvent--attendees">
-          21 fans attending, 9 requests pending
+          {attending} fans attending, {pending} requests pending
         </div>
         <div className="FanEvent__main-container">
         <div className="FanEvent__icon-container">
@@ -123,13 +126,13 @@ class FanEvent extends React.Component {
         <div className="FanEvent--icon" />
        </div>
         <div className="FanEvent--requests">
-          2 Song Request Complete
+          {completed} Song Request Complete
         </div>
         <div className="FanEvent--address">
           {event.address}
         </div>
         <div className="FanEvent--join">
-        <Button variant="contained" color="primary" classes={{root: 'FanEvent--join-button'}} onClick={this.join}>Join</Button>
+          <Button variant="contained" color="primary" classes={{root: 'FanEvent--join-button'}} onClick={this.join}>Join</Button>
         </div>
       </div>
     )

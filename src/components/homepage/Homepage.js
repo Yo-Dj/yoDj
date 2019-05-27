@@ -7,15 +7,6 @@ import FeedContainer from '../feedContainer'
 import EventWrapper from '../eventWrapper'
 import Header from '../header'
 
-// const requests = [
-//   {name: '@Ali', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 1},
-//   {name: '@Lindsay', message: 'tipped you $3.00', songRequest: false, img: '../../../images/lindsay-icon.png', id: 3},
-//   {name: '@Hamz', song: 'Mibb Deep - Shook Ones', tip: 3.00, songRequest: true, img: '../../../images/zaid-icon.png', id: 2},
-//   {name: '@Maha', message: 'joined your event', songRequest: false, img: '../../../images/maha-icon.png', id: 4},
-//   {name: '@Ali', message: 'joined your event', songRequest: false, img: '../../../images/ali-icon.png', id: 5},
-//   {name: '@Bois', song: 'Eminem - The Real Slim Shady', tip: 2.00, songRequest: true, img: '../../../images/ali-icon.png', id: 6}
-// ]
-
 class Homepage extends React.Component {
   constructor(props) {
     super(props)
@@ -31,6 +22,7 @@ class Homepage extends React.Component {
     this.requestOpen = this.requestOpen.bind(this)
     this.acceptSong = this.acceptSong.bind(this)
     this.forwardFeedPage = this.forwardFeedPage.bind(this)
+    this.openDeliverPage = this.openDeliverPage.bind(this)
   }
 
   componentDidMount() {
@@ -109,6 +101,10 @@ class Homepage extends React.Component {
     this.props.history.push('/new-event')
   }
 
+  openDeliverPage() {
+    this.props.onDeliver()
+  }
+
   render() {
     let {userInfo, event, requests, acceptedSongs} = this.props
     let {requestOpen, requestMessage, active} = this.state
@@ -136,7 +132,7 @@ class Homepage extends React.Component {
             <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>
           <div className="Homepage__tip-container">
-            <div className="Homepage--queue-title">Queue</div>
+            <div className="Homepage--queue-title" onClick={this.openDeliverPage}>Queue</div>
             <div className="Homepage--queue-subtitle">
               {acceptedSongs.length} songs are in a queue
             </div>
