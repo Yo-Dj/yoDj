@@ -30,6 +30,7 @@ class NewEventWrapper extends React.Component {
     this.tipChange = this.tipChange.bind(this)
     this.createEvent = this.createEvent.bind(this)
     this.close = this.close.bind(this)
+    this.selectChange = this.selectChange.bind(this)
   }
 
   handleName(e) {
@@ -97,6 +98,10 @@ class NewEventWrapper extends React.Component {
     }
   }
 
+  selectChange(e) {
+    console.log('Target Value ----> ', e.target.value)
+  }
+
   render() {
     let {userInfo} = this.props
     return (
@@ -124,7 +129,7 @@ class NewEventWrapper extends React.Component {
           onChange={this.handleLocation}
         />
         <div className="NewEventWrapper__form-control">
-          <FormControl className="NewEventWrapper__form">
+          {/* <FormControl className="NewEventWrapper__form">
             <InputLabel
               htmlFor="age-simple"
               FormLabelClasses={{
@@ -145,7 +150,14 @@ class NewEventWrapper extends React.Component {
               <MenuItem value="venue" classes={{root: 'NewEventWrapper__menu-item'}}>Venue</MenuItem>
               <MenuItem value="party" classes={{root: 'NewEventWrapper__menu-item'}}>Party</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
+          <div className="NewEventWrapper--custom-select">
+            <select onChange={this.selectChange}>
+              <option value="">Type</option>
+              <option value="venue">Venue</option>
+              <option value="party">Party</option>
+            </select>         
+          </div>
         </div>
         <div className="NewEventWrapper--tip-title">
             Minimimum tip required for request
