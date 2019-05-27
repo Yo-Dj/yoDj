@@ -111,7 +111,6 @@ class Homepage extends React.Component {
   }
 
   openDeliverPage() {
-    console.log('OPen Deliver page ---> ')
     this.props.onDeliver()
   }
 
