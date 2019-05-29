@@ -1,0 +1,133 @@
+.Dropdown {
+
+  &__wrapper {
+    -webkit-user-select: none;
+    position: relative;
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &--header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 36px;
+    cursor: default;
+    position: relative;
+    border-bottom: 2px solid white;
+    color: white;
+    box-sizing: border-box;
+    padding: 0 10px;
+
+    span {
+      margin-right: 20px;
+    }
+  }
+
+  &--header-title {
+    font-weight: 300;
+    margin: 2px 20px;
+    margin-right: 30px;
+  }
+
+  &--icon {
+    margin-left: auto;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transition: all .25s ease-in-out;
+    border: 1px solid black;
+    border-top: none;
+    pointer-events: auto;
+  }
+
+  &--list-item {
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    padding: 2px 5px;
+    outline: none;
+    text-align: center;
+    color: #FF8800;
+    font-weight: 500;
+    &:last-child {
+      margin-bottom: 2px;
+      border: none;
+    }
+  }
+
+  &__list-hide {
+    opacity: 0;
+    height: 0;
+    pointer-events: none;
+  }
+}
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) { 
+  .Dropdown {
+    &--header-title {
+      font-size: 14px;
+    }
+
+    &--list-item {
+      font-size: 14px;
+    }
+  }
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .Dropdown {
+      &--header-title {
+        font-size: 14px;
+      }
+
+      &--list-item {
+        font-size: 14px;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .Dropdown {
+      &--header-title {
+        font-size: 16px;
+      }
+
+      &--list-item {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .Dropdown {
+      &--header-title {
+        font-size: 16px;
+      }
+
+      &--list-item {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+  }

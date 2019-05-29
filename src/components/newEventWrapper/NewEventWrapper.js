@@ -11,6 +11,7 @@ import Select from '@material-ui/core/Select'
 import Header from '../header'
 import Button from '@material-ui/core/Button'
 import NumberFormat from 'react-number-format'
+import Dropdown from '../dropdown'
 
 
 class NewEventWrapper extends React.Component {
@@ -50,7 +51,6 @@ class NewEventWrapper extends React.Component {
   }
 
   profileImgClicked() {
-    console.log('Profile is picked -->')
     this.props.onLogout()
   }
 
@@ -98,8 +98,10 @@ class NewEventWrapper extends React.Component {
     }
   }
 
-  selectChange(e) {
-    console.log('Target Value ----> ', e.target.value)
+  selectChange(type) {
+    this.setState({
+      type
+    })
   }
 
   render() {
@@ -129,7 +131,7 @@ class NewEventWrapper extends React.Component {
           onChange={this.handleLocation}
         />
         <div className="NewEventWrapper__form-control">
-          <FormControl className="NewEventWrapper__form">
+          {/* <FormControl className="NewEventWrapper__form">
             <InputLabel
               htmlFor="age-simple"
               FormLabelClasses={{
@@ -150,7 +152,8 @@ class NewEventWrapper extends React.Component {
               <MenuItem value="venue" classes={{root: 'NewEventWrapper__menu-item'}}>Venue</MenuItem>
               <MenuItem value="party" classes={{root: 'NewEventWrapper__menu-item'}}>Party</MenuItem>
             </Select>
-          </FormControl> 
+          </FormControl>  */}
+          <Dropdown onChange={this.selectChange}/>
         </div>
         <div className="NewEventWrapper--tip-title">
             Minimimum tip required for request
