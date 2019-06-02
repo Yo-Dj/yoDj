@@ -115,20 +115,7 @@ class LoginWrapper extends React.Component {
   }
 
   fanSignUp() {
-    console.log('User STate ---> ', this.state)
-    // firebase.database()
-    //   .ref(`users/${userInfo.uid}`)
-    //   .once('value')
-    //   .then(snapshot => {
-    //     if (snapshot.exists()) {
-    //       this.props.history.push('/fan-home')
-    //       return
-    //     }
-    //     this.setState({
-    //       userInfo: {token: userInfo.m, phone: userInfo.phoneNumber, uid: userInfo.uid},
-    //       view: 'registration'
-    //     })
-    //   })
+
     let {userType, username, userInfo: {phone}} = this.state
     let userId = !this.state.userInfo.uid ? fire.auth().currentUser.uid : this.state.userInfo.uid
     firebase.database().ref(`users/${userId}`).set({
