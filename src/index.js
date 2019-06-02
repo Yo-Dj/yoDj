@@ -9,6 +9,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 
 
 library.add(fas)
+window.screen.lockOrientation('portrait-primary')
 ReactDOM.render((
   <BrowserRouter>
     <MainPage />

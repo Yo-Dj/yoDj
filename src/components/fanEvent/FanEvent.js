@@ -54,7 +54,7 @@ class FanEvent extends React.Component {
   }
 
   onProfile() {
-
+    this.props.onLogout()
   }
 
   componentWillUnmount() {
