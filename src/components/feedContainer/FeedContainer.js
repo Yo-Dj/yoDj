@@ -33,7 +33,7 @@ class FeedContainer extends React.Component {
   }
 
   render() {
-    let {active, requests, requestMessage, openRequestModal, onAccept} = this.props
+    let {active, requests, requestMessage, openRequestModal, onAccept, onReject} = this.props
     let {selectedRequest} = this.state
     requests = active ? requests : []
     let requestNum = requests.reduce((acc,el) => acc +  (el.songRequest), 0)
@@ -47,6 +47,7 @@ class FeedContainer extends React.Component {
           onClose={this.handleClose}
           onAccept={onAccept}
           request={selectedRequest}
+          onReject={onReject}
         />
         <div className="FeedContainer__header">
           <div className="FeedContainer--title" onClick={this.forwardToFeed}>Feed <span className={active ? 'FeedContainer--active' : ''}>></span></div>

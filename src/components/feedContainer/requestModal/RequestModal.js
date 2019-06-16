@@ -24,9 +24,18 @@ class RequestModal extends React.Component {
       }
 
       buttonClicked(answer) {
-        let {onAccept, request} = this.props
-        if (answer === 'Yes') {
+        let {onAccept, request, onReject, message} = this.props
+        if (answer === 'Yes' && message === 'Are you sure you want to accept this req?') {
           onAccept(request)
+          return
+        }
+        else if (answer === 'Yes' && message === 'Are you sure you want to reject this req?') {
+          onReject(request)
+          this.props.onClose()
+          return
+        }
+        else if (answer === 'No') {
+          this.props.onClose()
         }
       }
 
