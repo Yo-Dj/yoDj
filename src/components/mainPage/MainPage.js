@@ -53,6 +53,7 @@ class MainPage extends React.Component {
     this.acceptingSong = this.acceptingSong.bind(this)
     this.updateAcceptedSongs = this.updateAcceptedSongs.bind(this)
     this.openDeliveryPage = this.openDeliveryPage.bind(this)
+    this.rejectRequest = this.rejectRequest.bind(this)
   }
 
   componentDidMount() {
@@ -278,7 +279,7 @@ class MainPage extends React.Component {
       this.setState({
         requests
       })
-    } 
+    }
     else if (requestedArr.length === 0) {
       requests = requests.filter(request => {
         if (!request.songRequest) {
@@ -294,7 +295,6 @@ class MainPage extends React.Component {
       })
     }
    else if (requestedArr.length < songRequests) {
-
      requests = requests.filter(request => {
        if (!request.songRequest) {
          return request
@@ -303,7 +303,7 @@ class MainPage extends React.Component {
          return request
        }
      })
-   } 
+   }
    else if (requestIds.indexOf(lastAdded) === -1) {
      requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: lastAdded.user})
     }
@@ -531,6 +531,12 @@ class MainPage extends React.Component {
     })
   }
 
+  rejectRequest(request) {
+    let {event, acceptedSongs, requests, newRequest, userId} = this.state
+      firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
+      firebase.database().ref(`users/${request.fanId}/venue/requests/${request.id}`).remove()
+  }
+
   submitSongRequest(info) {
     let {fanEvent, userId, userInfo} = this.state
     let now = new Date().getTime()
@@ -566,6 +572,7 @@ class MainPage extends React.Component {
                     isActive={isActive}
                     acceptedSongs={acceptedSongs}
                     onDeliver={this.openDeliveryPage}
+                    onReject={this.rejectRequest}
                   />
                 )} />
               <Route path="/fan-home" render={props =>
