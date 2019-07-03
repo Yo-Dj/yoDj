@@ -14,6 +14,7 @@ import FanHomepage from '../fanHomepage'
 import SelectDj from '../selectDJ'
 import FanEvent from '../fanEvent'
 import TippingPage from '../tippingPage'
+import ProfilePage from '../profilePage'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -54,6 +55,7 @@ class MainPage extends React.Component {
     this.updateAcceptedSongs = this.updateAcceptedSongs.bind(this)
     this.openDeliveryPage = this.openDeliveryPage.bind(this)
     this.rejectRequest = this.rejectRequest.bind(this)
+    this.logout = this.logout.bind(this)
   }
 
   componentDidMount() {
@@ -62,6 +64,16 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
+    // if (location.pathname === '/profile' && Object.keys(this.state.userInfo).length === 0) {
+    //     this.props.history.push('/home')
+    //     return
+    //   }
+    //   if (location.pathname === '/home' && prevProps.location.pathname === '/profile' && Object.keys(this.state.userInfo).length > 0 && Object.keys(prevState.userInfo).length > 0) {
+    //     console.log('Profile ----> ', this.state)
+    //     this.props.history.push('/profile')
+    //     return
+    //   }
+      
       if (location.pathname === '/event' &&  Object.keys(this.state.event).length === 0)
       {
         this.props.history.push('/home')
@@ -154,17 +166,31 @@ class MainPage extends React.Component {
     })
   }
 
+  logout() {
+    fire.auth().signOut()
+      .then(() => {
+        this.setState({
+          isLogged: false,
+          userId: '',
+          userInfo: {}, 
+        })
+        console.log('Signed Out sucks ---> ')
+        this.props.history.push('/login')
+    })
+  }
+
   logoutUser() {
     console.log('Logout')
-    fire.auth().signOut()
-    .then(() => {
-      this.setState({
-        isLogged: false,
-        userId: '',
-        userInfo: {}
-      })
-      this.props.history.push('/login')
-    })
+    // fire.auth().signOut()
+    // .then(() => {
+    //   this.setState({
+    //     isLogged: false,
+    //     userId: '',
+    //     userInfo: {}
+    //   })
+    //   this.props.history.push('/login')
+    // })
+    this.props.history.push('/profile')
   }
 
   getDjs() {
@@ -393,6 +419,7 @@ class MainPage extends React.Component {
       .ref(`users/${uid}`)
       .on('value',snapshot => {
         let data = snapshot.val()
+        console.log('USER DATA -----> ', data)
         if (data) {
           if (data.userType && data.userType === 'Fan') {
             let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
@@ -409,9 +436,11 @@ class MainPage extends React.Component {
             })
             return
           }
-          let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          // let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          let userInfo = {...data}
           let isActive = false
           let {event} = data
+          console.log('USERINFO ----> ', userInfo)
           this.setState({
             userInfo
           }, () => {
@@ -633,6 +662,13 @@ class MainPage extends React.Component {
                   />)}
                 />
               )} />
+
+                <Route path='/profile' render={props => (
+                  <ProfilePage 
+                    userInfo={userInfo}
+                    onLogout={this.logout}
+                  />
+                )} />
               <Redirect to="/home" />
           </Switch>
         </div>
