@@ -109,8 +109,29 @@
   }
 
   &--logout {
-    margin: 10px 0;
+    // margin: 10px 0;
+    // text-align: center;
+    // align-self: flex-end;
+    // justify-self: flex-end;
+    border-top: 1px solid #555;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 10px 0;
+    box-sizing: border-box;
+    font-size: 20px;
+  }
+
+  &--logout-button {
+    flex: 1;
     text-align: center;
+  }
+
+  &--settings-button {
+    flex: 1;
+    text-align: center;
+    border-left: 1px solid #555;
   }
 
   &--username {
@@ -155,6 +176,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 5px;
   }
 
   &--money {
@@ -176,6 +198,10 @@
     display: flex !important;
     justify-content: center !important;
     flex-direction: column !important;
+  }
+
+  &--tip-wrapper {
+    margin-left: 2em;
   }
 }
 

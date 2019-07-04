@@ -11,6 +11,7 @@ class ProfilePage extends React.Component {
     this.editClicked = this.editClicked.bind(this)
     this.logout = this.logout.bind(this)
     this.handleBank = this.handleBank.bind(this)
+    this.handleSettings = this.handleSettings.bind(this)
   }
 
   iconClick() {
@@ -22,7 +23,6 @@ class ProfilePage extends React.Component {
   }
 
   logout() {
-    console.log('Logout ---> ')
     this.props.onLogout()
   }
 
@@ -30,10 +30,14 @@ class ProfilePage extends React.Component {
     console.log('Handle Bank')
   }
 
+  handleSettings() {
+    console.log('Setting is clicked')
+  }
+
   render() {
     let {userInfo} = this.props
     let socialMedia = userInfo.verificationType && userInfo.verificationType === 'facebook' ? '../../images/facebook.png' : userInfo.verificationType === 'twitter' ? '../../images/twitter.png' : ''
-    console.log('User Info ---> ', userInfo)
+
     return (
       <div className="ProfilePage"> 
          <Header imageUrl={userInfo.imageUrl} iconClick={this.iconClick} isActive={true} />
@@ -70,10 +74,18 @@ class ProfilePage extends React.Component {
         </div>
         <div className="ProfilePage--bank-buttons">
           <Button variant="contained" color="primary" classes={{root: 'ProfilePage--money', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="dollar-sign" /><div className="ProfilePage--money-text">Bank</div></Button>
-          <Button variant="contained" color="primary" classes={{root: 'ProfilePage--tip', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="clock" /><div className="ProfilePage--money-text">Bank</div></Button>
+          <div className="ProfilePage--tip-wrapper">
+            <Button variant="contained" color="primary" classes={{root: 'ProfilePage--tip', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="clock" /><div className="ProfilePage--money-text">Bank</div></Button>
+          </div>
         </div>
         <div className="ProfilePage--logout">
-          <Button variant="contained" color="primary" classes={{root: 'ProfilePage--edit'}} onClick={this.logout}>Logout</Button>
+          <div className="ProfilePage--logout-button" onClick={this.logout}>
+            <FontAwesomeIcon icon="power-off" />
+          </div>
+          <div className="ProfilePage--settings-button" onClick={this.handleSettings}>
+            <FontAwesomeIcon icon="cog" />
+          </div>
+          {/* <Button variant="contained" color="primary" classes={{root: 'ProfilePage--edit'}} onClick={this.logout}>Logout</Button> */}
         </div>
       </div>
     )
