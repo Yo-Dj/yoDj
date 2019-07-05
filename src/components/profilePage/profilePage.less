@@ -203,6 +203,63 @@
   &--tip-wrapper {
     margin-left: 2em;
   }
+
+  &--events-num {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    margin-left: 20px;
+  }
+
+  &__events-container {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  &__event-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &--event-icon {
+    text-align: center;
+    background: transparent no-repeat center center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: #555;
+    border: 3px solid #F1C232;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--event-place {
+    font-size: 18px;
+    color: #F1C232;
+    margin-left: 8px;
+    font-weight: 600;
+  }
+
+  &--event-time {
+    margin-left: auto;
+  }
 }
 
 
@@ -214,6 +271,19 @@
       &--subtitle {
         margin-left: 4em;
       }
+
+      &--event-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 6px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 
@@ -224,6 +294,19 @@
     .ProfilePage {
       &--subtitle {
         margin-left: 4em;
+      }
+
+      &--event-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 6px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
@@ -237,6 +320,19 @@
       &--subtitle {
         margin-left: 6em;
       }
+
+      &--event-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 12px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
 }
 
@@ -247,6 +343,19 @@
     .ProfilePage {
       &--subtitle {
         margin-left: 5em;
+      }
+
+      &--event-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 12px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }

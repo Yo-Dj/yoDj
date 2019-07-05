@@ -4,6 +4,12 @@ import Button from '@material-ui/core/Button'
 import StarRatings from 'react-star-ratings'
 import Header from '../header'
 
+const events = [
+  {placeName: 'Start Bar', time: '3/4 10pm', title: 'T'},
+  {placeName: 'Sound Bar', time: '5/6 11pm', title: 'O'},
+  {placeName: 'Prysm', time: '11/23 12am', title: 'P'},
+  {placeName: 'Stereo', time: '2/10 10pm', title: 'E'},
+]
 class ProfilePage extends React.Component {
   constructor(props) {
     super(props)
@@ -37,7 +43,7 @@ class ProfilePage extends React.Component {
   render() {
     let {userInfo} = this.props
     let socialMedia = userInfo.verificationType && userInfo.verificationType === 'facebook' ? '../../images/facebook.png' : userInfo.verificationType === 'twitter' ? '../../images/twitter.png' : ''
-
+    let eventsText = events.length === 1 ? 'event' : 'events'
     return (
       <div className="ProfilePage"> 
          <Header imageUrl={userInfo.imageUrl} iconClick={this.iconClick} isActive={true} />
@@ -78,6 +84,18 @@ class ProfilePage extends React.Component {
             <Button variant="contained" color="primary" classes={{root: 'ProfilePage--tip', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="clock" /><div className="ProfilePage--money-text">Bank</div></Button>
           </div>
         </div>
+        <div className="ProfilePage--events-num">{`${events.length} ${eventsText}`}</div>
+        <div className="ProfilePage__events-container">
+          {
+            events.map((event, index) => (
+              <div className="ProfilePage__event-wrapper" key={index}>
+                <div className="ProfilePage--event-icon">{event.FontAwesomeIcontitle}</div>
+                <div className="ProfilePage--event-place">{event.placeName}</div>
+                <div className="ProfilePage--event-time">{event.time}</div>
+              </div>
+            ))
+          }
+        </div>
         <div className="ProfilePage--logout">
           <div className="ProfilePage--logout-button" onClick={this.logout}>
             <FontAwesomeIcon icon="power-off" />
@@ -85,7 +103,6 @@ class ProfilePage extends React.Component {
           <div className="ProfilePage--settings-button" onClick={this.handleSettings}>
             <FontAwesomeIcon icon="cog" />
           </div>
-          {/* <Button variant="contained" color="primary" classes={{root: 'ProfilePage--edit'}} onClick={this.logout}>Logout</Button> */}
         </div>
       </div>
     )
