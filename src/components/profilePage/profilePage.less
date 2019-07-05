@@ -1,0 +1,361 @@
+.ProfilePage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #2E3336;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: white;
+  justify-content: flex-start;
+  pointer-events: auto;
+  background-image: url("../../images/fractal-background.png");
+
+  &__subheader {
+    display: flex;
+    justify-content: flex-start;
+    height: 30px;
+    padding: 5px 3px;
+    align-items: center;
+    color: #08FF00;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+
+  &--subtitle {
+    margin-left: 4.5em;
+    font-size: 24px;
+    color: #08FF00;
+    text-transform: capitalize;
+  }
+
+  &--back-icon {
+    font-size: 20px;
+  }
+
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+
+  }
+
+  &--genre-container {
+    width: 100px;
+    background: #F1C232;
+    box-sizing: border-box;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 0;
+
+    h3 {
+      margin: 0;
+      margin-bottom: 3px;
+      padding: 0;
+    }
+  }
+
+  &--icon-container {
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
+
+  &--icon {
+    text-align: center;
+    background: transparent no-repeat center center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: #555;
+    margin-bottom: 5px;
+    // border: 2px solid #08FF00;
+  }
+
+  &--settings {
+    width: 33%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &--edit {
+    color: white !important;
+  }
+
+  &--edit-text {
+    margin-left: 5px;
+  }
+
+  &--fans {
+    min-width: 66px;
+    max-width: 100px;
+    margin: 10px 0;
+    border-radius: 6px;
+    padding: 5px;
+    box-sizing: border-box;
+    background: #F1C232;
+    text-align: center;
+  }
+
+  &--logout {
+    // margin: 10px 0;
+    // text-align: center;
+    // align-self: flex-end;
+    // justify-self: flex-end;
+    border-top: 1px solid #555;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 10px 0;
+    box-sizing: border-box;
+    font-size: 20px;
+  }
+
+  &--logout-button {
+    flex: 1;
+    text-align: center;
+  }
+
+  &--settings-button {
+    flex: 1;
+    text-align: center;
+    border-left: 1px solid #555;
+  }
+
+  &--username {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  &--facebook {
+    background: transparent no-repeat center center;
+    background-image: url("../../images/facebook.png");
+    background-size: 36px 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  &--twitter {
+    background: transparent no-repeat center center;
+    background-image: url("../../images/twitter.png");
+    background-size: 36px 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  &--rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+    flex-direction: column;
+  }
+
+  &--rating-num {
+    font-weight: 500;
+    font-size: 16px;
+    color: white;
+  }
+
+  &--bank-buttons {
+    padding: 5px 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  &--money {
+    background: #F1C232 !important;
+    color: white !important;
+  }
+
+  &--tip {
+    background: #F1C232 !important;
+    color: white !important;
+    margin-left: 1em;
+  }
+
+  &--money-text {
+    display: block;
+  }
+
+  &--money-label {
+    display: flex !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+  }
+
+  &--tip-wrapper {
+    margin-left: 2em;
+  }
+
+  &--events-num {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    margin-left: 20px;
+  }
+
+  &__events-container {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  &__event-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &--event-icon {
+    text-align: center;
+    background: transparent no-repeat center center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+    background-color: #555;
+    border: 3px solid #F1C232;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--event-place {
+    font-size: 18px;
+    color: #F1C232;
+    margin-left: 8px;
+    font-weight: 600;
+  }
+
+  &--event-time {
+    margin-left: auto;
+  }
+}
+
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .ProfilePage {
+      &--subtitle {
+        margin-left: 4em;
+      }
+
+      &--event-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 6px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .ProfilePage {
+      &--subtitle {
+        margin-left: 4em;
+      }
+
+      &--event-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 6px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+@media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .ProfilePage {
+      &--subtitle {
+        margin-left: 6em;
+      }
+
+      &--event-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 12px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .ProfilePage {
+      &--subtitle {
+        margin-left: 5em;
+      }
+
+      &--event-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      &__event-wrapper {
+        margin-bottom: 12px;
+    
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
