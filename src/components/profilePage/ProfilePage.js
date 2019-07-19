@@ -1,5 +1,6 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {withRouter} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import StarRatings from 'react-star-ratings'
 import Header from '../header'
@@ -23,6 +24,13 @@ class ProfilePage extends React.Component {
 
   goBack() {
     console.log('Go Back ----> ', this.props)
+    let {userInfo} = this.props
+    if (userInfo.verificationType && userInfo.userType !== 'Fan') {
+      this.props.history.push('/home')
+    } else {
+      this.props.history.push('/fan-home')
+    }
+
   }
 
   iconClick() {
@@ -114,4 +122,4 @@ class ProfilePage extends React.Component {
   }
 }
 
-export default ProfilePage
+export default withRouter(ProfilePage)
