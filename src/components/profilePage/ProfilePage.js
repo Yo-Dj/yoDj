@@ -1,5 +1,6 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {withRouter} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import StarRatings from 'react-star-ratings'
 import Header from '../header'
@@ -18,6 +19,18 @@ class ProfilePage extends React.Component {
     this.logout = this.logout.bind(this)
     this.handleBank = this.handleBank.bind(this)
     this.handleSettings = this.handleSettings.bind(this)
+    this.goBack = this.goBack.bind(this)
+  }
+
+  goBack() {
+    console.log('Go Back ----> ', this.props)
+    let {userInfo} = this.props
+    if (userInfo.verificationType && userInfo.userType !== 'Fan') {
+      this.props.history.push('/home')
+    } else {
+      this.props.history.push('/fan-home')
+    }
+
   }
 
   iconClick() {
@@ -45,10 +58,10 @@ class ProfilePage extends React.Component {
     let socialMedia = userInfo.verificationType && userInfo.verificationType === 'facebook' ? '../../images/facebook.png' : userInfo.verificationType === 'twitter' ? '../../images/twitter.png' : ''
     let eventsText = events.length === 1 ? 'event' : 'events'
     return (
-      <div className="ProfilePage"> 
+      <div className="ProfilePage">
          <Header imageUrl={userInfo.imageUrl} iconClick={this.iconClick} isActive={true} />
          <div className="ProfilePage__subheader">
-          <div className="ProfilePage--back-icon"><FontAwesomeIcon icon="arrow-left" /></div>
+          <div className="ProfilePage--back-icon" onClick={this.goBack}><FontAwesomeIcon icon="arrow-left" /></div>
           <div className="ProfilePage--subtitle">Profile</div>
         </div>
         <div className="ProfilePage__container">
@@ -109,4 +122,4 @@ class ProfilePage extends React.Component {
   }
 }
 
-export default ProfilePage
+export default withRouter(ProfilePage)
