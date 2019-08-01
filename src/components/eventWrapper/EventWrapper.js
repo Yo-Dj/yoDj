@@ -102,8 +102,8 @@ class EventWrapper extends React.Component {
     if (address) {
       let splitAddress = address.split(', ')
       street = splitAddress[0]
-      city = splitAddress[1]
-      state = splitAddress[2].split(' ')[0]
+      city =  splitAddress.length > 1 ? splitAddress[1] : 'Chicago'
+      state = splitAddress.length > 2 ? splitAddress[2].split(' ')[0] : 'IL'
     }
     return (
       <div className="EventWrapper">
