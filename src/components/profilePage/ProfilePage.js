@@ -47,6 +47,8 @@ class ProfilePage extends React.Component {
 
   handleBank() {
     console.log('Handle Bank')
+    this.props.history.push('/bank')
+
   }
 
   handleSettings() {

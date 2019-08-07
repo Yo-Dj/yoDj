@@ -16,6 +16,7 @@ import SelectDj from '../selectDJ'
 import FanEvent from '../fanEvent'
 import TippingPage from '../tippingPage'
 import ProfilePage from '../profilePage'
+import BankComponent from '../bankComponent'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -669,6 +670,13 @@ class MainPage extends React.Component {
 
                 <Route path='/profile' render={props => (
                   <ProfilePage 
+                    userInfo={userInfo}
+                    onLogout={this.logout}
+                  />
+                )} />
+
+                <Route path='/bank' render={props => (
+                  <BankComponent 
                     userInfo={userInfo}
                     onLogout={this.logout}
                   />
