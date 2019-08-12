@@ -16,7 +16,7 @@ class CardFormComponent extends React.Component {
     let {userInfo: {username}, onSubmit} = this.props
     console.log('USERNAMe ---> ', username)
     let {token} = await this.props.stripe.createToken({name: username})
-    console.log('Token ----> ', token)
+    // console.log('Token ----> ', token)
     onSubmit(token)
   }
 

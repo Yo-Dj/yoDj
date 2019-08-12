@@ -12,14 +12,36 @@ const app = express()
 
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
-                      'https://accounts.spotify.com']
+'https://accounts.spotify.com']
 
 const stripe = require('stripe')('sk_test_zIGU3JWicxTyRA0NydEELiqF00ztaNTI63');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 // (async () => {
-//   // Create a Customer:
+  //   // Create a Customer:
+const corsOptions = {
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
+
+app.use(express.static('public'))
+.use(cors(corsOptions))
+.use(cookieParser())
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Expose-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type', 'Origin, X-Requested-With, Content-Type, Accept')
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  next()
+})
 //   const customer = await stripe.customers.create({
 //     source: 'tok_mastercard',
 //     email: 'paying.user@example.com',
@@ -45,20 +67,42 @@ app.use(bodyParser.urlencoded({extended: true}))
 //   });
 // })()
 
-app.post('/save', (req, res) => {
+app.post('/save', async (req, res) => {
   console.log('Req Body ----> ', req.body)
   // (async () => {
   // Create a Customer:
-  const customers = stripe.customers.create({
-    source: req.body.token.id,
-    name: req.body.userInfo.name,
-    description: `User ${req.body.userInfo.username} default payment`
-  }, (err, customer) => {
-    console.log('CUSTOMER INFO ----> ', customer)
-    res.send('Hello World')
-  } )
-  // console.log('CUSTOMER -----> ', customer)
-// })()
+  let customer = {}
+  try {
+    customer = await stripe.customers.create({
+      source: req.body.token.id,
+      name: req.body.userInfo.name,
+      description: `User ${req.body.userInfo.username} default payment`
+    })
+    console.log('CUSTOMER -----> ', customer)
+    res.json(customer)
+  }
+  catch(e) {
+    console.log('ERR ----> ', e)
+    next(e)
+  }
+  // })()
+  console.log('SAVE CUSTOMER -----> ', customer)
+  console.log('It gets here')
+  // res.json(customer)
+})
+
+app.get('/card', async (req, res) => {
+  try {
+    // console.log('REQ ---> ', req)
+    // console.log('REQ BODY ----> ', req.body)
+    console.log('REQ PArams  ---> ', req.query.cardId)
+    const customer = await stripe.customers.retrieve(req.query.cardId)
+    console.log('CUSTOMER RETRIEVE ------> ', customer)
+    res.json(customer)
+  } catch(e) {
+    console.log("Error -----> ", e)
+    next(e)
+  }
 })
 
 // app.use(cors({
@@ -74,27 +118,6 @@ app.post('/save', (req, res) => {
 //     return callback(null, true)
 //   }
 // }))
-const corsOptions = {
-  origin: function(origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
-
-app.use(express.static('public'))
-.use(cors())
-.use(cookieParser())
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Expose-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept, Authorization')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type', 'Origin, X-Requested-With, Content-Type, Accept')
-  res.setHeader('Access-Control-Allow-Credentials', true)
-  next()
-})
 
 // var whitelist = ['https://accounts.spotify.com', 'http://localhost:3000']
 // var corsOptions = {

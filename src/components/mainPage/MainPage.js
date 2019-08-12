@@ -58,6 +58,7 @@ class MainPage extends React.Component {
     this.openDeliveryPage = this.openDeliveryPage.bind(this)
     this.rejectRequest = this.rejectRequest.bind(this)
     this.logout = this.logout.bind(this)
+    this.addCard = this.addCard.bind(this)
   }
 
   componentDidMount() {
@@ -75,7 +76,10 @@ class MainPage extends React.Component {
     //     this.props.history.push('/profile')
     //     return
     //   }
-      
+      if (location.pathname === '/bank' && Object.keys(this.state.userInfo).length === 0) {
+        this.props.history.push('/profile')
+        return
+      }
       if (location.pathname === '/event' &&  Object.keys(this.state.event).length === 0)
       {
         this.props.history.push('/home')
@@ -569,21 +573,23 @@ class MainPage extends React.Component {
   }
 
   submitSongRequest(info) {
-    // let {fanEvent, userId, userInfo} = this.state
-    // let now = new Date().getTime()
-    // let request = {...info, user: userId, time: now}
-    // let myRef = firebase.database().ref(`venues/${fanEvent.fanId}/requests`)
-    // let key = myRef.push().key
-    // request.requestId = key
-    // myRef.child(`/${key}`).set(request)
-    // firebase.database().ref(`users/${userId}/venue/requests/${key}`).set(true, error => {
-    //   if (!error) {
-    //     console.log('Its added to firebase')
-    //   }
-    // })
     axios.get('http://localhost:8080/login')
       .then(res => console.log('RES ---> ', res))
       .catch(err => console.log('Err ---> ', err))
+  }
+
+  addCard(cardToken) {
+    let {userId, userInfo} = this.state
+    console.log("ADD CARD USER INFO ----> ", userInfo)
+    console.log('USER ID -----> ', userId)
+    console.log('CARD TOKEN- ---> ', cardToken)
+    firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
+      if (!error) {
+        console.log('Card is Added -----> ')
+        return 
+      }
+      console.log('ERROR ----> ', error)
+    })
   }
 
   render() {
@@ -678,6 +684,7 @@ class MainPage extends React.Component {
                 <Route path='/bank' render={props => (
                   <BankComponent 
                     userInfo={userInfo}
+                    onCardAdd={this.addCard}
                     onLogout={this.logout}
                   />
                 )} />
