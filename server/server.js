@@ -68,9 +68,6 @@ app.use(function(req, res, next) {
 // })()
 
 app.post('/save', async (req, res) => {
-  console.log('Req Body ----> ', req.body)
-  // (async () => {
-  // Create a Customer:
   let customer = {}
   try {
     customer = await stripe.customers.create({
@@ -85,23 +82,26 @@ app.post('/save', async (req, res) => {
     console.log('ERR ----> ', e)
     next(e)
   }
-  // })()
-  console.log('SAVE CUSTOMER -----> ', customer)
-  console.log('It gets here')
-  // res.json(customer)
 })
 
 app.get('/card', async (req, res) => {
   try {
-    // console.log('REQ ---> ', req)
-    // console.log('REQ BODY ----> ', req.body)
-    console.log('REQ PArams  ---> ', req.query.cardId)
     const customer = await stripe.customers.retrieve(req.query.cardId)
-    console.log('CUSTOMER RETRIEVE ------> ', customer)
     res.json(customer)
   } catch(e) {
     console.log("Error -----> ", e)
     next(e)
+  }
+})
+
+app.post('/upgrade-card', async (req, res) => {
+  try {
+    const customer = await stripe.customers.update(req.body.userId, {
+      source: req.body.token.id
+    })
+    res.json(customer)
+  } catch(e) {
+    console.log('Upgrade Card Err --> ', e)
   }
 })
 

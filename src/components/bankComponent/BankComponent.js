@@ -1,9 +1,11 @@
 import React from 'react'
 import {StripeProvider, Elements, injectStripe} from 'react-stripe-elements'
+import {withRouter} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import Header from '../header'
 import CardFormComponent from './CardForm'
 import PaymentIcon from 'react-payment-icons'
+import Icon from '@material-ui/core/Icon'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 
@@ -34,13 +36,13 @@ class BankComponent extends React.Component {
     }
     this.submitCard = this.submitCard.bind(this)
     this.getCard = this.getCard.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
 
   componentDidMount() {
-    console.log('USER PROPS ----> ', this.props)
     let {userInfo} = this.props
     if (userInfo.card && userInfo.card !== '') {
-      axios.get('http://localhost:8080/card', {params: {cardId: userInfo.card}})
+      axios.get('/card', {params: {cardId: userInfo.card}})
       .then(res => {
         console.log('RES ------> ', res)
         this.setState({
@@ -51,22 +53,35 @@ class BankComponent extends React.Component {
     }
   }
 
+  goBack() {
+    this.props.history.push('/profile')
+  }
+
   submitCard(token = {}) {
     let {userInfo, onCardAdd} = this.props
-    axios.post('http://localhost:8080/save', {userInfo, token})
-      .then(res => {
-        console.log('Responst ---> ', res)
-        if (res.data) {
-          console.log('Card Tokens ---> ', res.data)
-          onCardAdd(res.data.id)
-        }
-      })
-      .catch(e => console.log('Bank Component error ---> ', e))
+    if (!userInfo.card && userCard.card !== '') {
+      axios.post('/save', {userInfo, token})
+        .then(res => {
+          if (res.data) {
+            onCardAdd(res.data.id)
+          }
+        })
+        .catch(e => console.log('Bank Component error ---> ', e))
+    } else {
+      axios.post('/upgrade-card', {userId: userInfo.card, token})
+        .then(res => {
+          console.log('UPGRADED CARD ----> ', res)
+          if (res.data) {
+            console.log('CARD ----> ', res.data)
+          }
+        })
+        .catch(e => console.log('CARD ERR ---> ', e))
+    }
+
   }
 
   getCard() {
-    console.log("STATE ----> ", this.state)
-    axios.get('http://localhost:8080/card', {params: {cardId: this.state.userCard.id}})
+    axios.get('/card', {params: {cardId: this.state.userCard.id}})
       .then(res => {
         console.log('RES ------> ', res)
       })
@@ -77,7 +92,7 @@ class BankComponent extends React.Component {
     let {userInfo} = this.props
     let {userCard} = this.state
     let card = {}
-    const CardForm = injectStripe(CardFormComponent)
+    // const CardForm = injectStripe(CardFormComponent)
     let active = false
     let boxShadowColor = active ? '#08FF00' : 'yellow'
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
@@ -88,14 +103,17 @@ class BankComponent extends React.Component {
       card.exp_year = userCard.sources.data[0].exp_year
       card.exp_month = userCard.sources.data[0].exp_month
       card.name = userCard.sources.data[0].name
-      console.log('Card ---> ', card)
     }
     return (
       <div className="BankComponent">
         <Header imageUrl={userInfo.imageUrl} iconClick={() => {}} isActive={false} onClick={() => {}}/>
+        <div className="BankComponent__subheader">
+          <Icon onClick ={this.goBack}>close</Icon>
+          <div className="BankComponent--subtitle">Bank Info</div>
+       </div>
         <StripeProvider apiKey="pk_test_ZEn0Cz3VCvWRZSMR6AZpB32C0045ge11LF">
           <Elements>
-            <CardForm userInfo={userInfo} onSubmit={this.submitCard}/>
+          <CardFormComponent userInfo={userInfo} onSubmit={this.submitCard} update={userCard.card !== undefined}/>
           </Elements>
         </StripeProvider>
         <div className="BankComponent__existing-container">
@@ -124,4 +142,4 @@ class BankComponent extends React.Component {
   }
 }
 
-export default BankComponent
+export default withRouter(BankComponent)

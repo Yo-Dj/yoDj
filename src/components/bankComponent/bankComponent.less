@@ -11,6 +11,22 @@
   color: white;
   background-image: url("../../images/fractal-background.png");
 
+  &__subheader {
+    display: flex;
+    justify-content: flex-start;
+    height: 30px;
+    padding: 5px 3px;
+    align-items: center;
+    color: yellow;
+  }
+
+  &--subtitle {
+    margin-left: 4.5em;
+    font-size: 24px;
+    color: yellow;
+    text-transform: capitalize;
+  }
+
   &__card-container {
     display: block;
     padding: 15px;
@@ -111,3 +127,48 @@
     padding: 0;
   }
 }
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .BankComponent {
+      &--subtitle {
+        margin-left: 3.5em;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .BankComponent {
+      &--subtitle {
+        margin-left: 3.5em;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .BankComponent {
+      &--subtitle {
+        margin-left: 6em;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .BankComponent {
+      &--subtitle {
+        margin-left: 5em;
+      }
+    }
+  }

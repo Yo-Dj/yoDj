@@ -446,7 +446,6 @@ class MainPage extends React.Component {
           let userInfo = {...data}
           let isActive = false
           let {event} = data
-          console.log('USERINFO ----> ', userInfo)
           this.setState({
             userInfo
           }, () => {
@@ -580,9 +579,6 @@ class MainPage extends React.Component {
 
   addCard(cardToken) {
     let {userId, userInfo} = this.state
-    console.log("ADD CARD USER INFO ----> ", userInfo)
-    console.log('USER ID -----> ', userId)
-    console.log('CARD TOKEN- ---> ', cardToken)
     firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
       if (!error) {
         console.log('Card is Added -----> ')
