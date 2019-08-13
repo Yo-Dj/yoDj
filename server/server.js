@@ -12,7 +12,7 @@ const app = express()
 
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
-'https://accounts.spotify.com']
+'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com']
 
 const stripe = require('stripe')('sk_test_zIGU3JWicxTyRA0NydEELiqF00ztaNTI63');
 
