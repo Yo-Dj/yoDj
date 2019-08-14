@@ -12,7 +12,7 @@ const app = express()
 
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
-'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com']
+'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']
 
 const stripe = require('stripe')('sk_test_zIGU3JWicxTyRA0NydEELiqF00ztaNTI63');
 
@@ -25,6 +25,7 @@ const corsOptions = {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
+      console.log('Origin ---> ', origin)
       callback(new Error('Not allowed by CORS'))
     }
   }
@@ -32,7 +33,7 @@ const corsOptions = {
 
 
 app.use(express.static('public'))
-.use(cors(corsOptions))
+// .use(cors(corsOptions))
 .use(cookieParser())
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Expose-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept, Authorization')
