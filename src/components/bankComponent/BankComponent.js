@@ -53,17 +53,33 @@ class BankComponent extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    let {userInfo} = this.props
+    if ((!prevProps.userInfo.card && userInfo.card) || (prevProps.userInfo.card !== userInfo.card)) {
+      axios.get('/card', {params: {cardId: userInfo.card}})
+      .then(res => {
+        console.log('DID UPDATE RES ------> ', res)
+        this.setState({
+          userCard: res.data
+        })
+      })
+      .catch(e => console.log('E ---> ', e))
+    }
+  }
+
   goBack() {
     this.props.history.push('/profile')
   }
 
   submitCard(token = {}) {
     let {userInfo, onCardAdd} = this.props
-    if (!userInfo.card && userCard.card !== '') {
+    if (!userInfo.card && userInfo.card !== '') {
       axios.post('/save', {userInfo, token})
         .then(res => {
           if (res.data) {
+            console.log('Card ADDED ----> ', res.data)
             onCardAdd(res.data.id)
+            this.props.history('/bank')
           }
         })
         .catch(e => console.log('Bank Component error ---> ', e))
@@ -73,11 +89,11 @@ class BankComponent extends React.Component {
           console.log('UPGRADED CARD ----> ', res)
           if (res.data) {
             console.log('CARD ----> ', res.data)
+            this.props.history('/bank')
           }
         })
         .catch(e => console.log('CARD ERR ---> ', e))
     }
-
   }
 
   getCard() {
@@ -104,6 +120,7 @@ class BankComponent extends React.Component {
       card.exp_month = userCard.sources.data[0].exp_month
       card.name = userCard.sources.data[0].name
     }
+    console.log('USER CARD ---> ', userCard)
     return (
       <div className="BankComponent">
         <Header imageUrl={userInfo.imageUrl} iconClick={() => {}} isActive={false} onClick={() => {}}/>
@@ -113,7 +130,7 @@ class BankComponent extends React.Component {
        </div>
         <StripeProvider apiKey="pk_test_ZEn0Cz3VCvWRZSMR6AZpB32C0045ge11LF">
           <Elements>
-          <CardFormComponent userInfo={userInfo} onSubmit={this.submitCard} update={userCard.card !== undefined}/>
+          <CardFormComponent userInfo={userInfo} onSubmit={this.submitCard} update={userCard.card === undefined}/>
           </Elements>
         </StripeProvider>
         <div className="BankComponent__existing-container">
