@@ -572,9 +572,18 @@ class MainPage extends React.Component {
   }
 
   submitSongRequest(info) {
-    axios.get('http://localhost:8080/login')
-      .then(res => console.log('RES ---> ', res))
-      .catch(err => console.log('Err ---> ', err))
+    let {fanEvent, userId, userInfo} = this.state
+    let now = new Date().getTime()
+    let request = {...info, user: userId, time: now}
+    let myRef = firebase.database().ref(`venues/${fanEvent.fanId}/requests`)
+    let key = myRef.push().key
+    request.requestId = key
+    myRef.child(`/${key}`).set(request)
+    firebase.database().ref(`users/${userId}/venue/requests/${key}`).set(true, error => {
+      if (!error) {
+        console.log('Its added to firebase')
+      }
+    })
   }
 
   addCard(cardToken) {
