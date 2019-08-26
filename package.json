@@ -52,6 +52,7 @@
     "cordova-plugin-screen-orientation": "^3.0.1",
     "cors": "^2.8.5",
     "express": "^4.15.2",
+    "grpc": "^1.23.3",
     "install": "^0.13.0",
     "moment": "^2.24.0",
     "path": "^0.12.7",
@@ -67,10 +68,12 @@
     "react-redux": "^6.0.0",
     "react-star-ratings": "^2.3.0",
     "react-stripe-elements": "^4.0.0",
+    "react-widgets": "^4.4.11",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "request": "^2.88.0",
-    "stripe": "^7.5.3"
+    "stripe": "^7.5.3",
+    "tidal-api-wrapper": "^1.7.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-object-rest-spread": "^7.3.1",

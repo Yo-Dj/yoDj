@@ -1,4 +1,5 @@
 import React from 'react'
+import Tidal from 'tidal-api-wrapper'
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
@@ -6,7 +7,15 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
+import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
+import 'react-widgets/dist/css/react-widgets.css'
+
+
+const tidal = new Tidal({
+    countryCode: 'US',
+    limit: 1000
+  })
 
 class TippingPage extends React.Component {
     constructor(props) {
@@ -15,14 +24,18 @@ class TippingPage extends React.Component {
             tipText: '',
             searchText: '',
             isError: false,
-            errorMessage: ''
+            errorMessage: '',
+            busySpinner: false,
+            data: [],
+            search: ''
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
         this.search = this.search.bind(this)
         this.submit = this.submit.bind(this)
         this.closeError = this.closeError.bind(this)
-        this.openProfile = this.openProfile.bind(this)
+        this.openProfile = this.openProfile.bind(this) 
+        this.searchSong = this.searchSong.bind(this)
     }
 
     leaveEvent() {
@@ -31,7 +44,7 @@ class TippingPage extends React.Component {
 
     search(e) {
         this.setState({
-            searchText: e.target.value
+            search: e
         })
     }
 
@@ -47,11 +60,19 @@ class TippingPage extends React.Component {
         let eventTip = parseFloat(fanEvent.tipAmount)
         let errorMessage = ''
         let isError = false
+        if (!tipAmount && tipAmount !== 0) {
+            errorMessage = 'Tip Container should not be empty'
+            isError = true
+        }
+        if (this.state.tipText === '') {
+            errorMessage = 'Tip Container should not be empty'
+            isError = true
+        }
         if (eventTip > tipAmount) {
             errorMessage = 'Tip Amount is below Minimum'
             isError = true
         }
-        if (this.state.searchText === '') {
+        if (this.state.search === '') {
             errorMessage = 'Enter music or an album!'
             isError = true
         }
@@ -61,14 +82,16 @@ class TippingPage extends React.Component {
             errorMessage
         })
         if (isError) return
-        onSubmit({tipAmount, music: this.state.searchText})
+        console.log('Error ----> ', isError)
+        console.log('State ---> ', this.state)
+        onSubmit({tipAmount, music: this.state.search})
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
             tipText: '',
+            search: '',
             searchText: ''
         })
-
     }
 
     openProfile() {
@@ -79,6 +102,21 @@ class TippingPage extends React.Component {
         this.setState({
             isError: false,
             errorMessage: ''
+        })
+    }
+
+    async searchSong(searchText) {
+        this.setState({
+            busySpinner: true
+        })
+        const artists = await tidal.search(searchText, 'tracks', 5)
+        let data = artists.map(song => {
+            return `${song.title} by ${song.artist.name}`
+        })
+        this.setState({
+            searchText,
+            busySpinner: false,
+            data
         })
     }
 
@@ -137,15 +175,24 @@ class TippingPage extends React.Component {
                     <div className="TippingPage--search-container">
                         <div className="TippingPage--music-icon" />
                         <div className="TippingPage--search-input">
-                                <TextField
+                                {/* <TextField
                                     value={this.state.searchText}
                                     margin="normal"
                                     placeholder="Search song, artist, album"
                                     onChange={this.search}
                                     classes={{root: "TippingPage--search-text"}}
                                     InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
-                                />
-                            </div>
+                                /> */}
+                            <DropdownList
+                                busy={this.state.busySpinner}
+                                filter
+                                onSearch={this.searchSong}
+                                value={this.state.e}
+                                onChange={this.search}
+                                allowCreate={false}
+                                data={this.state.data}
+                            />
+                        </div>
                     </div>
                     <div className="TippingPage--submit-button">
                         <Button variant="contained" color="primary" classes={{root: 'TippingPage-submit'}} onClick={this.submit}>
