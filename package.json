@@ -61,6 +61,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-dom-factories": "^1.0.2",
+    "react-dropdown-input": "^0.1.11",
     "react-load-script": "0.0.6",
     "react-number-format": "^4.0.7",
     "react-payment-icons": "^1.2.6",

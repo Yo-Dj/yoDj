@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
+// import DropdownInput from 'react-dropdown-input'
 import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
@@ -20,6 +21,7 @@ const tidal = new Tidal({
 class TippingPage extends React.Component {
     constructor(props) {
         super(props)
+        this.tippingWrapper = React.createRef()
         this.state = {
             tipText: '',
             searchText: '',
@@ -82,8 +84,6 @@ class TippingPage extends React.Component {
             errorMessage
         })
         if (isError) return
-        console.log('Error ----> ', isError)
-        console.log('State ---> ', this.state)
         onSubmit({tipAmount, music: this.state.search})
         this.setState({
             isError: true,
@@ -106,6 +106,10 @@ class TippingPage extends React.Component {
     }
 
     async searchSong(searchText) {
+        if (this.tippingWrapper) {
+            console.log('TippingWrapper ---> ', this.tippingWrapper)
+            this.tippingWrapper.scrollIntoView({ behavior: "smooth" })
+        }
         this.setState({
             busySpinner: true
         })
@@ -131,7 +135,7 @@ class TippingPage extends React.Component {
         let tip = parseFloat(fanEvent.tipAmount).toFixed(2)
         let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
         return (
-            <div className="TippingPage">
+            <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
                 <div className="TippingPage__fan-container">
                     <div className="TippingPage--icon-container">
@@ -183,15 +187,16 @@ class TippingPage extends React.Component {
                                     classes={{root: "TippingPage--search-text"}}
                                     InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
                                 /> */}
-                            <DropdownList
-                                busy={this.state.busySpinner}
-                                filter
-                                onSearch={this.searchSong}
-                                value={this.state.e}
-                                onChange={this.search}
-                                allowCreate={false}
-                                data={this.state.data}
-                            />
+                        <DropdownList
+                            busy={this.state.busySpinner}
+                            filter
+                            dropUp
+                            onSearch={this.searchSong}
+                            value={this.state.e}
+                            onChange={this.search}
+                            allowCreate={false}
+                            data={this.state.data}
+                        />
                         </div>
                     </div>
                     <div className="TippingPage--submit-button">
