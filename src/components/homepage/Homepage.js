@@ -23,6 +23,7 @@ class Homepage extends React.Component {
     this.acceptSong = this.acceptSong.bind(this)
     this.forwardFeedPage = this.forwardFeedPage.bind(this)
     this.openDeliverPage = this.openDeliverPage.bind(this)
+    this.handleRejection = this.handleRejection.bind(this)
   }
 
   componentDidMount() {
@@ -74,7 +75,7 @@ class Homepage extends React.Component {
         state: {request: {...request}}
       })
     }
-  
+
   }
 
   forwardFeedPage() {
@@ -105,6 +106,11 @@ class Homepage extends React.Component {
     this.props.onDeliver()
   }
 
+  handleRejection(request) {
+    console.log('Rejection is clicked')
+    this.props.onReject(request)
+  }
+
   render() {
     let {userInfo, event, requests, acceptedSongs} = this.props
     let {requestOpen, requestMessage, active} = this.state
@@ -128,6 +134,7 @@ class Homepage extends React.Component {
               requestMessage={requestMessage}
               onAccept={this.acceptSong}
               onForward={this.forwardFeedPage}
+              onReject={this.handleRejection}
             />
             <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>

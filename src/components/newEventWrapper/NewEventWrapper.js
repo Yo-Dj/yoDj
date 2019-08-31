@@ -1,6 +1,7 @@
 import React from 'react'
 import {withRouter} from 'react-router-dom'
 import firebase from 'firebase'
+import Script from 'react-load-script'
 import Icon from '@material-ui/core/Icon'
 import TextField from '@material-ui/core/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -11,6 +12,8 @@ import Select from '@material-ui/core/Select'
 import Header from '../header'
 import Button from '@material-ui/core/Button'
 import NumberFormat from 'react-number-format'
+import Dropdown from '../dropdown'
+import {googlePlaces} from 'src/config/CustomKeys'
 
 
 class NewEventWrapper extends React.Component {
@@ -31,6 +34,8 @@ class NewEventWrapper extends React.Component {
     this.createEvent = this.createEvent.bind(this)
     this.close = this.close.bind(this)
     this.selectChange = this.selectChange.bind(this)
+    this.handleScriptLoad = this.handleScriptLoad.bind(this)
+    this.handlePlaceSelect = this.handlePlaceSelect.bind(this)
   }
 
   handleName(e) {
@@ -50,7 +55,6 @@ class NewEventWrapper extends React.Component {
   }
 
   profileImgClicked() {
-    console.log('Profile is picked -->')
     this.props.onLogout()
   }
 
@@ -98,8 +102,29 @@ class NewEventWrapper extends React.Component {
     }
   }
 
-  selectChange(e) {
-    console.log('Target Value ----> ', e.target.value)
+  selectChange(type) {
+    this.setState({
+      type
+    })
+  }
+
+  handleScriptLoad() {
+    var options = {componentRestrictions: {country: 'us'}}
+    this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), options)
+    this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
+  }
+
+  handlePlaceSelect() {
+    let addressObject = this.autocomplete.getPlace()
+    let address = addressObject.formatted_address
+
+    if (address) {
+      this.setState({
+        location: address,
+        placeName: addressObject.name
+      })
+    }
+
   }
 
   render() {
@@ -114,7 +139,11 @@ class NewEventWrapper extends React.Component {
        <div className="NewEventWrapper__container">
         <h3>Event</h3>
         <div className="NewEventWrapper--icon" />
+          <Script url={`https://maps.googleapis.com/maps/api/js?key=${googlePlaces}&libraries=places`}
+              onLoad={this.handleScriptLoad}
+          />
         <TextField
+          id="autocomplete"
           value={this.state.placeName}
           placeholder="Place Name"
           margin="normal"
@@ -129,35 +158,7 @@ class NewEventWrapper extends React.Component {
           onChange={this.handleLocation}
         />
         <div className="NewEventWrapper__form-control">
-          {/* <FormControl className="NewEventWrapper__form">
-            <InputLabel
-              htmlFor="age-simple"
-              FormLabelClasses={{
-                root: "NewEventWrapper__form-label",
-                focused: "NewEventWrapper__label-focused"
-              }}>
-                Type
-            </InputLabel>
-              <Select
-                value={this.state.type}
-                onChange={this.typeChange}
-                inputProps={{
-                  name: 'age',
-                  id: 'age-simple',
-                  style: {color: 'yellow'}
-                }}
-              >
-              <MenuItem value="venue" classes={{root: 'NewEventWrapper__menu-item'}}>Venue</MenuItem>
-              <MenuItem value="party" classes={{root: 'NewEventWrapper__menu-item'}}>Party</MenuItem>
-            </Select>
-          </FormControl> */}
-          <div className="NewEventWrapper--custom-select">
-            <select onChange={this.selectChange}>
-              <option value="">Type</option>
-              <option value="venue">Venue</option>
-              <option value="party">Party</option>
-            </select>         
-          </div>
+          <Dropdown onChange={this.selectChange}/>
         </div>
         <div className="NewEventWrapper--tip-title">
             Minimimum tip required for request
@@ -168,8 +169,7 @@ class NewEventWrapper extends React.Component {
               margin="normal"
               classes={{root: "NewEventWrapper--tip-text"}}
               onChange={this.tipChange}
-              InputProps={{style: {textAlign: 'start', margin: '20px 0'}}}
-            />
+              InputProps={{style: {textAlign: 'start', margin: '20px 0'}}}/>
             <Button
               variant="contained"
               color="primary"

@@ -2,6 +2,7 @@ import React from 'react'
 import {BrowserRouter, Switch, Redirect, Route, withRouter} from 'react-router-dom'
 import firebase from 'firebase'
 import {MuiThemeProvider} from '@material-ui/core/styles'
+import axios from 'axios'
 import theme from 'src/config/CustomStyle'
 import HomePage from '../homepage'
 import LoginWrapper from '../loginWrapper'
@@ -14,6 +15,8 @@ import FanHomepage from '../fanHomepage'
 import SelectDj from '../selectDJ'
 import FanEvent from '../fanEvent'
 import TippingPage from '../tippingPage'
+import ProfilePage from '../profilePage'
+import BankComponent from '../bankComponent'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -53,6 +56,9 @@ class MainPage extends React.Component {
     this.acceptingSong = this.acceptingSong.bind(this)
     this.updateAcceptedSongs = this.updateAcceptedSongs.bind(this)
     this.openDeliveryPage = this.openDeliveryPage.bind(this)
+    this.rejectRequest = this.rejectRequest.bind(this)
+    this.logout = this.logout.bind(this)
+    this.addCard = this.addCard.bind(this)
   }
 
   componentDidMount() {
@@ -61,6 +67,19 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
+    // if (location.pathname === '/profile' && Object.keys(this.state.userInfo).length === 0) {
+    //     this.props.history.push('/home')
+    //     return
+    //   }
+    //   if (location.pathname === '/home' && prevProps.location.pathname === '/profile' && Object.keys(this.state.userInfo).length > 0 && Object.keys(prevState.userInfo).length > 0) {
+    //     console.log('Profile ----> ', this.state)
+    //     this.props.history.push('/profile')
+    //     return
+    //   }
+      if (location.pathname === '/bank' && Object.keys(this.state.userInfo).length === 0) {
+        this.props.history.push('/profile')
+        return
+      }
       if (location.pathname === '/event' &&  Object.keys(this.state.event).length === 0)
       {
         this.props.history.push('/home')
@@ -153,6 +172,19 @@ class MainPage extends React.Component {
     })
   }
 
+  logout() {
+    fire.auth().signOut()
+      .then(() => {
+        this.setState({
+          isLogged: false,
+          userId: '',
+          userInfo: {}, 
+        })
+        console.log('Signed Out sucks ---> ')
+        this.props.history.push('/login')
+    })
+  }
+
   logoutUser() {
     console.log('Logout')
     fire.auth().signOut()
@@ -164,6 +196,7 @@ class MainPage extends React.Component {
       })
       this.props.history.push('/login')
     })
+    // this.props.history.push('/profile')
   }
 
   getDjs() {
@@ -278,7 +311,7 @@ class MainPage extends React.Component {
       this.setState({
         requests
       })
-    } 
+    }
     else if (requestedArr.length === 0) {
       requests = requests.filter(request => {
         if (!request.songRequest) {
@@ -294,7 +327,6 @@ class MainPage extends React.Component {
       })
     }
    else if (requestedArr.length < songRequests) {
-
      requests = requests.filter(request => {
        if (!request.songRequest) {
          return request
@@ -303,7 +335,7 @@ class MainPage extends React.Component {
          return request
        }
      })
-   } 
+   }
    else if (requestIds.indexOf(lastAdded) === -1) {
      requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: lastAdded.user})
     }
@@ -393,6 +425,7 @@ class MainPage extends React.Component {
       .ref(`users/${uid}`)
       .on('value',snapshot => {
         let data = snapshot.val()
+        console.log('USER DATA -----> ', data)
         if (data) {
           if (data.userType && data.userType === 'Fan') {
             let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
@@ -409,7 +442,8 @@ class MainPage extends React.Component {
             })
             return
           }
-          let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          // let userInfo = {imageUrl: data.imageUrl, name: data.name}
+          let userInfo = {...data}
           let isActive = false
           let {event} = data
           this.setState({
@@ -531,6 +565,12 @@ class MainPage extends React.Component {
     })
   }
 
+  rejectRequest(request) {
+    let {event, acceptedSongs, requests, newRequest, userId} = this.state
+      firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
+      firebase.database().ref(`users/${request.fanId}/venue/requests/${request.id}`).remove()
+  }
+
   submitSongRequest(info) {
     let {fanEvent, userId, userInfo} = this.state
     let now = new Date().getTime()
@@ -543,6 +583,17 @@ class MainPage extends React.Component {
       if (!error) {
         console.log('Its added to firebase')
       }
+    })
+  }
+
+  addCard(cardToken) {
+    let {userId, userInfo} = this.state
+    firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
+      if (!error) {
+        console.log('Card is Added -----> ')
+        return 
+      }
+      console.log('ERROR ----> ', error)
     })
   }
 
@@ -566,6 +617,7 @@ class MainPage extends React.Component {
                     isActive={isActive}
                     acceptedSongs={acceptedSongs}
                     onDeliver={this.openDeliveryPage}
+                    onReject={this.rejectRequest}
                   />
                 )} />
               <Route path="/fan-home" render={props =>
@@ -626,6 +678,21 @@ class MainPage extends React.Component {
                   />)}
                 />
               )} />
+
+                <Route path='/profile' render={props => (
+                  <ProfilePage 
+                    userInfo={userInfo}
+                    onLogout={this.logout}
+                  />
+                )} />
+
+                <Route path='/bank' render={props => (
+                  <BankComponent 
+                    userInfo={userInfo}
+                    onCardAdd={this.addCard}
+                    onLogout={this.logout}
+                  />
+                )} />
               <Redirect to="/home" />
           </Switch>
         </div>

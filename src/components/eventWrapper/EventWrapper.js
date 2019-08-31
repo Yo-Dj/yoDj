@@ -98,12 +98,21 @@ class EventWrapper extends React.Component {
     let tip = parseFloat(tipAmount).toFixed(2)
     let time = active ? this.timeFormatter() : "Duration"
     let completed = event.completed ? Object.keys(event.completed).length : 0
+    let street, city, state
+    if (address) {
+      let splitAddress = address.split(', ')
+      street = splitAddress[0]
+      city =  splitAddress.length > 1 ? splitAddress[1] : 'Chicago'
+      state = splitAddress.length > 2 ? splitAddress[2].split(' ')[0] : 'IL'
+    }
     return (
       <div className="EventWrapper">
         <div className={`EventWrapper__address-container${!active ? ' EventWrapper--disable' : ''}`}>
-          <div className="EventWrapper--address">{active ? address : "Address"}</div>
+          <div className="EventWrapper--address">{active ? street : "Address"}</div>
           <div className="EventWrapper--city">
-            City, State
+           {
+             active ? `${city}, ${state}` : 'City, State'
+           }
           </div>
           <div className="EventWrapper--tip">
             min: ${active ? tip : '0.00'}
