@@ -187,16 +187,16 @@ class MainPage extends React.Component {
 
   logoutUser() {
     console.log('Logout')
-    // fire.auth().signOut()
-    // .then(() => {
-    //   this.setState({
-    //     isLogged: false,
-    //     userId: '',
-    //     userInfo: {}
-    //   })
-    //   this.props.history.push('/login')
-    // })
-    this.props.history.push('/profile')
+    fire.auth().signOut()
+    .then(() => {
+      this.setState({
+        isLogged: false,
+        userId: '',
+        userInfo: {}
+      })
+      this.props.history.push('/login')
+    })
+    // this.props.history.push('/profile')
   }
 
   getDjs() {
