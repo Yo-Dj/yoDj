@@ -9,6 +9,7 @@ import Icon from '@material-ui/core/Icon'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 
+// const stripe = Stripe('pk_test_ZEn0Cz3VCvWRZSMR6AZpB32C0045ge11LF')
 export const createOptions = (fontSize, padding) => {
   return {
     style: {
@@ -26,11 +27,12 @@ export const createOptions = (fontSize, padding) => {
         color: '#9e2146',
       },
     },
-  };
+  }
 }
 class BankComponent extends React.Component {
   constructor(props) {
     super(props)
+    this.wrapper = React.createRef()
     this.state = {
       userCard: {}
     }
@@ -39,7 +41,7 @@ class BankComponent extends React.Component {
     this.goBack = this.goBack.bind(this)
   }
 
-  componentDidMount() {
+ componentDidMount() {
     let {userInfo} = this.props
     if (userInfo.card && userInfo.card !== '') {
       axios.get('/card', {params: {cardId: userInfo.card}})
@@ -51,14 +53,52 @@ class BankComponent extends React.Component {
       })
       .catch(e => console.log('E ---> ', e))
     }
-  }
+    // const paymentRequest = stripe.paymentRequest({
+    //   country: 'US',
+    //   currency: 'usd',
+    //   total: {
+    //     label: 'Demo total',
+    //     amount: 1000,
+    //   },
+    //   requestPayerName: true,
+    //   requestPayerEmail: true,
+    // })
+    // console.log('Stripe ----> ', stripe)
+    // const elements = stripe.elements()
+    // console.log('Elements ---> ', elements)
+    // const prButton = elements.create('paymentRequestButton', {
+    //   paymentRequest,
+    // })
+    // console.log('PR Button ----> ', prButton)
+
+    // // ( async () => {
+    //   const result = await paymentRequest.canMakePayment()
+
+    //   this.wrapper.appendChild(prButton)
+    //   console.log('Result ---> ', result)
+    // }
+
+    // )()
+    // (async () => {
+    //   // Check the availability of the Payment Request API first.
+    //   const result = await paymentRequest.canMakePayment();
+    //   if (result) {
+    //     console.log('RESULTAT ----> ', result)
+    //     // prButton.mount('#payment-request-button');
+    //   } else {
+    //     document.getElementById('payment-request-button').style.display = 'none';
+    //   }
+    // })()
+    // stripe.applePay.checkAvailability(function(available) {
+    //     console.log('Available ---> ', available)
+    //   })
+    }
 
   componentDidUpdate(prevProps) {
     let {userInfo} = this.props
     if ((!prevProps.userInfo.card && userInfo.card) || (prevProps.userInfo.card !== userInfo.card)) {
       axios.get('/card', {params: {cardId: userInfo.card}})
       .then(res => {
-        console.log('DID UPDATE RES ------> ', res)
         this.setState({
           userCard: res.data
         })
@@ -74,7 +114,7 @@ class BankComponent extends React.Component {
   submitCard(token = {}) {
     let {userInfo, onCardAdd} = this.props
     if (!userInfo.card && userInfo.card !== '') {
-      axios.post('/save', {userInfo, token})
+      axios.post('https:localhost:8080/save', {userInfo, token})
         .then(res => {
           if (res.data) {
             console.log('Card ADDED ----> ', res.data)
@@ -84,7 +124,7 @@ class BankComponent extends React.Component {
         })
         .catch(e => console.log('Bank Component error ---> ', e))
     } else {
-      axios.post('/upgrade-card', {userId: userInfo.card, token})
+      axios.post('https:localhost:8080/upgrade-card', {userId: userInfo.card, token})
         .then(res => {
           console.log('UPGRADED CARD ----> ', res)
           if (res.data) {
@@ -97,7 +137,7 @@ class BankComponent extends React.Component {
   }
 
   getCard() {
-    axios.get('/card', {params: {cardId: this.state.userCard.id}})
+    axios.get('https:localhost:8080/card', {params: {cardId: this.state.userCard.id}})
       .then(res => {
         console.log('RES ------> ', res)
       })
@@ -114,7 +154,7 @@ class BankComponent extends React.Component {
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
     let cardExist = userCard.sources !== undefined
     if (cardExist) {
-      card.type = userCard.sources.data[0].brand 
+      card.type = userCard.sources.data[0].brand
       card.last4 = userCard.sources.data[0].last4
       card.exp_year = userCard.sources.data[0].exp_year
       card.exp_month = userCard.sources.data[0].exp_month

@@ -15,6 +15,9 @@ var whitelist = ['http://localhost:3000',
 'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']
 
 const stripe = require('stripe')('sk_test_zIGU3JWicxTyRA0NydEELiqF00ztaNTI63');
+stripe.applePayDomains.create({
+  domain_name: 'localhost:8080'
+})
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
@@ -43,30 +46,11 @@ app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true)
   next()
 })
-//   const customer = await stripe.customers.create({
-//     source: 'tok_mastercard',
-//     email: 'paying.user@example.com',
-//   });
 
-//   // Charge the Customer instead of the card:
-//   const charge = await stripe.charges.create({
-//     amount: 1000,
-//     currency: 'usd',
-//     customer: customer.id,
-//   });
+app.get('/.well-known/apple-developer-merchantid-domain-association', function(req, res) {
+  res.sendFile(__dirname + '/apple-developer-merchantid-domain-association')
+})
 
-//   // YOUR CODE: Save the customer ID and other info in a database for later.
-
-// })();
-
-// (async () => {
-//   // When it's time to charge the customer again, retrieve the customer ID.
-//   const charge = await stripe.charges.create({
-//     amount: 1500, // $15.00 this time
-//     currency: 'usd',
-//     customer: customer.id, // Previously stored, then retrieved
-//   });
-// })()
 
 app.post('/save', async (req, res) => {
   let customer = {}
@@ -87,6 +71,7 @@ app.post('/save', async (req, res) => {
 
 app.get('/card', async (req, res) => {
   try {
+    console.log('Stripe ----> ', stripe)
     const customer = await stripe.customers.retrieve(req.query.cardId)
     res.json(customer)
   } catch(e) {
