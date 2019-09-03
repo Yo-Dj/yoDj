@@ -167,7 +167,7 @@ class MainPage extends React.Component {
         this.getUserInfo(user.uid)
       }
       else {
-        this.logoutUser()
+        this.logout()
       }
     })
   }
@@ -178,7 +178,7 @@ class MainPage extends React.Component {
         this.setState({
           isLogged: false,
           userId: '',
-          userInfo: {}, 
+          userInfo: {},
         })
         console.log('Signed Out sucks ---> ')
         this.props.history.push('/login')
@@ -186,17 +186,17 @@ class MainPage extends React.Component {
   }
 
   logoutUser() {
-    console.log('Logout')
-    fire.auth().signOut()
-    .then(() => {
-      this.setState({
-        isLogged: false,
-        userId: '',
-        userInfo: {}
-      })
-      this.props.history.push('/login')
-    })
-    // this.props.history.push('/profile')
+    // console.log('Logout')
+    // fire.auth().signOut()
+    // .then(() => {
+    //   this.setState({
+    //     isLogged: false,
+    //     userId: '',
+    //     userInfo: {}
+    //   })
+    //   this.props.history.push('/login')
+    // })
+    this.props.history.push('/profile')
   }
 
   getDjs() {
@@ -591,7 +591,7 @@ class MainPage extends React.Component {
     firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
       if (!error) {
         console.log('Card is Added -----> ')
-        return 
+        return
       }
       console.log('ERROR ----> ', error)
     })
@@ -680,14 +680,14 @@ class MainPage extends React.Component {
               )} />
 
                 <Route path='/profile' render={props => (
-                  <ProfilePage 
+                  <ProfilePage
                     userInfo={userInfo}
                     onLogout={this.logout}
                   />
                 )} />
 
                 <Route path='/bank' render={props => (
-                  <BankComponent 
+                  <BankComponent
                     userInfo={userInfo}
                     onCardAdd={this.addCard}
                     onLogout={this.logout}
