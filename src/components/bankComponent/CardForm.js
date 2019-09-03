@@ -39,9 +39,6 @@ class CardFormComponent extends React.Component {
     let {userInfo: {username}, onSubmit} = this.props
     let {token} = await this.props.stripe.createToken({name: username})
     onSubmit(token)
-    // document.getElementById("stripe-card").reset();
-    // console.log('ELEMENT -----> ', this.elementRef)
-    // this.elementRef.clear()
   }
 
   render() {

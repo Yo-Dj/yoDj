@@ -9,7 +9,6 @@ import Icon from '@material-ui/core/Icon'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 
-// const stripe = Stripe('pk_test_ZEn0Cz3VCvWRZSMR6AZpB32C0045ge11LF')
 export const createOptions = (fontSize, padding) => {
   return {
     style: {
@@ -53,46 +52,7 @@ class BankComponent extends React.Component {
       })
       .catch(e => console.log('E ---> ', e))
     }
-    // const paymentRequest = stripe.paymentRequest({
-    //   country: 'US',
-    //   currency: 'usd',
-    //   total: {
-    //     label: 'Demo total',
-    //     amount: 1000,
-    //   },
-    //   requestPayerName: true,
-    //   requestPayerEmail: true,
-    // })
-    // console.log('Stripe ----> ', stripe)
-    // const elements = stripe.elements()
-    // console.log('Elements ---> ', elements)
-    // const prButton = elements.create('paymentRequestButton', {
-    //   paymentRequest,
-    // })
-    // console.log('PR Button ----> ', prButton)
-
-    // // ( async () => {
-    //   const result = await paymentRequest.canMakePayment()
-
-    //   this.wrapper.appendChild(prButton)
-    //   console.log('Result ---> ', result)
-    // }
-
-    // )()
-    // (async () => {
-    //   // Check the availability of the Payment Request API first.
-    //   const result = await paymentRequest.canMakePayment();
-    //   if (result) {
-    //     console.log('RESULTAT ----> ', result)
-    //     // prButton.mount('#payment-request-button');
-    //   } else {
-    //     document.getElementById('payment-request-button').style.display = 'none';
-    //   }
-    // })()
-    // stripe.applePay.checkAvailability(function(available) {
-    //     console.log('Available ---> ', available)
-    //   })
-    }
+  }
 
   componentDidUpdate(prevProps) {
     let {userInfo} = this.props
