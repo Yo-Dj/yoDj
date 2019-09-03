@@ -7,7 +7,6 @@ import './bankComponent.less'
 class CardFormComponent extends React.Component {
   constructor(props) {
     super(props)
-    console.log('STRIPE ---> ', props)
     const paymentRequest = props.stripe.paymentRequest({
       country: 'US',
       currency: 'usd',
@@ -42,7 +41,7 @@ class CardFormComponent extends React.Component {
   }
 
   render() {
-    let {canMakePayment, payment} = this.state
+    let {canMakePayment, paymentRequest} = this.state
     let {update} = this.props
     return (
       <form id="stripe-card">
@@ -70,7 +69,7 @@ class CardFormComponent extends React.Component {
                 }}
               />
             )
-            : null
+            : <div>WIP Apple Pay</div>
           }
         </div>
       </form>
