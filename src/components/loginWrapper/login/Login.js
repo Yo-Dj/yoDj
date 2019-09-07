@@ -147,6 +147,8 @@ class Login extends React.Component {
 
   handleTextChange(e) {
     let {codeSent, value} = this.state
+    console.log('E VALUE ---> ', e.target.value)
+    console.log('VALUE ----> ', value)
     if (codeSent && (value.length < 6 || e.target.value.length < value.length)) {
      this.setState({
         value: e.target.value,
@@ -157,19 +159,23 @@ class Login extends React.Component {
 
   render() {
     let nums = [1,2,3,4,5,6,7,8,9]
+    let {codeSent} = this.state
     return (
       <div className="Login">
         <div ref={ref => this.phoneRef = ref} className="Login__recaptcha"/>
         <div className="Login__logo">
           <div className="Login__icon" />
-          <TextField
+          {/* <TextField
             value={this.state.value}
             placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
             margin="normal"
             classes={{root: 'Login__text'}}
             onChange={this.handleTextChange}
             InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
-          />
+          /> */}
+          <div className="Login__text">
+            <input type={!codeSent ? "tel" : "number"} value={this.state.value} onChange={this.handleTextChange} />
+          </div>
         </div>
         <div className="Login__numbers">
           {
