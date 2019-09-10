@@ -174,7 +174,14 @@ class Login extends React.Component {
             InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
           /> */}
           <div className="Login__text">
-            <input type={!codeSent ? "tel" : "number"} value={this.state.value} onChange={this.handleTextChange} />
+            <input
+              className="Login--text-field"
+              type={!codeSent ? "tel" : "number"}
+              value={this.state.value}
+              onChange={this.handleTextChange}
+              placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
+
+            />
           </div>
         </div>
         <div className="Login__numbers">
