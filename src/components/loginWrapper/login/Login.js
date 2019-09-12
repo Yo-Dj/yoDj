@@ -185,7 +185,7 @@ class Login extends React.Component {
                 />
               :  <input
                     className="Login--text-field"
-                    type="number"
+                    type="tel"
                     value={this.state.value}
                     onChange={this.handleTextChange}
                     placeholder="Confirmation Code"
