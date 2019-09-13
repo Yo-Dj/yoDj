@@ -36,7 +36,7 @@ class TippingPage extends React.Component {
         this.search = this.search.bind(this)
         this.submit = this.submit.bind(this)
         this.closeError = this.closeError.bind(this)
-        this.openProfile = this.openProfile.bind(this) 
+        this.openProfile = this.openProfile.bind(this)
         this.searchSong = this.searchSong.bind(this)
     }
 
@@ -107,7 +107,6 @@ class TippingPage extends React.Component {
 
     async searchSong(searchText) {
         if (this.tippingWrapper) {
-            console.log('TippingWrapper ---> ', this.tippingWrapper)
             this.tippingWrapper.scrollIntoView({ behavior: "smooth" })
         }
         this.setState({
@@ -159,13 +158,20 @@ class TippingPage extends React.Component {
                         <div className="TippingPage--input-container">
                             $
                             <div className="TippingPage--input">
-                                <TextField
+                                {/* <TextField
                                     value={this.state.tipText}
                                     margin="normal"
                                     onChange={this.tipChange}
                                     classes={{root: "TippingPage--tip-text"}}
                                     InputProps={{style: {textAlign: 'start', margin: '0 10px'}}}
+                                /> */}
+                                <input
+                                    type="number"
+                                    value={this.state.tipText}
+                                    onChange={this.tipChange}
+                                    className="TippingPage--tip-text"
                                 />
+
                             </div>
                             <div className="TippingPage--user-icon">
                                 <svg className="TippingPage--sample-user" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26"><path d="M15 2H3c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zM9 4.75c1.24 0 2.25 1.01 2.25 2.25S10.24 9.25 9 9.25 6.75 8.24 6.75 7 7.76 4.75 9 4.75zM13.5 14h-9v-.75c0-1.5 3-2.25 4.5-2.25s4.5.75 4.5 2.25V14z"/></svg>
