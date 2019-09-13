@@ -165,40 +165,15 @@ class Login extends React.Component {
         <div ref={ref => this.phoneRef = ref} className="Login__recaptcha"/>
         <div className="Login__logo">
           <div className="Login__icon" />
-          {/* <TextField
-            value={this.state.value}
-            placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
-            margin="normal"
-            classes={{root: 'Login__text'}}
-            onChange={this.handleTextChange}
-            InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
-          /> */}
           <div className="Login__text">
-            {
-              !codeSent
-              ?  <input
-                  className="Login--text-field"
-                  type="tel"
-                  value={this.state.value}
-                  onChange={this.handleTextChange}
-                  placeholder="Enter Your Number"
-                />
-              :  <input
-                    className="Login--text-field"
-                    type="tel"
-                    value={this.state.value}
-                    onChange={this.handleTextChange}
-                    placeholder="Confirmation Code"
-                  />
-            }
-            {/* // <input
-            //   className="Login--text-field"
-            //   type={!codeSent ? "tel" : "number"}
-            //   value={this.state.value}
-            //   onChange={this.handleTextChange}
-            //   placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
+             <input
+               className="Login--text-field"
+               type={!codeSent ? "tel" : "number"}
+               value={this.state.value}
+               onChange={this.handleTextChange}
+               placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
 
-            // /> */}
+             />
           </div>
         </div>
         <div className="Login__numbers">
