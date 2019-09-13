@@ -170,6 +170,7 @@ class TippingPage extends React.Component {
                                     value={this.state.tipText}
                                     onChange={this.tipChange}
                                     className="TippingPage--tip-text"
+                                    pattern="\d*"
                                 />
 
                             </div>
