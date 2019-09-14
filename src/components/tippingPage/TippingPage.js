@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField'
 import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
+import { parse } from 'url';
 
 
 const tidal = new Tidal({
@@ -23,13 +24,14 @@ class TippingPage extends React.Component {
         super(props)
         this.tippingWrapper = React.createRef()
         this.state = {
-            tipText: '',
+            tipText: '0.00',
             searchText: '',
             isError: false,
             errorMessage: '',
             busySpinner: false,
             data: [],
-            search: ''
+            search: '',
+            numberSubtracted: false
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
@@ -51,8 +53,25 @@ class TippingPage extends React.Component {
     }
 
     tipChange(e) {
+        let {value} = e.target
+        let tipText
+        let {numbersEntered, numberSubtracted} = this.state
+        if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
+            let tip = parseFloat(value)
+            tip = tip * 10
+            tipText = tip.toFixed(2).toString()
+        } else if (numberSubtracted) {
+            let tip = parseFloat(value)
+            tipText = tip.toFixed(2).toString()
+            numberSubtracted = false
+        } else if (!numberSubtracted){
+            tipText = value
+            numberSubtracted = true
+        }
+
         this.setState({
-            tipText: e.target.value
+            numberSubtracted,
+            tipText
         })
     }
 
@@ -158,13 +177,6 @@ class TippingPage extends React.Component {
                         <div className="TippingPage--input-container">
                             $
                             <div className="TippingPage--input">
-                                {/* <TextField
-                                    value={this.state.tipText}
-                                    margin="normal"
-                                    onChange={this.tipChange}
-                                    classes={{root: "TippingPage--tip-text"}}
-                                    InputProps={{style: {textAlign: 'start', margin: '0 10px'}}}
-                                /> */}
                                 <input
                                     type="number"
                                     value={this.state.tipText}
