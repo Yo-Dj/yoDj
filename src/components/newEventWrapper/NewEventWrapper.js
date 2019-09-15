@@ -23,8 +23,9 @@ class NewEventWrapper extends React.Component {
       placeName: '',
       location: '',
       type: '',
-      tipText: '$',
-      tipAmount: ''
+      tipText: '0.00',
+      tipAmount: '',
+      numberSubtracted: false
     }
     this.profileImgClicked = this.profileImgClicked.bind(this)
     this.handleName = this.handleName.bind(this)
@@ -67,17 +68,28 @@ class NewEventWrapper extends React.Component {
   tipChange(e) {
     let {value} = e.target
     let tipText
+    let {numberSubtracted} = this.state
     if (value[0] === '$') {
       value = value.slice(1)
     }
-    if (!isNaN(value)) {
-      // value = parseFloat(value).toFixed(2)
-      tipText = '$' + value
-      this.setState({
-        tipText,
-        tipAmount: value
-      })
+    if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
+      let tip = parseFloat(value)
+      tip = tip * 10
+      tipText = tip.toFixed(2).toString()
+    } else if (numberSubtracted) {
+        let tip = parseFloat(value)
+        tipText = tip.toFixed(2).toString()
+        numberSubtracted = false
+    } else if (!numberSubtracted){
+        tipText = value
+        numberSubtracted = true
     }
+
+  this.setState({
+      numberSubtracted,
+      tipText,
+      tipAmount: parseFloat(tipText)
+    })
   }
 
   createEvent() {
@@ -164,12 +176,22 @@ class NewEventWrapper extends React.Component {
             Minimimum tip required for request
         </div>
         <div className="NewEventWrapper--tip-container">
-            <TextField
+            {/* <TextField
               value={this.state.tipText}
               margin="normal"
               classes={{root: "NewEventWrapper--tip-text"}}
               onChange={this.tipChange}
-              InputProps={{style: {textAlign: 'start', margin: '20px 0'}}}/>
+              InputProps={{style: {textAlign: 'start', margin: '20px 0'}}}/> */}
+          <div className="NewEventWrapper--text-cont">
+            $
+            <input
+              type="number"
+              value={this.state.tipText}
+              onChange={this.tipChange}
+              className="NewEventWrapper--tip-text"
+              pattern="\d*"
+            />
+          </div>
             <Button
               variant="contained"
               color="primary"
