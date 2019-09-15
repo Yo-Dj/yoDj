@@ -111,8 +111,55 @@
         align-items: center;
         flex-direction: column;
 
-        input {
-            text-align: start !important;
+        // input {
+        //     text-align: start !important;
+        // }
+    }
+
+    &--text-cont {
+        margin: 15px 0;
+        width: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &--tip-text {
+        width: 100%;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        border-radius: 0;
+        border: none;
+        display: block;
+        box-sizing: border-box;
+        text-align: center;
+        font-size: 18px;
+        border-bottom: 1px solid white;
+        color: white;
+
+        &::-webkit-input-placeholder{
+          color: white;
+          text-align: center;
+        }
+
+        &:focus {
+          outline: none;
+        }
+
+        &:before {
+        content: "";
+        box-sizing: border-box;
+        width: 100%;
+        height: 1px;
+
+        opacity: 0;
+
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-bottom: 1px solid white;
+        padding-top: 7px;
         }
     }
 

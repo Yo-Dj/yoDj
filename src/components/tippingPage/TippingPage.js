@@ -55,7 +55,7 @@ class TippingPage extends React.Component {
     tipChange(e) {
         let {value} = e.target
         let tipText
-        let {numbersEntered, numberSubtracted} = this.state
+        let {numberSubtracted} = this.state
         if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
             let tip = parseFloat(value)
             tip = tip * 10
