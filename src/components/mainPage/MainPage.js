@@ -129,7 +129,7 @@ class MainPage extends React.Component {
         return
       }
 
-      if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
+      if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests.length > 0) {
         this.setState({
           requests: location.state.requests
         })
