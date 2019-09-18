@@ -123,6 +123,7 @@ class MainPage extends React.Component {
 
       if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' &&  this.state.requests.length === 0 && (!location.state || (location.state && location.state.requests === 0))) {
         this.props.history.push('/home')
+        console.log('REQUESTS SET EMPTY')
         this.setState({
           requests: []
         })
@@ -137,6 +138,7 @@ class MainPage extends React.Component {
       }
 
       if (this.state.requests.length !== 0 && location.pathname === '/feed' && location.state && location.state.deletingRequest) {
+        console.log('REQUEST DELETING ---> ', location.state.deletingRequest)
         let requests = this.state.requests.filter(request => request.id !== location.state.deletingRequest.id)
         this.setState({
           requests
@@ -638,6 +640,7 @@ class MainPage extends React.Component {
                   requests={requests}
                   onGoBack={this.goBackHome}
                   onLogout={this.logoutUser}
+                  onReject={this.rejectRequest}
                   />)} />
               <Route path='/accept-request' render={props =>
                   (<AcceptWrapper
