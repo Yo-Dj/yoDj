@@ -493,7 +493,11 @@ class MainPage extends React.Component {
     })
     this.setState({
       isActive: false,
-      event: {}
+      event: {},
+      requests: [],
+      activities: [],
+      acceptedSongs: [],
+      fans: []
     }, () => {
       this.props.history.push('/home')
     })
@@ -651,6 +655,7 @@ class MainPage extends React.Component {
                     request={newRequest}
                     onAccepted={this.acceptingSong}
                     onAddRequest={this.addRequestToFirebase}
+                    onReject={this.rejectRequest}
                   />)} />
               <Route path="/login" render={props => (<LoginWrapper />)} />
               <Route path="/dj-page" render={props => (

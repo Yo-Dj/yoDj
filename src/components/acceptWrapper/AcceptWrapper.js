@@ -1,4 +1,5 @@
 import React from 'react'
+import {withRouter} from 'react-router-dom'
 import Header from '../header'
 import RequestPage from './requestPage'
 import DeliverPage from './deliverPage'
@@ -52,7 +53,10 @@ class AcceptWrapper extends React.Component {
     this.props.onGoBack()
   }
 
-  decline() {
+  decline(request) {
+    console.log('DECLINE ----> ', request)
+    this.props.onReject(request)
+    this.props.history.push('/home')
   }
 
   addToFirebase() {
@@ -63,11 +67,11 @@ class AcceptWrapper extends React.Component {
     let {userInfo, request, onLogout, onGoBack} = this.props
     switch (this.state.view) {
       case 'requestPage':
-        return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} onAccept={this.accept} />)
+        return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} onAccept={this.accept} onDecline={this.decline} />)
       case 'deliverPage':
         return (<DeliverPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={this.goBackRequest} onCompleteRequest={this.addToFirebase} onCompleteGoBack={onGoBack}/>)
       default:
-        return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} />)
+        return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} onDecline={this.decline} />)
     }
   }
 
@@ -83,4 +87,4 @@ class AcceptWrapper extends React.Component {
   }
 }
 
-export default AcceptWrapper
+export default withRouter(AcceptWrapper)
