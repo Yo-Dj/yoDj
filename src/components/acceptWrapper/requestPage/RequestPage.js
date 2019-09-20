@@ -26,6 +26,7 @@ class RequestPage extends React.Component {
   }
 
   decline() {
+    this.props.onDecline(this.props.request)
   }
 
   render() {
