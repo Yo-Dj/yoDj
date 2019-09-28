@@ -37,6 +37,8 @@ class NewEventWrapper extends React.Component {
     this.selectChange = this.selectChange.bind(this)
     this.handleScriptLoad = this.handleScriptLoad.bind(this)
     this.handlePlaceSelect = this.handlePlaceSelect.bind(this)
+    this.setCursor = this.setCursor.bind(this)
+
   }
 
   handleName(e) {
@@ -57,6 +59,11 @@ class NewEventWrapper extends React.Component {
 
   profileImgClicked() {
     this.props.onLogout()
+  }
+
+  setCursor(e) {
+    let {value, selectionEnd} = e.target
+    e.target.setSelectionRange(value.length, value.length);        
   }
 
   typeChange(e) {
@@ -190,6 +197,7 @@ class NewEventWrapper extends React.Component {
               onChange={this.tipChange}
               className="NewEventWrapper--tip-text"
               pattern="\d*"
+              onClick={this.setCursor}
             />
           </div>
             <Button
