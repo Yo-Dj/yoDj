@@ -11,7 +11,6 @@ import TextField from '@material-ui/core/TextField'
 import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
-import { parse } from 'url';
 
 
 const tidal = new Tidal({
@@ -22,6 +21,7 @@ const tidal = new Tidal({
 class TippingPage extends React.Component {
     constructor(props) {
         super(props)
+        this.inputWrapper = React.createRef()
         this.tippingWrapper = React.createRef()
         this.state = {
             tipText: '0.00',
@@ -40,6 +40,7 @@ class TippingPage extends React.Component {
         this.closeError = this.closeError.bind(this)
         this.openProfile = this.openProfile.bind(this)
         this.searchSong = this.searchSong.bind(this)
+        this.setCursor = this.setCursor.bind(this)
     }
 
     leaveEvent() {
@@ -75,6 +76,12 @@ class TippingPage extends React.Component {
         })
     }
 
+    setCursor(e) {
+        let {value, selectionEnd} = e.target
+        console.log('Cal ---> ', selectionEnd)
+        e.target.setSelectionRange(value.length, value.length);        
+    }
+
     submit() {
         let {fanEvent, onSubmit} = this.props
         let tipAmount = parseFloat(this.state.tipText)
@@ -107,7 +114,7 @@ class TippingPage extends React.Component {
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
-            tipText: '',
+            tipText: '0.00',
             search: '',
             searchText: ''
         })
@@ -178,11 +185,13 @@ class TippingPage extends React.Component {
                             $
                             <div className="TippingPage--input">
                                 <input
-                                    type="number"
+                                    type="tel"
                                     value={this.state.tipText}
                                     onChange={this.tipChange}
                                     className="TippingPage--tip-text"
                                     pattern="\d*"
+                                    onClick={this.setCursor}
+                                    ref={input => this.inputWrapper = input}
                                 />
 
                             </div>
