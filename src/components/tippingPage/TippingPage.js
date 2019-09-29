@@ -221,15 +221,15 @@ class TippingPage extends React.Component {
                     <div className="TippingPage--search-container">
                         <div className="TippingPage--music-icon" />
                         <div className="TippingPage--search-input">
-                                {/* <TextField
+                                <TextField
                                     value={this.state.searchText}
                                     margin="normal"
                                     placeholder="Search song, artist, album"
                                     onChange={this.search}
                                     classes={{root: "TippingPage--search-text"}}
                                     InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
-                                /> */}
-                        <DropdownList
+                                />
+                        {/* <DropdownList
                             busy={this.state.busySpinner}
                             filter
                             // dropUp
@@ -238,7 +238,7 @@ class TippingPage extends React.Component {
                             onChange={this.search}
                             allowCreate={false}
                             data={this.state.data}
-                        />
+                        /> */}
                         </div>
                     </div>
                     <div className="TippingPage--submit-button">
