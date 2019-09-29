@@ -8,11 +8,16 @@ import CloseIcon from '@material-ui/icons/Close'
 import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
 // import DropdownInput from 'react-dropdown-input'
-import DropdownList from 'react-widgets/lib/DropdownList'
+// import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
 import ScrollToBottom, {useScrollToBottom, useSticky} from 'react-scroll-to-bottom';
-
+import Select from 'react-select'
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' },
+]
 
 
 const tidal = new Tidal({
@@ -33,7 +38,8 @@ class TippingPage extends React.Component {
             busySpinner: false,
             data: [],
             search: '',
-            numberSubtracted: false
+            numberSubtracted: false,
+            searchDropdown: null
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
@@ -229,7 +235,7 @@ class TippingPage extends React.Component {
                                     classes={{root: "TippingPage--search-text"}}
                                     InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
                                 /> */}
-                        <DropdownList
+                        {/* <DropdownList
                             busy={this.state.busySpinner}
                             filter
                             // dropUp
@@ -238,6 +244,12 @@ class TippingPage extends React.Component {
                             onChange={this.search}
                             allowCreate={true}
                             data={this.state.data}
+                        /> */}
+                        <Select
+                            className="TippingPage--dropdown"
+                            value={this.state.searchDropdown}
+                            options={options}
+                            onChange={e => this.setState({searchDropdown: e})}
                         />
                         </div>
                     </div>
