@@ -225,7 +225,7 @@ class TippingPage extends React.Component {
                                     value={this.state.searchText}
                                     margin="normal"
                                     placeholder="Search song, artist, album"
-                                    onChange={this.search}
+                                    onChange={e => this.setState({searchText: e.target.value})}
                                     classes={{root: "TippingPage--search-text"}}
                                     InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
                                 />
