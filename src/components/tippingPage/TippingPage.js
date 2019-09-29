@@ -41,6 +41,7 @@ class TippingPage extends React.Component {
         this.openProfile = this.openProfile.bind(this)
         this.searchSong = this.searchSong.bind(this)
         this.setCursor = this.setCursor.bind(this)
+        this.scrollToBottom = this.scrollToBottom.bind(this)
     }
 
     leaveEvent() {
@@ -48,6 +49,7 @@ class TippingPage extends React.Component {
     }
 
     search(e) {
+        console.log('SEARCH E ----> ', e)
         this.setState({
             search: e
         })
@@ -78,7 +80,6 @@ class TippingPage extends React.Component {
 
     setCursor(e) {
         let {value, selectionEnd} = e.target
-        console.log('Cal ---> ', selectionEnd)
         e.target.setSelectionRange(value.length, value.length);        
     }
 
@@ -116,7 +117,8 @@ class TippingPage extends React.Component {
             errorMessage: 'Your request successfully submitted',
             tipText: '0.00',
             search: '',
-            searchText: ''
+            searchText: '',
+            data: []
         })
     }
 
@@ -149,6 +151,10 @@ class TippingPage extends React.Component {
         })
     }
 
+    scrollToBottom() {
+        this.tippingWrapper.scrollIntoView({ behavior: "smooth" });
+    }
+
     render() {
         let {fanEvent, userInfo, allDjs} = this.props
         let eventDj = allDjs.reduce((acc, dj) => {
@@ -162,6 +168,7 @@ class TippingPage extends React.Component {
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
+                <div onClick={this.scrollToBottom}>Click me</div>
                 <div className="TippingPage__fan-container">
                     <div className="TippingPage--icon-container">
                         <div className="TippingPage--headset">
@@ -191,7 +198,6 @@ class TippingPage extends React.Component {
                                     className="TippingPage--tip-text"
                                     pattern="\d*"
                                     onClick={this.setCursor}
-                                    ref={input => this.inputWrapper = input}
                                 />
 
                             </div>
@@ -218,9 +224,9 @@ class TippingPage extends React.Component {
                         <DropdownList
                             busy={this.state.busySpinner}
                             filter
-                            dropUp
+                            // dropUp
                             onSearch={this.searchSong}
-                            value={this.state.e}
+                            value={this.state.search}
                             onChange={this.search}
                             allowCreate={false}
                             data={this.state.data}
