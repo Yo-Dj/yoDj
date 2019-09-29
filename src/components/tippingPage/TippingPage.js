@@ -144,6 +144,7 @@ class TippingPage extends React.Component {
         let data = artists.map(song => {
             return `${song.title} by ${song.artist.name}`
         })
+        document.getElementsByClassName('rw-input-reset')[0].focus()
         this.setState({
             searchText,
             busySpinner: false,
