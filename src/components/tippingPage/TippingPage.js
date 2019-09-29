@@ -11,6 +11,8 @@ import TextField from '@material-ui/core/TextField'
 import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
+import ScrollToBottom, {useScrollToBottom, useSticky} from 'react-scroll-to-bottom';
+
 
 
 const tidal = new Tidal({
@@ -145,6 +147,11 @@ class TippingPage extends React.Component {
             return `${song.title} by ${song.artist.name}`
         })
         document.getElementsByClassName('rw-input-reset')[0].focus()
+        // useScrollToBottom()
+        // const scrollToBottom = useScrollToBottom();
+        // console.log('Scroll TO BOTTOM ---> ', scrollToBottom)
+
+        this.scrollToBottom()
         this.setState({
             searchText,
             busySpinner: false,
@@ -169,6 +176,7 @@ class TippingPage extends React.Component {
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
+                <ScrollToBottom>
                 <div className="TippingPage__fan-container">
                     <div className="TippingPage--icon-container">
                         <div className="TippingPage--headset">
@@ -263,6 +271,7 @@ class TippingPage extends React.Component {
                         <CloseIcon />
                       </IconButton>
                   ]} />
+                </ScrollToBottom>
             </div>
         )
     }
