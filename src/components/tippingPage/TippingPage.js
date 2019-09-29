@@ -168,7 +168,6 @@ class TippingPage extends React.Component {
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
-                <div onClick={this.scrollToBottom}>Click me</div>
                 <div className="TippingPage__fan-container">
                     <div className="TippingPage--icon-container">
                         <div className="TippingPage--headset">
