@@ -7,18 +7,10 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
-// import DropdownInput from 'react-dropdown-input'
-// import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
 import ScrollToBottom, {useScrollToBottom, useSticky} from 'react-scroll-to-bottom';
-import Select from 'react-select'
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' },
-]
-
+import AsyncSelect from 'react-select/async';
 
 const tidal = new Tidal({
     countryCode: 'US',
@@ -36,7 +28,7 @@ class TippingPage extends React.Component {
             isError: false,
             errorMessage: '',
             busySpinner: false,
-            data: [],
+            options: [],
             search: '',
             numberSubtracted: false,
             searchDropdown: null
@@ -50,6 +42,9 @@ class TippingPage extends React.Component {
         this.searchSong = this.searchSong.bind(this)
         this.setCursor = this.setCursor.bind(this)
         this.scrollToBottom = this.scrollToBottom.bind(this)
+        this.inputChange = this.inputChange.bind(this)
+        this.songSelected = this.songSelected.bind(this)
+        this.loadOptions = this.loadOptions.bind(this)
     }
 
     leaveEvent() {
@@ -57,7 +52,6 @@ class TippingPage extends React.Component {
     }
 
     search(e) {
-        console.log('SEARCH E ----> ', e)
         this.setState({
             search: e
         })
@@ -109,7 +103,7 @@ class TippingPage extends React.Component {
             errorMessage = 'Tip Amount is below Minimum'
             isError = true
         }
-        if (this.state.search === '') {
+        if (this.state.searchText === '') {
             errorMessage = 'Enter music or an album!'
             isError = true
         }
@@ -119,14 +113,15 @@ class TippingPage extends React.Component {
             errorMessage
         })
         if (isError) return
-        onSubmit({tipAmount, music: this.state.search})
+        onSubmit({tipAmount, music: this.state.searchText})
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
             tipText: '0.00',
             search: '',
             searchText: '',
-            data: []
+            options: [],
+            searchDropdown: null
         })
     }
 
@@ -142,31 +137,35 @@ class TippingPage extends React.Component {
     }
 
     async searchSong(searchText) {
-        if (this.tippingWrapper) {
-            this.tippingWrapper.scrollIntoView({ behavior: "smooth" })
-        }
-        this.setState({
-            busySpinner: true
-        })
         const artists = await tidal.search(searchText, 'tracks', 5)
         let data = artists.map(song => {
             return `${song.title} by ${song.artist.name}`
         })
-        document.getElementsByClassName('rw-input-reset')[0].focus()
-        // useScrollToBottom()
-        // const scrollToBottom = useScrollToBottom();
-        // console.log('Scroll TO BOTTOM ---> ', scrollToBottom)
+        return data.map(song => ({value: song, label: song}))
+    }
 
-        this.scrollToBottom()
-        this.setState({
-            searchText,
-            busySpinner: false,
-            data
-        })
+     inputChange(e) {
+        return e
     }
 
     scrollToBottom() {
         this.tippingWrapper.scrollIntoView({ behavior: "smooth" });
+    }
+
+    songSelected(e) {
+        let {searchText} = this.state
+        if (Object.keys(e).length > 0) {
+            searchText = e.value
+        }
+        this.setState({
+            searchDropdown: e,
+            searchText
+        })
+    }
+    
+     async loadOptions (inputValue, callback) {
+        let data = await this.searchSong(inputValue)
+        callback(data);
     }
 
     render() {
@@ -245,11 +244,27 @@ class TippingPage extends React.Component {
                             allowCreate={true}
                             data={this.state.data}
                         /> */}
-                        <Select
+                        <AsyncSelect
                             className="TippingPage--dropdown"
                             value={this.state.searchDropdown}
-                            options={options}
-                            onChange={e => this.setState({searchDropdown: e})}
+                            isSearchable
+                            onChange={this.songSelected}
+                            cacheOptions
+                            onInputChange={this.inputChange}
+                            autoFocus={true}
+                            loadOptions={this.loadOptions}
+                            styles={{option: (provided, state) => ({
+                                ...provided,
+                                color: 'black',
+                                fontWeight: 'bold'
+                              })
+                            }
+                            }
+                            placeholder="Choose the song"
+                            // onChange={e => this.setState({searchDropdown: e})}
+                            components={{
+                                IndicatorSeparator: () => null
+                              }}
                         />
                         </div>
                     </div>
