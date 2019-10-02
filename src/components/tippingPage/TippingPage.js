@@ -59,24 +59,24 @@ class TippingPage extends React.Component {
 
     tipChange(e) {
         let {value} = e.target
-        let tipText
-        let {numberSubtracted} = this.state
-        if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
-            let tip = parseFloat(value)
-            tip = tip * 10
-            tipText = tip.toFixed(2).toString()
-        } else if (numberSubtracted) {
-            let tip = parseFloat(value)
-            tipText = tip.toFixed(2).toString()
-            numberSubtracted = false
-        } else if (!numberSubtracted){
-            tipText = value
-            numberSubtracted = true
-        }
+        // let tipText
+        // let {numberSubtracted} = this.state
+        // if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
+        //     let tip = parseFloat(value)
+        //     tip = tip * 10
+        //     tipText = tip.toFixed(2).toString()
+        // } else if (numberSubtracted) {
+        //     let tip = parseFloat(value)
+        //     tipText = tip.toFixed(2).toString()
+        //     numberSubtracted = false
+        // } else if (!numberSubtracted){
+        //     tipText = value
+        //     numberSubtracted = true
+        // }
 
         this.setState({
             numberSubtracted,
-            tipText
+            tipText: value
         })
     }
 
@@ -205,12 +205,14 @@ class TippingPage extends React.Component {
                             $
                             <div className="TippingPage--input">
                                 <input
-                                    type="tel"
+                                    type="text"
+                                    inputMode="decimanl"
                                     value={this.state.tipText}
                                     onChange={this.tipChange}
                                     className="TippingPage--tip-text"
                                     pattern="\d*"
                                     onClick={this.setCursor}
+                                    placeholder="0.00"
                                 />
 
                             </div>
@@ -226,46 +228,28 @@ class TippingPage extends React.Component {
                     <div className="TippingPage--search-container">
                         <div className="TippingPage--music-icon" />
                         <div className="TippingPage--search-input">
-                                {/* <TextField
-                                    value={this.state.searchText}
-                                    margin="normal"
-                                    placeholder="Search song, artist, album"
-                                    onChange={e => this.setState({searchText: e.target.value})}
-                                    classes={{root: "TippingPage--search-text"}}
-                                    InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
-                                /> */}
-                        {/* <DropdownList
-                            busy={this.state.busySpinner}
-                            filter
-                            // dropUp
-                            onSearch={this.searchSong}
-                            value={this.state.search}
-                            onChange={this.search}
-                            allowCreate={true}
-                            data={this.state.data}
-                        /> */}
-                        <AsyncSelect
-                            className="TippingPage--dropdown"
-                            value={this.state.searchDropdown}
-                            isSearchable
-                            onChange={this.songSelected}
-                            cacheOptions
-                            onInputChange={this.inputChange}
-                            autoFocus={true}
-                            loadOptions={this.loadOptions}
-                            styles={{option: (provided, state) => ({
-                                ...provided,
-                                color: 'black',
-                                fontWeight: 'bold'
-                              })
-                            }
-                            }
-                            placeholder="Choose the song"
-                            // onChange={e => this.setState({searchDropdown: e})}
-                            components={{
-                                IndicatorSeparator: () => null
-                              }}
-                        />
+                            <AsyncSelect
+                                className="TippingPage--dropdown"
+                                value={this.state.searchDropdown}
+                                isSearchable
+                                onChange={this.songSelected}
+                                cacheOptions
+                                onInputChange={this.inputChange}
+                                autoFocus={true}
+                                loadOptions={this.loadOptions}
+                                styles={{option: (provided, state) => ({
+                                    ...provided,
+                                    color: 'black',
+                                    fontWeight: 'bold'
+                                })
+                                }
+                                }
+                                placeholder="Choose the song"
+                                // onChange={e => this.setState({searchDropdown: e})}
+                                components={{
+                                    IndicatorSeparator: () => null
+                                }}
+                            />
                         </div>
                     </div>
                     <div className="TippingPage--submit-button">
