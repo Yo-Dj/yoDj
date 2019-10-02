@@ -1,5 +1,6 @@
 import React from 'react'
 import Tidal from 'tidal-api-wrapper'
+import NumberFormat from 'react-number-format';
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
@@ -23,7 +24,7 @@ class TippingPage extends React.Component {
         this.inputWrapper = React.createRef()
         this.tippingWrapper = React.createRef()
         this.state = {
-            tipText: '0.00',
+            tipText: '',
             searchText: '',
             isError: false,
             errorMessage: '',
@@ -73,9 +74,9 @@ class TippingPage extends React.Component {
         //     tipText = value
         //     numberSubtracted = true
         // }
-
+        console.log('Tip change e ---> ', value)
         this.setState({
-            numberSubtracted,
+            // numberSubtracted,
             tipText: value
         })
     }
@@ -117,7 +118,7 @@ class TippingPage extends React.Component {
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
-            tipText: '0.00',
+            tipText: '',
             search: '',
             searchText: '',
             options: [],
@@ -178,6 +179,16 @@ class TippingPage extends React.Component {
         }, {})
         let tip = parseFloat(fanEvent.tipAmount).toFixed(2)
         let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
+
+        const customInput = (<input 
+            type="text"
+            inputMode="decimanl"
+            value={this.state.tipText}
+            onChange={this.tipChange}
+            className="TippingPage--tip-text"
+            pattern="\d*"
+            onClick={this.setCursor}
+            placeholder="0.00" />)
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
@@ -204,7 +215,7 @@ class TippingPage extends React.Component {
                         <div className="TippingPage--input-container">
                             $
                             <div className="TippingPage--input">
-                                <input
+                                {/* <input
                                     type="text"
                                     inputMode="decimanl"
                                     value={this.state.tipText}
@@ -213,8 +224,19 @@ class TippingPage extends React.Component {
                                     pattern="\d*"
                                     onClick={this.setCursor}
                                     placeholder="0.00"
-                                />
-
+                                /> */}
+                                <NumberFormat 
+                                    value={this.state.tipText} 
+                                    className="TippingPage--tip-text"
+                                    placeholder="0.00"
+                                    onValueChange={
+                                        value => {
+                                            this.setState({
+                                                tipText: value.formattedValue
+                                            })
+                                        }
+                                    } 
+                                id="numberFormat" decimalSeparator="." thousandSeparator="," inputMode="decimal" pattern="[0-9],*" />
                             </div>
                             <div className="TippingPage--user-icon">
                                 <svg className="TippingPage--sample-user" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26"><path d="M15 2H3c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zM9 4.75c1.24 0 2.25 1.01 2.25 2.25S10.24 9.25 9 9.25 6.75 8.24 6.75 7 7.76 4.75 9 4.75zM13.5 14h-9v-.75c0-1.5 3-2.25 4.5-2.25s4.5.75 4.5 2.25V14z"/></svg>

@@ -64,7 +64,7 @@
     "react-dom-factories": "^1.0.2",
     "react-dropdown-input": "^0.1.11",
     "react-load-script": "0.0.6",
-    "react-number-format": "^4.0.7",
+    "react-number-format": "^4.3.0",
     "react-payment-icons": "^1.2.6",
     "react-phone-input-auto-format": "^0.1.0",
     "react-redux": "^6.0.0",
