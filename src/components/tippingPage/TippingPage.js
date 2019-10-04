@@ -216,15 +216,13 @@ class TippingPage extends React.Component {
                             $
                             <div className="TippingPage--input">
                                 <input
-                                    type="text"
-                                    inputMode="decimal"
+                                    type="text" inputmode="decimal" 
+                                    // type="text"
+                                    // inputMode="decimal"
                                     value={this.state.tipText}
                                     onChange={this.tipChange}
                                     className="TippingPage--tip-text"
-                                    pattern="\d*"
-                                    onClick={this.setCursor}
                                     placeholder="0.00"
-                                    step="0.01"
                                 />
                                 {/* <NumberFormat 
                                     value={this.state.tipText} 
