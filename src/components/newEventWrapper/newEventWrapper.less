@@ -110,10 +110,6 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-
-        // input {
-        //     text-align: start !important;
-        // }
     }
 
     &--text-cont {
@@ -139,7 +135,7 @@
         color: white;
 
         &::-webkit-input-placeholder{
-          color: white;
+          color: #555;
           text-align: center;
         }
 
@@ -206,6 +202,10 @@
         &--tip-container {
             padding-bottom: 20px;
         }
+
+        &--text-cont {
+            width: 70px;
+        }
     }
 
     .MuiFormControl-marginNormal-11, .MuiFormControl-marginNormal-126 {
@@ -237,10 +237,27 @@
         &--tip-container {
             padding-bottom: 20px;
         }
+
+        &--text-cont {
+            width: 100px;
+        }
     }
 
     .MuiFormControl-marginNormal-11, .MuiFormControl-marginNormal-126 {
         margin-top: 0 !important;
+    }
+}
+
+@media only screen 
+    and (device-width : 414px) 
+    and (device-height : 736px) 
+    and (-webkit-device-pixel-ratio : 3) { 
+
+    .NewEventWrapper {
+        &--text-cont {
+            width: 120px;
+            margin-bottom: 25px;
+        } 
     }
 }
 
@@ -261,6 +278,11 @@
 
         &--tip-title {
             margin-top: 50px;
+        }
+
+        &--text-cont {
+            width: 120px;
+            margin-bottom: 40px;
         }
     }
 }
