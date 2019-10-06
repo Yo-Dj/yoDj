@@ -101,20 +101,23 @@ class NewEventWrapper extends React.Component {
   }
 
   createEvent() {
-    let {placeName, location, type, tipAmount} = this.state
+    let {placeName, location, type, tipAmount, tipText} = this.state
+    console.log('PROPS ----> ', this.props)
     let {userId} = this.props
-    if (placeName !== '' && location !== '' && type !== '' && tipAmount !== '' ) {
+    if (placeName !== '' && location !== '' && type !== '' && tipText !== '' ) {
       let now = new Date().getTime()
       let newRequest = {
         placeName,
         address: location,
         type,
-        tipAmount,
+        tipAmount: parseFloat(tipText).toFixed(2).toString(),
         startDate: now
       }
       let venue = firebase.database().ref('venues').push({...newRequest, dj: userId})
       newRequest.requestId = venue.key
+      console.log('User ID ---> ', userId)
       firebase.database().ref(`users/${userId}/event`).set(newRequest,  error => {
+        console.log('Error ---> ', error)
         if (!error) {
           this.props.history.push('/home')
         }
@@ -193,7 +196,7 @@ class NewEventWrapper extends React.Component {
           <div className="NewEventWrapper--text-cont">
             $
             <input
-              type="text" inputmode="decimal" 
+              type="text" inputMode="decimal" 
               value={this.state.tipText}
               onChange={this.tipChange}
               className="NewEventWrapper--tip-text"
