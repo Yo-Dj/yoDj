@@ -23,7 +23,7 @@ class NewEventWrapper extends React.Component {
       placeName: '',
       location: '',
       type: '',
-      tipText: '0.00',
+      tipText: '',
       tipAmount: '',
       numberSubtracted: false
     }
@@ -75,27 +75,28 @@ class NewEventWrapper extends React.Component {
   tipChange(e) {
     let {value} = e.target
     let tipText
-    let {numberSubtracted} = this.state
-    if (value[0] === '$') {
-      value = value.slice(1)
-    }
-    if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
-      let tip = parseFloat(value)
-      tip = tip * 10
-      tipText = tip.toFixed(2).toString()
-    } else if (numberSubtracted) {
-        let tip = parseFloat(value)
-        tipText = tip.toFixed(2).toString()
-        numberSubtracted = false
-    } else if (!numberSubtracted){
-        tipText = value
-        numberSubtracted = true
-    }
+    // let {numberSubtracted} = this.state
+    // if (value[0] === '$') {
+    //   value = value.slice(1)
+    // }
+    // if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
+    //   let tip = parseFloat(value)
+    //   tip = tip * 10
+    //   tipText = tip.toFixed(2).toString()
+    // } else if (numberSubtracted) {
+    //     let tip = parseFloat(value)
+    //     tipText = tip.toFixed(2).toString()
+    //     numberSubtracted = false
+    // } else if (!numberSubtracted){
+    //     tipText = value
+    //     numberSubtracted = true
+    // }
 
   this.setState({
-      numberSubtracted,
-      tipText,
-      tipAmount: parseFloat(tipText)
+      // numberSubtracted,
+      // tipText,
+      // tipAmount: parseFloat(tipText)
+      tipText: value
     })
   }
 
@@ -192,12 +193,12 @@ class NewEventWrapper extends React.Component {
           <div className="NewEventWrapper--text-cont">
             $
             <input
-              type="number"
+              type="text" inputmode="decimal" 
               value={this.state.tipText}
               onChange={this.tipChange}
               className="NewEventWrapper--tip-text"
               pattern="\d*"
-              onClick={this.setCursor}
+              placeholder="0.00"
             />
           </div>
             <Button
