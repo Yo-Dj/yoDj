@@ -60,24 +60,16 @@ class TippingPage extends React.Component {
 
     tipChange(e) {
         let {value} = e.target
-        // let tipText
-        // let {numberSubtracted} = this.state
-        // if (value.length > this.state.tipText.toString().length && !numberSubtracted) {
-        //     let tip = parseFloat(value)
-        //     tip = tip * 10
-        //     tipText = tip.toFixed(2).toString()
-        // } else if (numberSubtracted) {
-        //     let tip = parseFloat(value)
-        //     tipText = tip.toFixed(2).toString()
-        //     numberSubtracted = false
-        // } else if (!numberSubtracted){
-        //     tipText = value
-        //     numberSubtracted = true
-        // }
-        console.log('Tip change e ---> ', value)
+        let tipText = value
+        let arr = value.split('.')
+        if (arr.length > 1) {
+          if (arr[1].length > 2) {
+            tipText = parseFloat(value).toFixed(2)
+          }
+        }
+    
         this.setState({
-            // numberSubtracted,
-            tipText: value
+            tipText
         })
     }
 
@@ -245,7 +237,6 @@ class TippingPage extends React.Component {
                                 onChange={this.songSelected}
                                 cacheOptions
                                 onInputChange={this.inputChange}
-                                autoFocus={true}
                                 loadOptions={this.loadOptions}
                                 styles={{option: (provided, state) => ({
                                     ...provided,
