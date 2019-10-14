@@ -33,7 +33,8 @@ class FanHomepage extends React.Component {
             }
             return acc
         }, {})
-
+        console.log(onlineDjs)
+        let performingDJs = Object.values(onlineDjs)
         return (
             <div className="FanHomepage">
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={false}/>
@@ -44,7 +45,7 @@ class FanHomepage extends React.Component {
                     </div>
                     <div className="FanHomepage--djs-container">
                         {
-                            djs.map((dj, index) => (
+                            performingDJs.map((dj, index) => (
                                 <div className="FanHomepage--dj" key={index} onClick={() => this.selectEvent(dj,onlineDjs[dj.userId])}>
                                     <div className="FanHomepage--icon-container">
                                         <div className="FanHomepage--headset">

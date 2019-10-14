@@ -25,7 +25,8 @@ class NewEventWrapper extends React.Component {
       type: '',
       tipText: '',
       tipAmount: '',
-      numberSubtracted: false
+      numberSubtracted: false,
+      eventName: ''
     }
     this.profileImgClicked = this.profileImgClicked.bind(this)
     this.handleName = this.handleName.bind(this)
@@ -41,7 +42,25 @@ class NewEventWrapper extends React.Component {
 
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    let {type, placeName} = this.state
+    if (prevState.type !== type && type === 'Party') {
+      google.maps.event.clearInstanceListeners(document.getElementById('autocomplete'))
+    }
+    else if (prevState.type !== type && type === 'Venue') {
+      var options = {componentRestrictions: {country: 'us'}}
+      this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), options)
+      this.autocomplete.addListener('place_changed', this.handlePlaceSelect)
+    }
+    else if (prevState.placeName !== placeName) {
+      this.setState({
+        eventName: placeName.charAt(0).toUpperCase()
+      })
+    }
+  }
+
   handleName(e) {
+    let {type} = this.state
     this.setState({
       placeName: e.target.value
     })
@@ -89,7 +108,6 @@ class NewEventWrapper extends React.Component {
 
   createEvent() {
     let {placeName, location, type, tipAmount, tipText} = this.state
-    console.log('PROPS ----> ', this.props)
     let {userId} = this.props
     if (placeName !== '' && location !== '' && type !== '' && tipText !== '' ) {
       let now = new Date().getTime()
@@ -102,9 +120,7 @@ class NewEventWrapper extends React.Component {
       }
       let venue = firebase.database().ref('venues').push({...newRequest, dj: userId})
       newRequest.requestId = venue.key
-      console.log('User ID ---> ', userId)
       firebase.database().ref(`users/${userId}/event`).set(newRequest,  error => {
-        console.log('Error ---> ', error)
         if (!error) {
           this.props.history.push('/home')
         }
@@ -119,26 +135,32 @@ class NewEventWrapper extends React.Component {
   }
 
   handleScriptLoad() {
-    var options = {componentRestrictions: {country: 'us'}}
-    this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), options)
-    this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
+    let {type} = this.state
+    if (type !== 'Party') {
+      var options = {componentRestrictions: {country: 'us'}}
+      this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), options)
+      this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
+    }
   }
 
   handlePlaceSelect() {
-    let addressObject = this.autocomplete.getPlace()
-    let address = addressObject.formatted_address
-
-    if (address) {
-      this.setState({
-        location: address,
-        placeName: addressObject.name
-      })
+    if (this.autocomplete) {
+      let addressObject = this.autocomplete.getPlace()
+      let address = addressObject.formatted_address
+  
+      if (address) {
+        this.setState({
+          location: address,
+          placeName: addressObject.name
+        })
+      }
     }
 
   }
 
   render() {
     let {userInfo} = this.props
+    let {type, eventName} = this.state
     return (
       <div className="NewEventWrapper">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.profileImgClicked} isActive={false} onClick={() => {}}/>
@@ -148,10 +170,10 @@ class NewEventWrapper extends React.Component {
        </div>
        <div className="NewEventWrapper__container">
         <h3>Event</h3>
-        <div className="NewEventWrapper--icon" />
+        <div className="NewEventWrapper--icon">{eventName}</div>
           <Script url={`https://maps.googleapis.com/maps/api/js?key=${googlePlaces}&libraries=places`}
-              onLoad={this.handleScriptLoad}
-          />
+                  onLoad={this.handleScriptLoad}
+            />
         <TextField
           id="autocomplete"
           value={this.state.placeName}
