@@ -15,10 +15,18 @@ class FeedContainer extends React.Component {
   }
 
   handleRequest(type, selectedRequest) {
-    this.setState({
-      selectedRequest
-    })
-    this.props.onRequestOpen(true, type)
+    let {acceptedSongs, onRequestOpen, onError} = this.props
+    console.log('Handle Request Props ---> ', this.props)
+    if (acceptedSongs.length < 1) {
+      this.setState({
+        selectedRequest
+      })
+      // console.log('Request Open ---> ', this.props)
+      onRequestOpen(true, type)
+    } else {
+      onError('Dj can only accept one request at a time')
+      console.log('Show Show Error Message')
+    }
   }
 
   handleClose() {
