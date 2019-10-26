@@ -32,7 +32,8 @@ class TippingPage extends React.Component {
             options: [],
             search: '',
             numberSubtracted: false,
-            searchDropdown: null
+            searchDropdown: null,
+            tipWithNoSong: false
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
@@ -46,6 +47,8 @@ class TippingPage extends React.Component {
         this.inputChange = this.inputChange.bind(this)
         this.songSelected = this.songSelected.bind(this)
         this.loadOptions = this.loadOptions.bind(this)
+        this.handleTip = this.handleTip.bind(this)
+        this.handleCancel = this.handleCancel.bind(this)
     }
 
     leaveEvent() {
@@ -84,6 +87,7 @@ class TippingPage extends React.Component {
         let eventTip = parseFloat(fanEvent.tipAmount)
         let errorMessage = ''
         let isError = false
+        let tipWithNoSong = false
         if (!tipAmount && tipAmount !== 0) {
             errorMessage = 'Tip Container should not be empty'
             isError = true
@@ -97,13 +101,15 @@ class TippingPage extends React.Component {
             isError = true
         }
         if (this.state.searchText === '') {
-            errorMessage = 'Enter music or an album!'
+            errorMessage = 'Are you sure you don\'t want to add music request?' 
+            tipWithNoSong = true
             isError = true
         }
 
         this.setState({
             isError,
-            errorMessage
+            errorMessage,
+            tipWithNoSong
         })
         if (isError) return
         onSubmit({tipAmount, music: this.state.searchText})
@@ -115,6 +121,30 @@ class TippingPage extends React.Component {
             searchText: '',
             options: [],
             searchDropdown: null
+        })
+    }
+
+    handleTip() {
+        let {onSubmit} = this.props
+        let tipAmount = parseFloat(this.state.tipText)
+        onSubmit({tipAmount, music: ''})
+        this.setState({
+            isError: true,
+            errorMessage: 'You tipped the DJ!',
+            tipWithNoSong: false,
+            tipText: '',
+            search: '',
+            searchText: '',
+            options: [],
+            searchDropdown: null
+        })
+    }
+
+    handleCancel() {
+        this.setState({
+            isError: false,
+            errorMessage: '',
+            tipWithNoSong: false
         })
     }
 
@@ -184,7 +214,6 @@ class TippingPage extends React.Component {
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
-                <ScrollToBottom>
                 <div className="TippingPage__fan-container">
                     <div className="TippingPage--icon-container">
                         <div className="TippingPage--headset">
@@ -265,25 +294,44 @@ class TippingPage extends React.Component {
                     horizontal: 'left'
                   }}
                   open={this.state.isError}
-                  autoHideDuration={3000}
+                  autoHideDuration={8000}
                   onClose={this.closeError}
                   ContentProps={{
                     'aria-describedby': 'message-id'
                 }}
                 variant="error"
 
-                  message={<span id="message-id">{this.state.errorMessage}</span>}
-                  action={[
-                      <IconButton
-                        key="close"
-                        arial-label="Close"
-                        color="inherit"
-                        onClick={this.closeError}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                  ]} />
-                </ScrollToBottom>
+                  message={
+                    this.state.tipWithNoSong
+                    ?  (
+                        <div className="TippingPage--tip-message">
+                            <div className="TippingPage--tip-title">{this.state.errorMessage}</div>
+                            <div className="TippingPage--actions-container">
+                                <Button variant="contained" color="primary" classes={{root: 'TippingPage--button', label: 'TippingPage--button-label'}} onClick={this.handleTip}>
+                                    Tip
+                                </Button>
+                                <div className="TippingPage--cancel-btn">
+                                    <Button variant="contained" color="primary" classes={{root: 'TippingPage--button', label: 'TippingPage--button-label'}} onClick={this.handleCancel}>
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>)
+                    : (<span id="message-id">{this.state.errorMessage}</span>)}
+                  action={
+                    !this.state.tipWithNoSong
+                    ?  [  
+                            <IconButton
+                                key="close"
+                                arial-label="Close"
+                                color="inherit"
+                                onClick={this.closeError}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        ]
+                    : []  
+                } />
             </div>
         )
     }

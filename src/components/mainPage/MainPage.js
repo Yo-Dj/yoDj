@@ -639,6 +639,7 @@ class MainPage extends React.Component {
                 )}/>
               <Route path="/feed" render={props =>
                 (<FeedPage
+                  acceptedSongs={acceptedSongs}
                   userInfo={userInfo}
                   isActive={this.state.isActive}
                   requests={requests}

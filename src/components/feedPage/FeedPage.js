@@ -1,6 +1,9 @@
 import React from 'react'
 import {withRouter} from 'react-router-dom'
 import Icon from '@material-ui/core/Icon'
+import Snackbar from '@material-ui/core/Snackbar'
+import CloseIcon from '@material-ui/icons/Close' 
+import IconButton from '@material-ui/core/IconButton'
 import Header from '../header'
 import SongContainer from './songContainer';
 import ActivityContainer from './activityContainer';
@@ -9,17 +12,30 @@ class FeedPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedRequest: {}
+      selectedRequest: {},
+      isError: false,
+      errorMessage: ''
     }
     this.openProfile = this.openProfile.bind(this)
     this.handleRequest = this.handleRequest.bind(this)
     this.close = this.close.bind(this)
+    this.closeError = this.closeError.bind(this)
   }
 
   handleRequest(type, selectedRequest) {
+    let {acceptedSongs} = this.props
     this.setState({
       selectedRequest
     })
+    console.log('Accepted SOngs ---> ', acceptedSongs)
+    if (type === 'accept' && acceptedSongs.length === 1) {
+      console.log('ErrorShow -> ')
+      this.setState({
+        errorMessage: 'Dj can only accept one request at a time',
+        isError: true
+      })
+      return
+    }
     if (type === 'accept') {
       this.props.history.push({
         pathname:'/accept-request',
@@ -36,6 +52,13 @@ class FeedPage extends React.Component {
 
   componentDidMount() {
 
+  }
+
+  closeError() {
+    this.setState({
+      isError: false,
+      errorMessage: ''
+    })
   }
 
   openProfile() {
@@ -63,6 +86,30 @@ class FeedPage extends React.Component {
             ))
           }
        </div>
+       <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          open={this.state.isError}
+          autoHideDuration={3000}
+          onClose={this.closeError}
+          ContentProps={{
+            'aria-describedby': 'message-id'
+        }}
+        variant="error"
+
+          message={<span id="message-id">{this.state.errorMessage}</span>}
+          action={[
+              <IconButton
+                key="close"
+                arial-label="Close"
+                color="inherit"
+                onClick={this.closeError}
+              >
+                <CloseIcon />
+              </IconButton>
+          ]} />
       </div>
     )
   }
