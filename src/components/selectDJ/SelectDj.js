@@ -37,8 +37,13 @@ class SelectDj extends React.Component {
   }
 
   render() {
-    let {userInfo, djs} = this.props
-    let onlineDjs = djs.filter(dj => dj.event)
+    let {userInfo, djs, allEvents} = this.props
+    let onlineDjs = djs.reduce((acc, el) => {
+      if (el.event && allEvents[el.event.requestId] && allEvents[el.event.requestId].tipAmount) {
+          acc.push(el) 
+      }
+      return acc
+    }, [])
 
     return(
       <div className="SelectDj">
