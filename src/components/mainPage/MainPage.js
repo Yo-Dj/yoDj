@@ -34,8 +34,10 @@ class MainPage extends React.Component {
       joined: false,
       activities: [],
       fans: [],
-      acceptedSongs: []
+      acceptedSongs: [],
+      allEvents: [],
     }
+    this.eventsListener = null
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
     this.logoutUser = this.logoutUser.bind(this)
@@ -59,11 +61,17 @@ class MainPage extends React.Component {
     this.rejectRequest = this.rejectRequest.bind(this)
     this.logout = this.logout.bind(this)
     this.addCard = this.addCard.bind(this)
+    this.getAllEvents = this.getAllEvents.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
+    this.getAllEvents()
   }
+
+  componentWillUnmount() {
+    firebase.database().ref('venues').off('value', this.eventsListener)
+  }  
 
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
@@ -123,7 +131,6 @@ class MainPage extends React.Component {
 
       if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' &&  this.state.requests.length === 0 && (!location.state || (location.state && location.state.requests === 0))) {
         this.props.history.push('/home')
-        console.log('REQUESTS SET EMPTY')
         this.setState({
           requests: []
         })
@@ -138,7 +145,6 @@ class MainPage extends React.Component {
       }
 
       if (this.state.requests.length !== 0 && location.pathname === '/feed' && location.state && location.state.deletingRequest) {
-        console.log('REQUEST DELETING ---> ', location.state.deletingRequest)
         let requests = this.state.requests.filter(request => request.id !== location.state.deletingRequest.id)
         this.setState({
           requests
@@ -199,6 +205,14 @@ class MainPage extends React.Component {
     //   this.props.history.push('/login')
     // })
     this.props.history.push('/profile')
+  }
+
+  getAllEvents() {
+    this.eventsListener = firebase.database().ref('venues').on('value', snapshot => {
+      this.setState({
+        allEvents: snapshot.val()
+      })
+    })
   }
 
   getDjs() {
@@ -596,7 +610,6 @@ class MainPage extends React.Component {
     let {userId, userInfo} = this.state
     firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
       if (!error) {
-        console.log('Card is Added -----> ')
         return
       }
       console.log('ERROR ----> ', error)
@@ -604,7 +617,7 @@ class MainPage extends React.Component {
   }
 
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs} = this.state
+    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs, allEvents} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -633,6 +646,7 @@ class MainPage extends React.Component {
                   userId={userId}
                   event={event}
                   onLogout={this.logoutUser}
+                  allEvents={allEvents}
                   djs={allDjs}
                   onFanSelect={this.addFanEvent}
                   />
@@ -663,6 +677,7 @@ class MainPage extends React.Component {
                 <SelectDj
                   userInfo={userInfo}
                   onLogout={this.logoutUser}
+                  allEvents={allEvents}
                   djs={allDjs}
                   onGoBack={this.goFanPage}
                   onFanSelect={this.addFanEvent}
