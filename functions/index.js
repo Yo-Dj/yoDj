@@ -13,6 +13,6 @@ exports.markEventsCompletedAfterTwelveHours = functions.pubsub.schedule('every 5
       .once('value', snap => snap.forEach(venue => {
         console.log(`found expired event: ${venue.key}, moving to endedEvents...`);
         db.ref('endedEvents/' + venue.key).set(venue.val());
-        db.ref('venues/'+venue.key).removeValue();
+        db.ref('venues').child(venue.key).remove();
       }));
   });
