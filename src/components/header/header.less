@@ -33,7 +33,7 @@
   &--offline-icon {
     background: transparent no-repeat center center;
     background-image: url("../../images/yellow-logo.png");
-    background-size: 90% 50px;
+    background-size: 150px 50px;
     width: 33%;
     height: 50px;
   }
@@ -41,8 +41,55 @@
   &--active-icon {
     background: transparent no-repeat center center;
     background-image: url("../../images/green-logo.png");
-    background-size: 90% 50px;
+    background-size: 150px 50px;
     width: 33%;
     height: 50px;
   }
 }
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .Header {
+      &--offline-icon {
+        background-size: 90% 40px;
+      }
+
+      &--active-icon { 
+        background-size: 90% 40px;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .Header {
+      &--offline-icon {
+        background-size: 90% 40px;
+      }
+
+      &--active-icon { 
+        background-size: 90% 40px;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .Header {
+      &--offline-icon {
+        background-size: 90% 50px;
+      }
+
+      &--active-icon { 
+        background-size: 90% 50px;
+      }
+    }
+  }

@@ -28,12 +28,13 @@ class FanHomepage extends React.Component {
     render() {
         let {userInfo, event, djs, allEvents} = this.props
         let onlineDjs = djs.reduce((acc, el) => {
-            if (el.event && allEvents[el.event.requestId] && allEvents[el.event.requestId].tipAmount) {
+            if (el.event && allEvents && allEvents[el.event.requestId] && allEvents[el.event.requestId].tipAmount) {
                 acc[el.userId] = el 
             }
             return acc
         }, {})
         let performingDJs = Object.values(onlineDjs)
+
         return (
             <div className="FanHomepage">
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={false}/>
