@@ -100,6 +100,7 @@ class FanEvent extends React.Component {
     let pending = fanEvent.pending ? Object.keys(fanEvent.pending).length : 0
     let attending = fanEvent.joiners ? Object.keys(fanEvent.joiners).length : 0
     let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
+    let eventname = fanEvent.event ? fanEvent.event.placeName.charAt(0).toUpperCase() : ''
     return(
       <div className="FanEvent">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.onProfile} isActive={false} onClick={() => {}}/>
@@ -123,7 +124,7 @@ class FanEvent extends React.Component {
           <div className="FanEvent--time">{time}</div>
           <div className="FanEvent--info"> Started at {event.time}</div>
         </div>
-        <div className="FanEvent--icon" />
+        <div className="FanEvent--icon">{eventname}</div>
        </div>
         <div className="FanEvent--requests">
           {completed} Song Request Complete
