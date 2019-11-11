@@ -75,15 +75,7 @@ class MainPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
-    // if (location.pathname === '/profile' && Object.keys(this.state.userInfo).length === 0) {
-    //     this.props.history.push('/home')
-    //     return
-    //   }
-    //   if (location.pathname === '/home' && prevProps.location.pathname === '/profile' && Object.keys(this.state.userInfo).length > 0 && Object.keys(prevState.userInfo).length > 0) {
-    //     console.log('Profile ----> ', this.state)
-    //     this.props.history.push('/profile')
-    //     return
-    //   }
+    const {event = {}, activities = [], requests = []} = this.state
       if (location.pathname === '/bank' && Object.keys(this.state.userInfo).length === 0) {
         this.props.history.push('/profile')
         return
@@ -161,6 +153,12 @@ class MainPage extends React.Component {
         })
         return
       }
+
+      if (event.joiners && activities.length === 0) {
+        // this.updateActivities(event.joiners, event)
+        // this.updateRequests(event.requests || [])
+        // console.log('SHOULD HAVE Activities ----> ', this.state)
+      }
   }
 
   authListener() {
@@ -188,7 +186,6 @@ class MainPage extends React.Component {
           userId: '',
           userInfo: {},
         })
-        console.log('Signed Out sucks ---> ')
         this.props.history.push('/login')
     })
   }
@@ -249,6 +246,18 @@ class MainPage extends React.Component {
         },{})
         this.setState({
           fans
+        }, () => {
+          const {event = {}, activities = [], requests = []} = this.state 
+          console.log('EVENT -----> ', event.requests)
+          console.log('Request ----> ', requests.length)
+          if (activities.length === 0 && event.joiners) {
+            this.updateActivities(event.joiners, event)
+          }
+          console.log('AFTER IF ----> ', Object.keys(event.requests))
+          if (event.requests && Object.keys(event.requests).length > 0) {
+            console.log("EVENT REQUESTS IN SETSTATE ----> ", event.requests)
+            this.updateRequests(event.requests)
+          }
         })
       }
     })
@@ -272,7 +281,7 @@ class MainPage extends React.Component {
     let requestsArr = requests.map(request => request.id)
     let now = new Date()
     now = now.getTime()
-    if (activities.length === 0 && Object.keys(fans).length !== 0) {
+    if (activities.length === 0 && Object.keys(fans).length !== 0 && Object.keys(joined).length > 0) {
       joinedArr.forEach(user => {
         if (fans[user]) {
           activities.push(user)
@@ -322,6 +331,7 @@ class MainPage extends React.Component {
     let lastAdded = requestedArr[requestedArr.length - 1]
     let requestedUser = requestedArr.length > 0 ? fans[requested[lastAdded].user] : ''
     let songRequests = requests.length - activities.length
+
     if (requestedArr.length === 0) {
       requests = requests.filter(req => !req.songRequest)
       this.setState({
@@ -341,6 +351,9 @@ class MainPage extends React.Component {
          requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user})
        }
       })
+      console.log('REQUESTS ---> ', requests)
+      console.log('SONGS ARR ---> ', songsArr)
+      console.log('FANS ----> ', fans)
     }
    else if (requestedArr.length < songRequests) {
      requests = requests.filter(request => {
@@ -355,8 +368,11 @@ class MainPage extends React.Component {
    else if (requestIds.indexOf(lastAdded) === -1) {
      requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: lastAdded.user})
     }
+    console.log('REUQUESTS SHOULD BE UPDATED ---> ', requests)
     this.setState({
       requests
+    }, () => {
+      console.log('NEW REQUESTS ---> ', this.state.requests)
     })
   }
 
@@ -618,6 +634,7 @@ class MainPage extends React.Component {
 
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs, allEvents} = this.state
+    // console.log('STATE -----> ', this.state)
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">

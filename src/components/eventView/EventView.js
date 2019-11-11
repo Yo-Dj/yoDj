@@ -89,9 +89,11 @@ class EventView extends React.Component {
   }
 
   render() {
-    let {userInfo, event} = this.props
+    let {userInfo, event = {}} = this.props
     let tip = parseFloat(event.tipAmount).toFixed(2)
     let time = this.timeFormatter()
+    console.log('EVent ---> ', event)
+    let eventName = event.placeName ? event.placeName.charAt(0) : ''
     return (
       <div className="EventView">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.profileImgClicked} isActive={true} onClick={() => {}}/>
@@ -108,7 +110,7 @@ class EventView extends React.Component {
           <div className="EventView--time">{time}</div>
           <div className="EventView--info"> Started at {this.getTime()}</div>
         </div>
-        <div className="EventView--icon" />
+        <div className="EventView--icon">{eventName}</div>
        </div>
        <div className="EventView--address">{event.address}</div>
        <div className="EventView__tip-container">
