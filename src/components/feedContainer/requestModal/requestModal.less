@@ -30,6 +30,7 @@
         padding: 25px;
         justify-content: center;
         box-sizing: border-box;
+        max-width: 400px;
     }
 
     &--text {
@@ -53,3 +54,16 @@
         color: white !important;
     }
 }
+
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) { 
+    .RequestModal {
+        &__container {
+            height: 125px;
+        }
+    }
+  }

@@ -165,7 +165,9 @@ class NewEventWrapper extends React.Component {
       <div className="NewEventWrapper">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.profileImgClicked} isActive={false} onClick={() => {}}/>
        <div className="NewEventWrapper__subheader">
+         <div className="NewEventWrapper--icon-subtitle">
           <Icon onClick ={this.close}>close</Icon>
+         </div>
           <div className="NewEventWrapper--subtitle">Check In</div>
        </div>
        <div className="NewEventWrapper__container">
