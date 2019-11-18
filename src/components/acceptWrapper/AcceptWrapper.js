@@ -23,6 +23,7 @@ class AcceptWrapper extends React.Component {
       this.props.onGoBack()
       return
     }
+    console.log('Accept Wrapper REQUEST ----> ', request)
     if (request.accepted) {
       this.setState({
         view: 'deliverPage'
