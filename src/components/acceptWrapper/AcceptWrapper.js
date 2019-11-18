@@ -8,13 +8,15 @@ class AcceptWrapper extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      view: 'requestPage'
+      view: 'requestPage',
+      request: {}
     }
     this.accept = this.accept.bind(this)
     this.decline = this.decline.bind(this)
     this.renderView = this.renderView.bind(this)
     this.goBackRequest = this.goBackRequest.bind(this)
     this.addToFirebase = this.addToFirebase.bind(this)
+    this.requestCompleted = this.requestCompleted.bind(this)
   }
 
   componentDidMount() {
@@ -23,10 +25,10 @@ class AcceptWrapper extends React.Component {
       this.props.onGoBack()
       return
     }
-    console.log('Accept Wrapper REQUEST ----> ', request)
     if (request.accepted) {
       this.setState({
-        view: 'deliverPage'
+        view: 'deliverPage',
+        request
       })
     }
   }
@@ -35,13 +37,15 @@ class AcceptWrapper extends React.Component {
     let {request} = this.props
     if (this.state.view ==='requestPage' && request.accepted) {
       this.setState({
-        view: 'deliverPage'
+        view: 'deliverPage',
+        request
       })
     }
 
     if (prevState.view === 'requestPage' && request.accepted) {
       this.setState({
-        view: 'deliverPage'
+        view: 'deliverPage',
+        request
       })
     }
   }
@@ -54,8 +58,15 @@ class AcceptWrapper extends React.Component {
     this.props.onGoBack()
   }
 
+  requestCompleted() {
+    this.setState({
+      request: {}
+    }, () => {
+      this.props.onGoBack()
+    })
+  }
+
   decline(request) {
-    console.log('DECLINE ----> ', request)
     this.props.onReject(request)
     this.props.history.push('/home')
   }
@@ -70,7 +81,7 @@ class AcceptWrapper extends React.Component {
       case 'requestPage':
         return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} onAccept={this.accept} onDecline={this.decline} />)
       case 'deliverPage':
-        return (<DeliverPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={this.goBackRequest} onCompleteRequest={this.addToFirebase} onCompleteGoBack={onGoBack}/>)
+        return (<DeliverPage userInfo={userInfo} request={this.state.request} onLogout={onLogout} onGoBack={this.goBackRequest} onCompleteRequest={this.addToFirebase} onCompleteGoBack={this.requestCompleted}/>)
       default:
         return (<RequestPage userInfo={userInfo} request={request} onLogout={onLogout} onGoBack={onGoBack} onDecline={this.decline} />)
     }
