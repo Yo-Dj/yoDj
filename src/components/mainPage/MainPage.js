@@ -104,7 +104,7 @@ class MainPage extends React.Component {
         return
       }
 
-      if (location.pathname ==='/accept-request' && location.state && (!this.state.newRequest.id || (this.state.newRequest.id !== location.state.request.id))) {
+      if (location.pathname ==='/accept-request' && location.state && !location.state.request.accepted && (!this.state.newRequest.id || (this.state.newRequest.id !== location.state.request.id))) {
         this.setState({
           newRequest: location.state.request
         }, () => {
@@ -113,13 +113,13 @@ class MainPage extends React.Component {
         return
       }
 
-      if (location.pathname === '/accept-request' && !location.state && (!this.state.newRequest.id && this.state.acceptedSongs.length > 0)) {
-        this.setState({
-          newRequest: {...this.state.acceptedSongs[0], accepted: true}
-        }, () => {
-          this.props.history.push('/accept-request')
-        })
-      }
+      // if (location.pathname === '/accept-request' && !location.state && (!this.state.newRequest.id && this.state.acceptedSongs.length > 0)) {
+      //   this.setState({
+      //     newRequest: {...this.state.acceptedSongs[0], accepted: true}
+      //   }, () => {
+      //     this.props.history.push('/accept-request')
+      //   })
+      // }
 
       if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' &&  this.state.requests.length === 0 && (!location.state || (location.state && location.state.requests === 0))) {
         this.props.history.push('/home')
@@ -248,14 +248,10 @@ class MainPage extends React.Component {
           fans
         }, () => {
           const {event = {}, activities = [], requests = []} = this.state 
-          console.log('EVENT -----> ', event.requests)
-          console.log('Request ----> ', requests.length)
           if (activities.length === 0 && event.joiners) {
             this.updateActivities(event.joiners, event)
           }
-          console.log('AFTER IF ----> ', Object.keys(event.requests))
           if (event.requests && Object.keys(event.requests).length > 0) {
-            console.log("EVENT REQUESTS IN SETSTATE ----> ", event.requests)
             this.updateRequests(event.requests)
           }
         })
@@ -308,6 +304,7 @@ class MainPage extends React.Component {
       this.setState({
         activities, requests, event: eventUpdated
       }, () => {
+        console.log('Find IDS ---> ', findIds)
         findIds.forEach(request => {
           firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
         })
@@ -351,9 +348,6 @@ class MainPage extends React.Component {
          requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user})
        }
       })
-      console.log('REQUESTS ---> ', requests)
-      console.log('SONGS ARR ---> ', songsArr)
-      console.log('FANS ----> ', fans)
     }
    else if (requestedArr.length < songRequests) {
      requests = requests.filter(request => {
@@ -381,6 +375,7 @@ class MainPage extends React.Component {
     let acceptedIds = acceptedSongs.map(song => song.id)
     let pendingIds = Object.keys(pendingSongs)
     let pendingSongArr = Object.values(pendingSongs)
+    console.log('UPDATED SONGS ----> ')
     if (pendingIds.length === 0) {
       acceptedSongs = []
     } else if (acceptedSongs.length > pendingSongArr.length) {
@@ -457,7 +452,6 @@ class MainPage extends React.Component {
       .ref(`users/${uid}`)
       .on('value',snapshot => {
         let data = snapshot.val()
-        console.log('USER DATA -----> ', data)
         if (data) {
           if (data.userType && data.userType === 'Fan') {
             let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
@@ -551,11 +545,16 @@ class MainPage extends React.Component {
 
   openDeliveryPage() {
     let {acceptedSongs, newRequest} = this.state
+    console.log('Accepted SOngs ----> ', acceptedSongs)
+    console.log('NEW REQUEST ---> ', newRequest)
     if (acceptedSongs.length > 0) {
       this.setState({
         newRequest: acceptedSongs[0]
       }, () => {
-        this.props.history.push('/accept-request')
+        this.props.history.push({
+          pathname: '/accept-request',
+          state: {request: {...acceptedSongs[0], accepted: true}}
+        })
       })
     }
   }
@@ -563,6 +562,8 @@ class MainPage extends React.Component {
   acceptingSong(request) {
     let {event, acceptedSongs, requests, newRequest} = this.state
     request.tipAmount = request.tip
+    console.log('Accepting REQUEST ---> ', request)
+    console.log('Accepting SONG Event -----> ', event)
     firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).set(request, error => {
       if (!error) {
         let index = requests.map(req => req.id).indexOf(request.id)
@@ -570,6 +571,7 @@ class MainPage extends React.Component {
           requests.splice(index, 1)
         }
         newRequest = {...request, accepted: true}
+        console.log('NEW REQUESt IN ACCEPTING SONG ----> ', newRequest)
         firebase.database().ref(`venues/${event.eventId}/requests/${request.id}`).remove()
         this.setState({
           acceptedSongs, requests, newRequest
@@ -647,6 +649,7 @@ class MainPage extends React.Component {
                     userInfo={userInfo}
                     userId={userId}
                     event={event}
+                    newRequest={newRequest}
                     requests={requests}
                     onLogout={this.logoutUser}
                     onFinish={this.finishEvent}
