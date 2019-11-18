@@ -83,7 +83,6 @@ class Homepage extends React.Component {
 
   acceptSong(request) {
     let {requests, acceptedSongs} = this.props
-    console.log('NEW REQUEST ---> ', this.props)
     if (acceptedSongs.length < 1) {
       this.props.history.push({
         pathname:'/accept-request',

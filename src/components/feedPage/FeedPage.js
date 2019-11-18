@@ -37,6 +37,7 @@ class FeedPage extends React.Component {
       return
     }
     if (type === 'accept') {
+      console.log("SELECTED REQUEST ----> ", selectedRequest)
       this.props.history.push({
         pathname:'/accept-request',
         state: {request: selectedRequest}
