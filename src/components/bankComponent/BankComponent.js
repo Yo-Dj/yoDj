@@ -9,6 +9,7 @@ import Icon from '@material-ui/core/Icon'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 
+const localhost = ''
 export const createOptions = (fontSize, padding) => {
   return {
     style: {
@@ -43,7 +44,7 @@ class BankComponent extends React.Component {
  componentDidMount() {
     let {userInfo} = this.props
     if (userInfo.card && userInfo.card !== '') {
-      axios.get('/card', {params: {cardId: userInfo.card}})
+      axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
         console.log('RES ------> ', res)
         this.setState({
@@ -57,7 +58,7 @@ class BankComponent extends React.Component {
   componentDidUpdate(prevProps) {
     let {userInfo} = this.props
     if ((!prevProps.userInfo.card && userInfo.card) || (prevProps.userInfo.card !== userInfo.card)) {
-      axios.get('/card', {params: {cardId: userInfo.card}})
+      axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
         this.setState({
           userCard: res.data
@@ -74,7 +75,7 @@ class BankComponent extends React.Component {
   submitCard(token = {}) {
     let {userInfo, onCardAdd} = this.props
     if (!userInfo.card && userInfo.card !== '') {
-      axios.post('https:localhost:8080/save', {userInfo, token})
+      axios.post(localhost + '/save', {userInfo, token})
         .then(res => {
           if (res.data) {
             console.log('Card ADDED ----> ', res.data)
@@ -84,12 +85,11 @@ class BankComponent extends React.Component {
         })
         .catch(e => console.log('Bank Component error ---> ', e))
     } else {
-      axios.post('https:localhost:8080/upgrade-card', {userId: userInfo.card, token})
+      axios.post(localhost + '/upgrade-card', {userId: userInfo.card, token})
         .then(res => {
-          console.log('UPGRADED CARD ----> ', res)
           if (res.data) {
-            console.log('CARD ----> ', res.data)
-            this.props.history('/bank')
+            console.log('CARD Updated----> ', res.data)
+            // this.props.history('/bank')
           }
         })
         .catch(e => console.log('CARD ERR ---> ', e))
@@ -97,7 +97,7 @@ class BankComponent extends React.Component {
   }
 
   getCard() {
-    axios.get('https:localhost:8080/card', {params: {cardId: this.state.userCard.id}})
+    axios.get(localhost + '/card', {params: {cardId: this.state.userCard.id}})
       .then(res => {
         console.log('RES ------> ', res)
       })

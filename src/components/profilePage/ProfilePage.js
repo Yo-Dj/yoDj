@@ -23,7 +23,6 @@ class ProfilePage extends React.Component {
   }
 
   goBack() {
-    console.log('Go Back ----> ', this.props)
     let {userInfo} = this.props
     if (userInfo.verificationType && userInfo.userType !== 'Fan') {
       this.props.history.push('/home')

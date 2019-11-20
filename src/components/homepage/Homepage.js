@@ -121,7 +121,6 @@ class Homepage extends React.Component {
   }
 
   handleRejection(request) {
-    console.log('Rejection is clicked')
     this.props.onReject(request)
   }
 

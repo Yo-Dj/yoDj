@@ -17,13 +17,10 @@ class CardFormComponent extends React.Component {
     })
 
     paymentRequest.on('token', ({complete, token, ...data}) => {
-      console.log('Received Stripe token: ', token);
-      console.log('Received customer information: ', data);
       complete('success');
     })
 
     paymentRequest.canMakePayment().then((result) => {
-      console.log('RESULT ---> ', result)
       this.setState({canMakePayment: !!result});
     })
     this.state = {
@@ -38,6 +35,7 @@ class CardFormComponent extends React.Component {
     let {userInfo: {username}, onSubmit} = this.props
     let {token} = await this.props.stripe.createToken({name: username})
     onSubmit(token)
+    this.elementRef._element.clear()
   }
 
   render() {
@@ -69,7 +67,7 @@ class CardFormComponent extends React.Component {
                 }}
               />
             )
-            : <div>WIP Apple Pay</div>
+            : null
           }
         </div>
       </form>
