@@ -319,7 +319,6 @@ class MainPage extends React.Component {
     let lastAdded = requestedArr[requestedArr.length - 1]
     let requestedUser = requestedArr.length > 0 ? fans[requested[lastAdded].user] : ''
     let songRequests = requests.length - activities.length
-
     if (requestedArr.length === 0) {
       requests = requests.filter(req => !req.songRequest)
       this.setState({
@@ -351,7 +350,7 @@ class MainPage extends React.Component {
      })
    }
    else if (requestIds.indexOf(lastAdded) === -1) {
-     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: lastAdded.user})
+     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user})
     }
   
     this.setState({
@@ -374,11 +373,11 @@ class MainPage extends React.Component {
       })
     } else if (acceptedSongs.length === 0 && pendingIds.length > 0) {
       pendingSongArr.forEach((request, idx) => {
-          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true})
+          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true, fanId: request.fanId})
       })
     } else if (acceptedIds.indexOf(pendingIds[pendingIds.length - 1]) === -1) {
       let lastRequest = pendingSongArr[pendingSongArr.length - 1]
-        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true})
+        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true, fanId: lastRequest.fanId})
     }
     this.setState({
       acceptedSongs,
@@ -621,7 +620,6 @@ class MainPage extends React.Component {
 
   render() {
     let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs, allEvents} = this.state
-    // console.log('STATE -----> ', this.state)
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
