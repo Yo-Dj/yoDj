@@ -25,6 +25,7 @@ class AcceptWrapper extends React.Component {
       this.props.onGoBack()
       return
     }
+    console.log('REQUEST DID MOunt----> ', request)
     if (request.accepted) {
       this.setState({
         view: 'deliverPage',
@@ -51,6 +52,7 @@ class AcceptWrapper extends React.Component {
   }
 
   accept() {
+    console.log("ACCEPT REQUEST IN ACCEPT  ---> ", this.props.request)
     this.props.onAccepted(this.props.request)
   }
 
@@ -72,6 +74,8 @@ class AcceptWrapper extends React.Component {
   }
 
   addToFirebase() {
+    console.log('STATE ADD FIREBASE ----> ', this.state)
+    console.log("PROPS REQUEST -----> ", this.props.request)
     this.props.onAddRequest(this.props.request)
   }
 
