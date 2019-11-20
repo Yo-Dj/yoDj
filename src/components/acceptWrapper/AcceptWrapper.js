@@ -17,6 +17,7 @@ class AcceptWrapper extends React.Component {
     this.goBackRequest = this.goBackRequest.bind(this)
     this.addToFirebase = this.addToFirebase.bind(this)
     this.requestCompleted = this.requestCompleted.bind(this)
+    this.openProfile = this.openProfile.bind(this)
   }
 
   componentDidMount() {
@@ -25,7 +26,6 @@ class AcceptWrapper extends React.Component {
       this.props.onGoBack()
       return
     }
-    console.log('REQUEST DID MOunt----> ', request)
     if (request.accepted) {
       this.setState({
         view: 'deliverPage',
@@ -52,7 +52,6 @@ class AcceptWrapper extends React.Component {
   }
 
   accept() {
-    console.log("ACCEPT REQUEST IN ACCEPT  ---> ", this.props.request)
     this.props.onAccepted(this.props.request)
   }
 
@@ -74,9 +73,11 @@ class AcceptWrapper extends React.Component {
   }
 
   addToFirebase() {
-    console.log('STATE ADD FIREBASE ----> ', this.state)
-    console.log("PROPS REQUEST -----> ", this.props.request)
     this.props.onAddRequest(this.props.request)
+  }
+
+  openProfile() {
+    this.props.onProfilePage()
   }
 
   renderView() {

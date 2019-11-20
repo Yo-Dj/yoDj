@@ -193,6 +193,7 @@ class MainPage extends React.Component {
     //   })
     //   this.props.history.push('/login')
     // })
+    console.log('Take to Profile Page')
     this.props.history.push('/profile')
   }
 
@@ -668,7 +669,7 @@ class MainPage extends React.Component {
                   (<AcceptWrapper
                     userInfo={userInfo}
                     isActive={isActive}
-                    onLogout={this.logoutUser}
+                    onProfilePage={this.logoutUser}
                     onGoBack={this.goBackHome}
                     request={newRequest}
                     onAccepted={this.acceptingSong}
