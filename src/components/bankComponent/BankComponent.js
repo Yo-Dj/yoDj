@@ -42,7 +42,7 @@ class BankComponent extends React.Component {
   }
 
  componentDidMount() {
-    let {userInfo} = this.props
+   let {userInfo} = this.props
     if (userInfo.card && userInfo.card !== '') {
       axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
@@ -80,7 +80,7 @@ class BankComponent extends React.Component {
           if (res.data) {
             console.log('Card ADDED ----> ', res.data)
             onCardAdd(res.data.id)
-            this.props.history('/bank')
+            // this.props.history('/bank')
           }
         })
         .catch(e => console.log('Bank Component error ---> ', e))
