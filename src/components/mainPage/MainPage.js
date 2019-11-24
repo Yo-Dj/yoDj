@@ -443,7 +443,10 @@ class MainPage extends React.Component {
         let data = snapshot.val()
         if (data) {
           if (data.userType && data.userType === 'Fan') {
-            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
+            let userInfo = {
+              username: data.username, type: 'fan', phone: data.phone, 
+              imageUrl: data.imageUrl, venue: data.venue, completed: data.completed,
+              userId: data.userId, card: data.card}
             let joined = data.venue ? true : false
             let fanEvent = {}
             this.setState({
