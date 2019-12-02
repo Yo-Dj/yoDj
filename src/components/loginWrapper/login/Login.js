@@ -6,7 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import TextField from '@material-ui/core/TextField'
-import {format} from 'react-phone-input-auto-format'
+import {format, normalize} from 'react-phone-input-auto-format'
 import {fire} from 'src/config/Fire'
 
 class Login extends React.Component {
@@ -42,10 +42,15 @@ class Login extends React.Component {
     window.confirmationResult = null
   }
 
-  numberPressed(num) {
+  numberPressed(num, numberTyped = false) {
     let {value, phone, codeSent} = this.state
-    value += num
-    phone += num
+    if (!numberTyped) {
+      value += num
+      phone += num
+    } else {
+      value = num
+      phone = num.split('-').join('')
+    }
     if (!codeSent) {
       value = format(value)
     }
@@ -147,8 +152,16 @@ class Login extends React.Component {
 
   handleTextChange(e) {
     let {codeSent, value} = this.state
-    console.log('E VALUE ---> ', e.target.value)
-    console.log('VALUE ----> ', value)
+    let num = normalize(e.target.value)
+    if (!codeSent && !isNaN(num) && num !== '' && num !== ' ') {
+      this.numberPressed(e.target.value, true)
+    } 
+    if (num === '' && e.target.value === '') {
+      this.setState({
+        value: '',
+        phone: ''
+      })
+    }
     if (codeSent && (value.length < 6 || e.target.value.length < value.length)) {
      this.setState({
         value: e.target.value,

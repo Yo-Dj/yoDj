@@ -36,6 +36,7 @@ class MainPage extends React.Component {
       fans: [],
       acceptedSongs: [],
       allEvents: [],
+      endedEvents: []
     }
     this.eventsListener = null
     this.authListener = this.authListener.bind(this)
@@ -62,11 +63,13 @@ class MainPage extends React.Component {
     this.logout = this.logout.bind(this)
     this.addCard = this.addCard.bind(this)
     this.getAllEvents = this.getAllEvents.bind(this)
+    this.getEndedEvents = this.getEndedEvents.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
     this.getAllEvents()
+    this.getEndedEvents()
   }
 
   componentWillUnmount() {
@@ -202,6 +205,15 @@ class MainPage extends React.Component {
       this.setState({
         allEvents: snapshot.val()
       })
+    })
+  }
+
+  getEndedEvents() {
+    firebase.database().ref(`endedEvents`).once('value').then(snapshot => {
+      let endedEvents = snapshot.val()
+      this.setState({
+        endedEvents
+      })      
     })
   }
 
@@ -497,27 +509,28 @@ class MainPage extends React.Component {
 
   finishEvent() {
     let {userId, event, activities} = this.state
-    firebase.database().ref(`users/${userId}/event`).remove()
-    firebase.database().ref(`venues/${event.eventId}`).remove()
-    activities.forEach(user => {
-      firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
-      let completedEvent = snapshot.val()
-      let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
-      firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
-      firebase.database().ref(`users/${user}/venue`).remove()
-      })
-    })
-    this.setState({
-      isActive: false,
-      event: {},
-      requests: [],
-      activities: [],
-      acceptedSongs: [],
-      newRequest: {},
-      fans: []
-    }, () => {
-      this.props.history.push('/home')
-    })
+    console.log('EVENT ----> ', event)
+    // firebase.database().ref(`users/${userId}/event`).remove()
+    // firebase.database().ref(`venues/${event.eventId}`).remove()
+    // activities.forEach(user => {
+    //   firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
+    //   let completedEvent = snapshot.val()
+    //   let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
+    //   firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
+    //   firebase.database().ref(`users/${user}/venue`).remove()
+    //   })
+    // })
+    // this.setState({
+    //   isActive: false,
+    //   event: {},
+    //   requests: [],
+    //   activities: [],
+    //   acceptedSongs: [],
+    //   newRequest: {},
+    //   fans: []
+    // }, () => {
+    //   this.props.history.push('/home')
+    // })
   }
 
   goBackHome() {
@@ -623,7 +636,10 @@ class MainPage extends React.Component {
   }
 
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs, allEvents} = this.state
+    let {userInfo, userId, event, 
+      newRequest, requests, isActive, 
+      allDjs, fanEvent, acceptedSongs, 
+      allEvents, endedEvents} = this.state
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
@@ -714,6 +730,7 @@ class MainPage extends React.Component {
                   <ProfilePage
                     userInfo={userInfo}
                     onLogout={this.logout}
+                    endedEvents={endedEvents}
                   />
                 )} />
 
