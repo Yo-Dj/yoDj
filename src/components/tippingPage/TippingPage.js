@@ -12,11 +12,14 @@ import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
 import ScrollToBottom, {useScrollToBottom, useSticky} from 'react-scroll-to-bottom';
 import AsyncSelect from 'react-select/async';
+import axios from 'axios'
+import { parse } from 'terser';
 
 const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
+const localhost = 'http://localhost:8080'
 
 class TippingPage extends React.Component {
     constructor(props) {
@@ -49,6 +52,7 @@ class TippingPage extends React.Component {
         this.loadOptions = this.loadOptions.bind(this)
         this.handleTip = this.handleTip.bind(this)
         this.handleCancel = this.handleCancel.bind(this)
+        this.sendMessage = this.sendMessage.bind(this)
     }
 
     leaveEvent() {
@@ -74,6 +78,22 @@ class TippingPage extends React.Component {
         this.setState({
             tipText
         })
+    }
+
+    sendMessage() {
+        let {tipText, searchText} = this.state
+        let {allDjs, fanEvent, userInfo} = this.props
+        let idx = allDjs.map(user => user.userId).indexOf(fanEvent.dj)
+        let postObj = {
+            userPhone: allDjs[idx].phone ? allDjs[idx].phone : '', 
+            requestInfo: {},
+            requestType: 'received'
+        }
+        axios.post(localhost + '/api/messages', {...postObj})
+            .then(res => {
+                console.log('Request is send ---> ', res)
+            })
+            .catch(err => console.log('Error at Sending message ---> ', err))
     }
 
     setCursor(e) {
@@ -113,6 +133,7 @@ class TippingPage extends React.Component {
         })
         if (isError) return
         onSubmit({tipAmount, music: this.state.searchText})
+        this.sendMessage()
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',

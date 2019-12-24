@@ -3,6 +3,8 @@ import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
 import Header from '../../header'
+import axios from 'axios'
+
 
 class RequestPage extends React.Component {
   constructor(props) {
@@ -22,11 +24,29 @@ class RequestPage extends React.Component {
   }
 
   accept() {
-    this.props.onAccept()
+    let { 
+      request: {
+        name = '',
+        phone: userPhone = '',
+      } = '',
+      userInfo: {
+        username: dj = ''
+      }
+    } = this.props  
+    this.props.onAccept({name, dj, userPhone})
   }
 
   decline() {
-    this.props.onDecline(this.props.request)
+    let { 
+      request: {
+        name = '',
+        phone: userPhone = '',
+      } = '',
+      userInfo: {
+        username: dj = ''
+      }
+    } = this.props 
+    this.props.onDecline(this.props.request, {name, dj, userPhone})
   }
 
   render() {
