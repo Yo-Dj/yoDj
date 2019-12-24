@@ -6,8 +6,13 @@ var cors = require('cors')
 var cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const {SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET} = require('./SpotifyKeys.js')
+const client = require('twilio')(
+  'AC1627d46dd41d475498395902b9ed1452',
+  'd7a70c54cbeb9c3b2ab57b6f57e95dd2'
+)
 const PORT = process.env.PORT || 8080
 const app = express()
+const {requestReceivedMessage, rejectMessage, acceptMessage} = require('./library')
 
 
 let redirect_uri = 'http://localhost:8080/callback'
@@ -51,6 +56,23 @@ app.get('/.well-known/apple-developer-merchantid-domain-association', function(r
   res.sendFile(__dirname + '/apple-developer-merchantid-domain-association')
 })
 
+app.post('/api/messages', (req, res, next) => {
+  let {userPhone, requestInfo, requestType} = req.body
+  let messageText = requestType === 'reject' ? rejectMessage(requestInfo) : requestType === 'accept' ? acceptMessage(requestInfo) : requestReceivedMessage()
+  client.messages
+    .create({
+      from: '+12057079203',
+      to: userPhone,
+      body: messageText
+    })
+    .then(() => {
+      res.send(JSON.stringify({success: true}))
+    })
+    .catch(error => {
+      console.log('Messages Error ---> ', error)
+      res.send(JSON.stringify({success: false}))
+    })
+})
 
 app.post('/save', async (req, res) => {
   let customer = {}
@@ -60,7 +82,6 @@ app.post('/save', async (req, res) => {
       name: req.body.userInfo.name,
       description: `User ${req.body.userInfo.username} default payment`
     })
-    console.log('CUSTOMER -----> ', customer)
     res.json(customer)
   }
   catch(e) {
@@ -71,7 +92,6 @@ app.post('/save', async (req, res) => {
 
 app.get('/card', async (req, res) => {
   try {
-    console.log('Stripe ----> ', stripe)
     const customer = await stripe.customers.retrieve(req.query.cardId)
     res.json(customer)
   } catch(e) {

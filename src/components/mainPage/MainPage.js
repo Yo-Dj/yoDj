@@ -348,7 +348,7 @@ class MainPage extends React.Component {
     else if (requestedArr.length > 0 && songRequests === 0) {
      songsArr.forEach((request, idx) => {
        if (fans[request.user]) {
-         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user})
+         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user, phone: fans[request.user].phone})
        }
       })
     }
@@ -363,7 +363,7 @@ class MainPage extends React.Component {
      })
    }
    else if (requestIds.indexOf(lastAdded) === -1) {
-     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user})
+     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user, phone: requestedUser.phone})
     }
   
     this.setState({
@@ -453,6 +453,7 @@ class MainPage extends React.Component {
       .ref(`users/${uid}`)
       .on('value',snapshot => {
         let data = snapshot.val()
+        console.log('USER DATA -----> ', data)
         if (data) {
           if (data.userType && data.userType === 'Fan') {
             let userInfo = {
@@ -509,28 +510,27 @@ class MainPage extends React.Component {
 
   finishEvent() {
     let {userId, event, activities} = this.state
-    console.log('EVENT ----> ', event)
-    // firebase.database().ref(`users/${userId}/event`).remove()
-    // firebase.database().ref(`venues/${event.eventId}`).remove()
-    // activities.forEach(user => {
-    //   firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
-    //   let completedEvent = snapshot.val()
-    //   let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
-    //   firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
-    //   firebase.database().ref(`users/${user}/venue`).remove()
-    //   })
-    // })
-    // this.setState({
-    //   isActive: false,
-    //   event: {},
-    //   requests: [],
-    //   activities: [],
-    //   acceptedSongs: [],
-    //   newRequest: {},
-    //   fans: []
-    // }, () => {
-    //   this.props.history.push('/home')
-    // })
+    firebase.database().ref(`users/${userId}/event`).remove()
+    firebase.database().ref(`venues/${event.eventId}`).remove()
+    activities.forEach(user => {
+      firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
+      let completedEvent = snapshot.val()
+      let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
+      firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
+      firebase.database().ref(`users/${user}/venue`).remove()
+      })
+    })
+    this.setState({
+      isActive: false,
+      event: {},
+      requests: [],
+      activities: [],
+      acceptedSongs: [],
+      newRequest: {},
+      fans: []
+    }, () => {
+      this.props.history.push('/home')
+    })
   }
 
   goBackHome() {

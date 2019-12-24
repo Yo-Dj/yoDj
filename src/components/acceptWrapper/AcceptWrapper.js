@@ -1,9 +1,12 @@
 import React from 'react'
+import axios from 'axios'
 import {withRouter} from 'react-router-dom'
 import Header from '../header'
 import RequestPage from './requestPage'
 import DeliverPage from './deliverPage'
 
+
+const localhost = ''
 class AcceptWrapper extends React.Component {
   constructor(props) {
     super(props)
@@ -51,8 +54,18 @@ class AcceptWrapper extends React.Component {
     }
   }
 
-  accept() {
+  accept(requestInfo) {
     this.props.onAccepted(this.props.request)
+    let postObj =  {
+      userPhone: requestInfo.userPhone,
+      requestInfo: {dj: requestInfo.dj, name: requestInfo.name},
+      requestType: 'accept'
+    }
+    axios.post(localhost + '/api/messages', {...postObj})
+    .then(res => {
+        console.log('Request is send ---> ', res)
+    })
+    .catch(err => console.log('Error at Sending message ---> ', err))  
   }
 
   goBackRequest() {
@@ -67,9 +80,19 @@ class AcceptWrapper extends React.Component {
     })
   }
 
-  decline(request) {
+  decline(request, requestInfo) {
     this.props.onReject(request)
-    this.props.history.push('/home')
+    let postObj =  {
+      userPhone: requestInfo.userPhone,
+      requestInfo: {dj: requestInfo.dj, name: requestInfo.name},
+      requestType: 'reject'
+    }
+    axios.post(localhost + '/api/messages', {...postObj})
+    .then(res => {
+        console.log('Decline Request is send ---> ', res)
+        this.props.history.push('/home')
+    })
+    .catch(err => console.log('Error at Sending message ---> ', err))  
   }
 
   addToFirebase() {
