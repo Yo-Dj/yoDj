@@ -26,8 +26,8 @@ stripe.applePayDomains.create({
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-// (async () => {
-  //   // Create a Customer:
+
+
 const corsOptions = {
   origin: function(origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -111,32 +111,6 @@ app.post('/upgrade-card', async (req, res) => {
   }
 })
 
-// app.use(cors({
-//   origin: function(origin, callback){
-//     // allow requests with no origin
-//     // (like mobile apps or curl requests)
-//     if(!origin) return callback(null, true)
-//     if(allowedOrigins.indexOf(origin) === -1){
-//       var msg = 'The CORS policy for this site does not ' +
-//                 'allow access from the specified Origin.'
-//       return callback(new Error(msg), false)
-//     }
-//     return callback(null, true)
-//   }
-// }))
-
-// var whitelist = ['https://accounts.spotify.com', 'http://localhost:3000']
-// var corsOptions = {
-//   origin: function (origin, callback) {
-//     console.log('Origin ---> ', origin)
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-// }
-
 
 app.get('/login', (req, res) => {
   console.log('CLIENT ID ----> ', SPOTIFY_CLIENT_ID)
@@ -183,9 +157,7 @@ app.get('/callback', (req, res) => {
   request.post(authOptions, function(error, response, body) {
     var access_token = body.access_token
     let uri = process.env.FRONTEND_URI || 'http://localhost:3000'
-    // res.redirect(uri + '?access_token=' + access_token)
     res.redirect(uri)
-    // res.send({...body})
   })
 })
 
