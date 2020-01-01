@@ -105,6 +105,7 @@ class EventWrapper extends React.Component {
       city =  splitAddress.length > 1 ? splitAddress[1] : 'Chicago'
       state = splitAddress.length > 2 ? splitAddress[2].split(' ')[0] : 'IL'
     }
+    let eventName = active ? placeName.charAt(0).toUpperCase() : ''
     return (
       <div className="EventWrapper">
         <div className={`EventWrapper__address-container${!active ? ' EventWrapper--disable' : ''}`}>
@@ -129,7 +130,7 @@ class EventWrapper extends React.Component {
         </div>
         <div className={`EventWrapper__event${!active ? ' EventWrapper--disable' : ''}`}>
           <h3 className={active ? 'EventWrapper--started' : ''} onClick={this.openEvent}>{active ? placeName : 'Event'}</h3>
-          <div className="EventWrapper--icon" />
+          <div className={`EventWrapper--icon${active ? ' EventWrapper--started' : ''}`}>{eventName}</div>
           <div className="EventWrapper--requests">
             {completed} Requests Completed
           </div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import Tidal from 'tidal-api-wrapper'
+import NumberFormat from 'react-number-format';
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
@@ -7,20 +8,23 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
-// import DropdownInput from 'react-dropdown-input'
-import DropdownList from 'react-widgets/lib/DropdownList'
 import Header from '../header'
 import 'react-widgets/dist/css/react-widgets.css'
-
+import ScrollToBottom, {useScrollToBottom, useSticky} from 'react-scroll-to-bottom';
+import AsyncSelect from 'react-select/async';
+import axios from 'axios'
+import { parse } from 'terser';
 
 const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
+const localhost = 'http://localhost:8080'
 
 class TippingPage extends React.Component {
     constructor(props) {
         super(props)
+        this.inputWrapper = React.createRef()
         this.tippingWrapper = React.createRef()
         this.state = {
             tipText: '',
@@ -28,16 +32,27 @@ class TippingPage extends React.Component {
             isError: false,
             errorMessage: '',
             busySpinner: false,
-            data: [],
-            search: ''
+            options: [],
+            search: '',
+            numberSubtracted: false,
+            searchDropdown: null,
+            tipWithNoSong: false
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
         this.search = this.search.bind(this)
         this.submit = this.submit.bind(this)
         this.closeError = this.closeError.bind(this)
-        this.openProfile = this.openProfile.bind(this) 
+        this.openProfile = this.openProfile.bind(this)
         this.searchSong = this.searchSong.bind(this)
+        this.setCursor = this.setCursor.bind(this)
+        this.scrollToBottom = this.scrollToBottom.bind(this)
+        this.inputChange = this.inputChange.bind(this)
+        this.songSelected = this.songSelected.bind(this)
+        this.loadOptions = this.loadOptions.bind(this)
+        this.handleTip = this.handleTip.bind(this)
+        this.handleCancel = this.handleCancel.bind(this)
+        this.sendMessage = this.sendMessage.bind(this)
     }
 
     leaveEvent() {
@@ -51,9 +66,39 @@ class TippingPage extends React.Component {
     }
 
     tipChange(e) {
+        let {value} = e.target
+        let tipText = value
+        let arr = value.split('.')
+        if (arr.length > 1) {
+          if (arr[1].length > 2) {
+            tipText = parseFloat(value).toFixed(2)
+          }
+        }
+    
         this.setState({
-            tipText: e.target.value
+            tipText
         })
+    }
+
+    sendMessage() {
+        let {tipText, searchText} = this.state
+        let {allDjs, fanEvent, userInfo} = this.props
+        let idx = allDjs.map(user => user.userId).indexOf(fanEvent.dj)
+        let postObj = {
+            userPhone: allDjs[idx].phone ? allDjs[idx].phone : '', 
+            requestInfo: {},
+            requestType: 'received'
+        }
+        axios.post(localhost + '/api/messages', {...postObj})
+            .then(res => {
+                console.log('Request is send ---> ', res)
+            })
+            .catch(err => console.log('Error at Sending message ---> ', err))
+    }
+
+    setCursor(e) {
+        let {value, selectionEnd} = e.target
+        e.target.setSelectionRange(value.length, value.length);        
     }
 
     submit() {
@@ -62,6 +107,7 @@ class TippingPage extends React.Component {
         let eventTip = parseFloat(fanEvent.tipAmount)
         let errorMessage = ''
         let isError = false
+        let tipWithNoSong = false
         if (!tipAmount && tipAmount !== 0) {
             errorMessage = 'Tip Container should not be empty'
             isError = true
@@ -74,23 +120,52 @@ class TippingPage extends React.Component {
             errorMessage = 'Tip Amount is below Minimum'
             isError = true
         }
-        if (this.state.search === '') {
-            errorMessage = 'Enter music or an album!'
+        if (this.state.searchText === '') {
+            errorMessage = 'Are you sure you don\'t want to add music request?' 
+            tipWithNoSong = true
             isError = true
         }
 
         this.setState({
             isError,
-            errorMessage
+            errorMessage,
+            tipWithNoSong
         })
         if (isError) return
-        onSubmit({tipAmount, music: this.state.search})
+        onSubmit({tipAmount, music: this.state.searchText})
+        this.sendMessage()
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
             tipText: '',
             search: '',
-            searchText: ''
+            searchText: '',
+            options: [],
+            searchDropdown: null
+        })
+    }
+
+    handleTip() {
+        let {onSubmit} = this.props
+        let tipAmount = parseFloat(this.state.tipText)
+        onSubmit({tipAmount, music: ''})
+        this.setState({
+            isError: true,
+            errorMessage: 'You tipped the DJ!',
+            tipWithNoSong: false,
+            tipText: '',
+            search: '',
+            searchText: '',
+            options: [],
+            searchDropdown: null
+        })
+    }
+
+    handleCancel() {
+        this.setState({
+            isError: false,
+            errorMessage: '',
+            tipWithNoSong: false
         })
     }
 
@@ -106,22 +181,35 @@ class TippingPage extends React.Component {
     }
 
     async searchSong(searchText) {
-        if (this.tippingWrapper) {
-            console.log('TippingWrapper ---> ', this.tippingWrapper)
-            this.tippingWrapper.scrollIntoView({ behavior: "smooth" })
-        }
-        this.setState({
-            busySpinner: true
-        })
         const artists = await tidal.search(searchText, 'tracks', 5)
         let data = artists.map(song => {
             return `${song.title} by ${song.artist.name}`
         })
+        return data.map(song => ({value: song, label: song}))
+    }
+
+     inputChange(e) {
+        return e
+    }
+
+    scrollToBottom() {
+        this.tippingWrapper.scrollIntoView({ behavior: "smooth" });
+    }
+
+    songSelected(e) {
+        let {searchText} = this.state
+        if (Object.keys(e).length > 0) {
+            searchText = e.value
+        }
         this.setState({
-            searchText,
-            busySpinner: false,
-            data
+            searchDropdown: e,
+            searchText
         })
+    }
+    
+     async loadOptions (inputValue, callback) {
+        let data = await this.searchSong(inputValue)
+        callback(data);
     }
 
     render() {
@@ -134,6 +222,16 @@ class TippingPage extends React.Component {
         }, {})
         let tip = parseFloat(fanEvent.tipAmount).toFixed(2)
         let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
+
+        const customInput = (<input 
+            type="text"
+            inputMode="decimanl"
+            value={this.state.tipText}
+            onChange={this.tipChange}
+            className="TippingPage--tip-text"
+            pattern="\d*"
+            onClick={this.setCursor}
+            placeholder="0.00" />)
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
@@ -159,12 +257,15 @@ class TippingPage extends React.Component {
                         <div className="TippingPage--input-container">
                             $
                             <div className="TippingPage--input">
-                                <TextField
+                                <input
+                                    type="text" inputMode="decimal" 
+                                    // type="text"
+                                    // inputMode="decimal"
                                     value={this.state.tipText}
-                                    margin="normal"
                                     onChange={this.tipChange}
-                                    classes={{root: "TippingPage--tip-text"}}
-                                    InputProps={{style: {textAlign: 'start', margin: '0 10px'}}}
+                                    className="TippingPage--tip-text"
+                                    pattern="\d*"
+                                    placeholder="0.00"
                                 />
                             </div>
                             <div className="TippingPage--user-icon">
@@ -179,24 +280,27 @@ class TippingPage extends React.Component {
                     <div className="TippingPage--search-container">
                         <div className="TippingPage--music-icon" />
                         <div className="TippingPage--search-input">
-                                {/* <TextField
-                                    value={this.state.searchText}
-                                    margin="normal"
-                                    placeholder="Search song, artist, album"
-                                    onChange={this.search}
-                                    classes={{root: "TippingPage--search-text"}}
-                                    InputProps={{style: {textAlign: 'start', margin: '0 20px'}}}
-                                /> */}
-                        <DropdownList
-                            busy={this.state.busySpinner}
-                            filter
-                            dropUp
-                            onSearch={this.searchSong}
-                            value={this.state.e}
-                            onChange={this.search}
-                            allowCreate={false}
-                            data={this.state.data}
-                        />
+                            <AsyncSelect
+                                className="TippingPage--dropdown"
+                                value={this.state.searchDropdown}
+                                isSearchable
+                                onChange={this.songSelected}
+                                cacheOptions
+                                onInputChange={this.inputChange}
+                                loadOptions={this.loadOptions}
+                                styles={{option: (provided, state) => ({
+                                    ...provided,
+                                    color: 'black',
+                                    fontWeight: 'bold'
+                                })
+                                }
+                                }
+                                placeholder="Choose the song"
+                                // onChange={e => this.setState({searchDropdown: e})}
+                                components={{
+                                    IndicatorSeparator: () => null
+                                }}
+                            />
                         </div>
                     </div>
                     <div className="TippingPage--submit-button">
@@ -211,24 +315,44 @@ class TippingPage extends React.Component {
                     horizontal: 'left'
                   }}
                   open={this.state.isError}
-                  autoHideDuration={3000}
+                  autoHideDuration={8000}
                   onClose={this.closeError}
                   ContentProps={{
                     'aria-describedby': 'message-id'
                 }}
                 variant="error"
 
-                  message={<span id="message-id">{this.state.errorMessage}</span>}
-                  action={[
-                      <IconButton
-                        key="close"
-                        arial-label="Close"
-                        color="inherit"
-                        onClick={this.closeError}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                  ]} />
+                  message={
+                    this.state.tipWithNoSong
+                    ?  (
+                        <div className="TippingPage--tip-message">
+                            <div className="TippingPage--tip-title">{this.state.errorMessage}</div>
+                            <div className="TippingPage--actions-container">
+                                <Button variant="contained" color="primary" classes={{root: 'TippingPage--button', label: 'TippingPage--button-label'}} onClick={this.handleTip}>
+                                    Tip
+                                </Button>
+                                <div className="TippingPage--cancel-btn">
+                                    <Button variant="contained" color="primary" classes={{root: 'TippingPage--button', label: 'TippingPage--button-label'}} onClick={this.handleCancel}>
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>)
+                    : (<span id="message-id">{this.state.errorMessage}</span>)}
+                  action={
+                    !this.state.tipWithNoSong
+                    ?  [  
+                            <IconButton
+                                key="close"
+                                arial-label="Close"
+                                color="inherit"
+                                onClick={this.closeError}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        ]
+                    : []  
+                } />
             </div>
         )
     }

@@ -4,6 +4,7 @@ import {withRouter} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import StarRatings from 'react-star-ratings'
 import Header from '../header'
+import moment from 'moment'
 
 const events = [
   {placeName: 'Start Bar', time: '3/4 10pm', title: 'T'},
@@ -14,6 +15,9 @@ const events = [
 class ProfilePage extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      userCompletedEvents: []
+    }
     this.iconClick = this.iconClick.bind(this)
     this.editClicked = this.editClicked.bind(this)
     this.logout = this.logout.bind(this)
@@ -23,14 +27,12 @@ class ProfilePage extends React.Component {
   }
 
   goBack() {
-    console.log('Go Back ----> ', this.props)
     let {userInfo} = this.props
     if (userInfo.verificationType && userInfo.userType !== 'Fan') {
       this.props.history.push('/home')
     } else {
       this.props.history.push('/fan-home')
     }
-
   }
 
   iconClick() {
@@ -56,9 +58,30 @@ class ProfilePage extends React.Component {
   }
 
   render() {
-    let {userInfo} = this.props
+    let {userInfo, endedEvents} = this.props
     let socialMedia = userInfo.verificationType && userInfo.verificationType === 'facebook' ? '../../images/facebook.png' : userInfo.verificationType === 'twitter' ? '../../images/twitter.png' : ''
     let eventsText = events.length === 1 ? 'event' : 'events'
+    console.log('Props DID MOUNt ----> ', this.props)
+    let completedEvents = []
+    if (userInfo && userInfo.completed) {
+      console.log('UserINfo COMPLETED ---> ', userInfo['completed'])
+      completedEvents = Object.keys(userInfo.completed).reduce((acc,event) => {
+        console.log('Event -----> ', event)
+        if (endedEvents && endedEvents[event] && endedEvents[event].placeName) {
+          console.log('Ended Events ---> ', endedEvents)
+          // {placeName: 'Start Bar', time: '3/4 10pm', title: 'T'},
+          let date = new Date(endedEvents[event].startDate)
+          let time = moment(date).format('MM/DD h a')
+          acc.push({
+            placeName: endedEvents[event].placeName,
+            time,
+            title: endedEvents[event].placeName.charAt(0).toUpperCase()
+          })
+        }
+        return acc
+      }, [])
+      console.log('CompletedEvents -----> ', completedEvents)
+    }
     return (
       <div className="ProfilePage">
          <Header imageUrl={userInfo.imageUrl} iconClick={this.iconClick} isActive={true} />

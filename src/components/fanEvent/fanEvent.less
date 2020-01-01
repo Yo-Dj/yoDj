@@ -9,7 +9,7 @@
   flex-direction: column;
   box-sizing: border-box;
   color: white;
-  background-image: url("../../images/fractal-background.png");
+  background-image: url("../../images/S-grey-fractal-bg.png");
 
   &__subheader {
     display: flex;
@@ -25,6 +25,8 @@
     font-size: 24px;
     color: #08FF00;
     text-transform: capitalize;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   &--attendees {
@@ -48,19 +50,20 @@
   &__icon-container {
     display: flex;
     flex-direction: column;
-    height: 100px;
+    height: 200px;
     align-items: center;
-    width: 60px;
+    width: 80px;
     box-sizing: border-box;
+    justify-content: center;
   }
 
   &--dj-icon {
     background: transparent no-repeat center center;
-    width: 55px;
-    height: 55px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     background-size: 100% 100%;
-    background-color: red;
+    background-color: #555;
   }
 
   &__main-container {
@@ -68,14 +71,17 @@
     padding: 40px 20px 10px 20px;
     display: flex;
     box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
   }
 
   &--time-container {
-    flex: 2;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-size: 16px;
+    max-width: 300px;
   }
 
   &--time {
@@ -87,12 +93,16 @@
   &--icon {
     text-align: center;
     background: transparent no-repeat center center;
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background-size: 100% 100%;
     background-color: #555;
     border: 2px solid #08FF00;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &--requests {
@@ -134,6 +144,47 @@
     .FanEvent {
       &--join {
         padding-bottom: 20px;
+      }
+
+      &__main-container {
+        width: 100%;
+        padding: 40px 20px 10px 20px;
+        display: flex;
+        box-sizing: border-box;
+        align-items: center;
+      }
+
+      &--dj-icon {
+        background: transparent no-repeat center center;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background-size: 100% 100%;
+        background-color: #555;
+      }
+
+      &__icon-container {
+        display: flex;
+        flex-direction: column;
+        height: 100px;
+        align-items: center;
+        width: 60px;
+        box-sizing: border-box;
+      }
+
+      &--icon {
+        text-align: center;
+        background: transparent no-repeat center center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-size: 100% 100%;
+        background-color: #555;
+        border: 2px solid #08FF00;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }

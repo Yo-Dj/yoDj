@@ -6,7 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import TextField from '@material-ui/core/TextField'
-import {format} from 'react-phone-input-auto-format'
+import {format, normalize} from 'react-phone-input-auto-format'
 import {fire} from 'src/config/Fire'
 
 class Login extends React.Component {
@@ -42,10 +42,15 @@ class Login extends React.Component {
     window.confirmationResult = null
   }
 
-  numberPressed(num) {
+  numberPressed(num, numberTyped = false) {
     let {value, phone, codeSent} = this.state
-    value += num
-    phone += num
+    if (!numberTyped) {
+      value += num
+      phone += num
+    } else {
+      value = num
+      phone = num.split('-').join('')
+    }
     if (!codeSent) {
       value = format(value)
     }
@@ -147,6 +152,16 @@ class Login extends React.Component {
 
   handleTextChange(e) {
     let {codeSent, value} = this.state
+    let num = normalize(e.target.value)
+    if (!codeSent && !isNaN(num) && num !== '' && num !== ' ') {
+      this.numberPressed(e.target.value, true)
+    } 
+    if (num === '' && e.target.value === '') {
+      this.setState({
+        value: '',
+        phone: ''
+      })
+    }
     if (codeSent && (value.length < 6 || e.target.value.length < value.length)) {
      this.setState({
         value: e.target.value,
@@ -157,19 +172,22 @@ class Login extends React.Component {
 
   render() {
     let nums = [1,2,3,4,5,6,7,8,9]
+    let {codeSent} = this.state
     return (
       <div className="Login">
         <div ref={ref => this.phoneRef = ref} className="Login__recaptcha"/>
         <div className="Login__logo">
           <div className="Login__icon" />
-          <TextField
-            value={this.state.value}
-            placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
-            margin="normal"
-            classes={{root: 'Login__text'}}
-            onChange={this.handleTextChange}
-            InputProps={{readOnly: this.state.codeSent ? false : true, style: {textAlign: 'center'}}}
-          />
+          <div className="Login__text">
+             <input
+               className="Login--text-field"
+               type={!codeSent ? "tel" : "number"}
+               value={this.state.value}
+               onChange={this.handleTextChange}
+               placeholder={`${this.state.codeSent ? 'Confirmation Code' : 'Enter Your Number'}`}
+
+             />
+          </div>
         </div>
         <div className="Login__numbers">
           {

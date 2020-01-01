@@ -9,6 +9,7 @@ import Icon from '@material-ui/core/Icon'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 
+const localhost = ''
 export const createOptions = (fontSize, padding) => {
   return {
     style: {
@@ -26,11 +27,12 @@ export const createOptions = (fontSize, padding) => {
         color: '#9e2146',
       },
     },
-  };
+  }
 }
 class BankComponent extends React.Component {
   constructor(props) {
     super(props)
+    this.wrapper = React.createRef()
     this.state = {
       userCard: {}
     }
@@ -39,10 +41,10 @@ class BankComponent extends React.Component {
     this.goBack = this.goBack.bind(this)
   }
 
-  componentDidMount() {
-    let {userInfo} = this.props
+ componentDidMount() {
+   let {userInfo} = this.props
     if (userInfo.card && userInfo.card !== '') {
-      axios.get('/card', {params: {cardId: userInfo.card}})
+      axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
         console.log('RES ------> ', res)
         this.setState({
@@ -56,9 +58,8 @@ class BankComponent extends React.Component {
   componentDidUpdate(prevProps) {
     let {userInfo} = this.props
     if ((!prevProps.userInfo.card && userInfo.card) || (prevProps.userInfo.card !== userInfo.card)) {
-      axios.get('/card', {params: {cardId: userInfo.card}})
+      axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
-        console.log('DID UPDATE RES ------> ', res)
         this.setState({
           userCard: res.data
         })
@@ -74,22 +75,21 @@ class BankComponent extends React.Component {
   submitCard(token = {}) {
     let {userInfo, onCardAdd} = this.props
     if (!userInfo.card && userInfo.card !== '') {
-      axios.post('/save', {userInfo, token})
+      axios.post(localhost + '/save', {userInfo, token})
         .then(res => {
           if (res.data) {
             console.log('Card ADDED ----> ', res.data)
             onCardAdd(res.data.id)
-            this.props.history('/bank')
+            // this.props.history('/bank')
           }
         })
         .catch(e => console.log('Bank Component error ---> ', e))
     } else {
-      axios.post('/upgrade-card', {userId: userInfo.card, token})
+      axios.post(localhost + '/upgrade-card', {userId: userInfo.card, token})
         .then(res => {
-          console.log('UPGRADED CARD ----> ', res)
           if (res.data) {
-            console.log('CARD ----> ', res.data)
-            this.props.history('/bank')
+            console.log('CARD Updated----> ', res.data)
+            // this.props.history('/bank')
           }
         })
         .catch(e => console.log('CARD ERR ---> ', e))
@@ -97,7 +97,7 @@ class BankComponent extends React.Component {
   }
 
   getCard() {
-    axios.get('/card', {params: {cardId: this.state.userCard.id}})
+    axios.get(localhost + '/card', {params: {cardId: this.state.userCard.id}})
       .then(res => {
         console.log('RES ------> ', res)
       })
@@ -114,7 +114,7 @@ class BankComponent extends React.Component {
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
     let cardExist = userCard.sources !== undefined
     if (cardExist) {
-      card.type = userCard.sources.data[0].brand 
+      card.type = userCard.sources.data[0].brand
       card.last4 = userCard.sources.data[0].last4
       card.exp_year = userCard.sources.data[0].exp_year
       card.exp_month = userCard.sources.data[0].exp_month

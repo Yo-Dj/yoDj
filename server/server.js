@@ -6,8 +6,13 @@ var cors = require('cors')
 var cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const {SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET} = require('./SpotifyKeys.js')
+const client = require('twilio')(
+  'AC1627d46dd41d475498395902b9ed1452',
+  'd7a70c54cbeb9c3b2ab57b6f57e95dd2'
+)
 const PORT = process.env.PORT || 8080
 const app = express()
+const {requestReceivedMessage, rejectMessage, acceptMessage} = require('./library')
 
 
 let redirect_uri = 'http://localhost:8080/callback'
@@ -15,11 +20,14 @@ var whitelist = ['http://localhost:3000',
 'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']
 
 const stripe = require('stripe')('sk_test_zIGU3JWicxTyRA0NydEELiqF00ztaNTI63');
+stripe.applePayDomains.create({
+  domain_name: 'localhost:8080'
+})
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-// (async () => {
-  //   // Create a Customer:
+
+
 const corsOptions = {
   origin: function(origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -43,30 +51,28 @@ app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true)
   next()
 })
-//   const customer = await stripe.customers.create({
-//     source: 'tok_mastercard',
-//     email: 'paying.user@example.com',
-//   });
 
-//   // Charge the Customer instead of the card:
-//   const charge = await stripe.charges.create({
-//     amount: 1000,
-//     currency: 'usd',
-//     customer: customer.id,
-//   });
+app.get('/.well-known/apple-developer-merchantid-domain-association', function(req, res) {
+  res.sendFile(__dirname + '/apple-developer-merchantid-domain-association')
+})
 
-//   // YOUR CODE: Save the customer ID and other info in a database for later.
-
-// })();
-
-// (async () => {
-//   // When it's time to charge the customer again, retrieve the customer ID.
-//   const charge = await stripe.charges.create({
-//     amount: 1500, // $15.00 this time
-//     currency: 'usd',
-//     customer: customer.id, // Previously stored, then retrieved
-//   });
-// })()
+app.post('/api/messages', (req, res, next) => {
+  let {userPhone, requestInfo, requestType} = req.body
+  let messageText = requestType === 'reject' ? rejectMessage(requestInfo) : requestType === 'accept' ? acceptMessage(requestInfo) : requestReceivedMessage()
+  client.messages
+    .create({
+      from: '+12057079203',
+      to: userPhone,
+      body: messageText
+    })
+    .then(() => {
+      res.send(JSON.stringify({success: true}))
+    })
+    .catch(error => {
+      console.log('Messages Error ---> ', error)
+      res.send(JSON.stringify({success: false}))
+    })
+})
 
 app.post('/save', async (req, res) => {
   let customer = {}
@@ -76,7 +82,6 @@ app.post('/save', async (req, res) => {
       name: req.body.userInfo.name,
       description: `User ${req.body.userInfo.username} default payment`
     })
-    console.log('CUSTOMER -----> ', customer)
     res.json(customer)
   }
   catch(e) {
@@ -105,32 +110,6 @@ app.post('/upgrade-card', async (req, res) => {
     console.log('Upgrade Card Err --> ', e)
   }
 })
-
-// app.use(cors({
-//   origin: function(origin, callback){
-//     // allow requests with no origin
-//     // (like mobile apps or curl requests)
-//     if(!origin) return callback(null, true)
-//     if(allowedOrigins.indexOf(origin) === -1){
-//       var msg = 'The CORS policy for this site does not ' +
-//                 'allow access from the specified Origin.'
-//       return callback(new Error(msg), false)
-//     }
-//     return callback(null, true)
-//   }
-// }))
-
-// var whitelist = ['https://accounts.spotify.com', 'http://localhost:3000']
-// var corsOptions = {
-//   origin: function (origin, callback) {
-//     console.log('Origin ---> ', origin)
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-// }
 
 
 app.get('/login', (req, res) => {
@@ -178,9 +157,7 @@ app.get('/callback', (req, res) => {
   request.post(authOptions, function(error, response, body) {
     var access_token = body.access_token
     let uri = process.env.FRONTEND_URI || 'http://localhost:3000'
-    // res.redirect(uri + '?access_token=' + access_token)
     res.redirect(uri)
-    // res.send({...body})
   })
 })
 
@@ -191,50 +168,3 @@ app.listen(PORT, '0.0.0.0', () => {
 app.get('*', (req, res) => {
   res.sendFile(path.resolve('public/index.html'))
 })
-
-
-
-
-// var express = require('express')
-// var cors = require('cors')
-// var server = express()
-
-// var whitelist = ['http://techiediaries.com', 'http://othersite.com', 'http://localhost:3000']
-
-// var options = {
-//   origin: function (origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-// }
-
-// server.use(function(req, res, next) {
-//   // res.setHeader('Access-Control-Expose-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept, Authorization')
-//   // res.setHeader('Access-Control-Allow-Origin', '*')
-//   // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-//   // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type', 'Origin, X-Requested-With, Content-Type, Accept')
-//   // res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-//   // res.setHeader('Access-Control-Allow-Credentials', true)
-//   res.header("Access-Control-Allow-Origin", "*")
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-//     // next();
-//   next()
-// })
-
-// server.use(cors(options))
-
-// // server.get('/login', function (req, res, next) {
-
-// //   // res.json({msg: 'This has CORS enabled'})
-// //   res.redirect('http://techiediaries.com')
-// // })
-// app.get('*', (req, res) => {
-//   res.sendFile(path.resolve('public/index.html'))
-// })
-
-// server.listen(8080, () => {
-//   console.log('Listenning at http://localhost:3000' )
-// })
