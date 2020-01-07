@@ -6,20 +6,20 @@ var cors = require('cors')
 var cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const {SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET} = require('./SpotifyKeys.js')
-const client = require('twilio')(
-  'AC1627d46dd41d475498395902b9ed1452',
-  'd7a70c54cbeb9c3b2ab57b6f57e95dd2'
-)
 const PORT = process.env.PORT || 8080
 const app = express()
 const {requestReceivedMessage, rejectMessage, acceptMessage} = require('./library')
-
+require('dotenv').config()
 
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
 'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']
 
-const stripe = require('stripe')('sk_test_zIGU3JWicxTyRA0NydEELiqF00ztaNTI63');
+const client = require('twilio')(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+)
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 stripe.applePayDomains.create({
   domain_name: 'localhost:8080'
 })
@@ -61,7 +61,7 @@ app.post('/api/messages', (req, res, next) => {
   let messageText = requestType === 'reject' ? rejectMessage(requestInfo) : requestType === 'accept' ? acceptMessage(requestInfo) : requestReceivedMessage()
   client.messages
     .create({
-      from: '+12057079203',
+      from: process.env.TWILIO_PHONE,
       to: userPhone,
       body: messageText
     })
