@@ -512,6 +512,8 @@ class MainPage extends React.Component {
     let {userId, event, activities} = this.state
     firebase.database().ref(`users/${userId}/event`).remove()
     firebase.database().ref(`venues/${event.eventId}`).remove()
+    firebase.database().ref(`endedEvents/${event.eventId}`).set(event)
+    firebase.database().ref(`users/${userId}/completed/${event.eventId}`).set(true)
     activities.forEach(user => {
       firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
       let completedEvent = snapshot.val()

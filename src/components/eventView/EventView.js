@@ -92,7 +92,6 @@ class EventView extends React.Component {
     let {userInfo, event = {}} = this.props
     let tip = parseFloat(event.tipAmount).toFixed(2)
     let time = this.timeFormatter()
-    console.log('EVent ---> ', event)
     let eventName = event.placeName ? event.placeName.charAt(0) : ''
     return (
       <div className="EventView">
