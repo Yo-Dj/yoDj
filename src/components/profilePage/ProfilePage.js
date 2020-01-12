@@ -61,14 +61,10 @@ class ProfilePage extends React.Component {
     let {userInfo, endedEvents} = this.props
     let socialMedia = userInfo.verificationType && userInfo.verificationType === 'facebook' ? '../../images/facebook.png' : userInfo.verificationType === 'twitter' ? '../../images/twitter.png' : ''
     let eventsText = events.length === 1 ? 'event' : 'events'
-    console.log('Props DID MOUNt ----> ', this.props)
     let completedEvents = []
     if (userInfo && userInfo.completed) {
-      console.log('UserINfo COMPLETED ---> ', userInfo['completed'])
       completedEvents = Object.keys(userInfo.completed).reduce((acc,event) => {
-        console.log('Event -----> ', event)
         if (endedEvents && endedEvents[event] && endedEvents[event].placeName) {
-          console.log('Ended Events ---> ', endedEvents)
           // {placeName: 'Start Bar', time: '3/4 10pm', title: 'T'},
           let date = new Date(endedEvents[event].startDate)
           let time = moment(date).format('MM/DD h a')
@@ -125,9 +121,9 @@ class ProfilePage extends React.Component {
         <div className="ProfilePage--events-num">{`${events.length} ${eventsText}`}</div>
         <div className="ProfilePage__events-container">
           {
-            events.map((event, index) => (
+            completedEvents.map((event, index) => (
               <div className="ProfilePage__event-wrapper" key={index}>
-                <div className="ProfilePage--event-icon">{event.FontAwesomeIcontitle}</div>
+                <div className="ProfilePage--event-icon">{event.title}</div>
                 <div className="ProfilePage--event-place">{event.placeName}</div>
                 <div className="ProfilePage--event-time">{event.time}</div>
               </div>
