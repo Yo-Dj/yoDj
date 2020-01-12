@@ -118,7 +118,7 @@ class ProfilePage extends React.Component {
             <Button variant="contained" color="primary" classes={{root: 'ProfilePage--tip', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="clock" /><div className="ProfilePage--money-text">Bank</div></Button>
           </div>
         </div>
-        <div className="ProfilePage--events-num">{`${events.length} ${eventsText}`}</div>
+        <div className="ProfilePage--events-num">{`${completedEvents.length} ${eventsText}`}</div>
         <div className="ProfilePage__events-container">
           {
             completedEvents.map((event, index) => (
