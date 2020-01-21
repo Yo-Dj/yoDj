@@ -196,7 +196,6 @@ class MainPage extends React.Component {
     //   })
     //   this.props.history.push('/login')
     // })
-    console.log('Take to Profile Page')
     this.props.history.push('/profile')
   }
 
@@ -283,7 +282,20 @@ class MainPage extends React.Component {
     let now = new Date()
     now = now.getTime()
     if (activities.length === 0 && Object.keys(fans).length !== 0 && Object.keys(joined).length > 0) {
+
       joinedArr.forEach(user => {
+        let isNewUser = requests.reduce((acc, el, index) => {
+          if (el.id === user && !el.songRequest) {
+            acc.push(index)
+          }
+          return acc
+        }, [])
+        if (isNewUser.length === 2) {
+          requests = requests.filter((req, idx) => {
+            let isOld = isNewUser.indexOf(idx)
+            return isOld === -1
+          })
+        }
         if (fans[user]) {
           activities.push(user)
           requests.unshift({name: fans[user].username, songRequest: false, id: user, message: 'joined your event', img: fans[user].imageUrl, time: now})
@@ -316,6 +328,8 @@ class MainPage extends React.Component {
     }
 
    else if (activities[activities.length - 1] !== lastJoiner && fans[lastJoiner]) {
+      console.log('LAST JOINER ----> ', lastJoiner)
+      console.log('LAST JOINER REQUESTS ---> ', requests)
       activities.push(lastJoiner)
       requests.unshift({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl, time: now})
     }
@@ -332,6 +346,7 @@ class MainPage extends React.Component {
     let lastAdded = requestedArr[requestedArr.length - 1]
     let requestedUser = requestedArr.length > 0 ? fans[requested[lastAdded].user] : ''
     let songRequests = requests.length - activities.length
+
     if (requestedArr.length === 0) {
       requests = requests.filter(req => !req.songRequest)
       this.setState({
@@ -429,7 +444,6 @@ class MainPage extends React.Component {
           this.updateActivities(joiners, event)
         }
         if (event.requests || songRequests !== 0) {
-
           let newSongRequests = event.requests ? event.requests : {}
           this.updateRequests(newSongRequests)
         }
@@ -518,10 +532,11 @@ class MainPage extends React.Component {
       firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
       let completedEvent = snapshot.val()
       let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
-      firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
+      firebase.database().ref(`users/${user}/completed/${event.eventId}`).set(userRequests)
       firebase.database().ref(`users/${user}/venue`).remove()
       })
     })
+    this.getEndedEvents()
     this.setState({
       isActive: false,
       event: {},
@@ -642,6 +657,7 @@ class MainPage extends React.Component {
       newRequest, requests, isActive, 
       allDjs, fanEvent, acceptedSongs, 
       allEvents, endedEvents} = this.state
+
     return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
