@@ -656,9 +656,9 @@ class MainPage extends React.Component {
     let {userInfo, userId, event, 
       newRequest, requests, isActive, 
       allDjs, fanEvent, acceptedSongs, 
-      allEvents, endedEvents} = this.state
+      isLogged, allEvents, endedEvents} = this.state
 
-    return(
+      return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
           <Switch>
@@ -713,7 +713,7 @@ class MainPage extends React.Component {
                     onAddRequest={this.addRequestToFirebase}
                     onReject={this.rejectRequest}
                   />)} />
-              <Route path="/login" render={props => (<LoginWrapper />)} />
+              <Route path="/login" render={props => (<LoginWrapper isLogged={isLogged} />)} />
               <Route path="/dj-page" render={props => (
                 <SelectDj
                   userInfo={userInfo}
