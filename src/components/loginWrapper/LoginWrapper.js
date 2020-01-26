@@ -12,7 +12,7 @@ class LoginWrapper extends React.Component {
     super(props)
     this.state = {
       userInfo: {},
-      view: '',
+      view: 'confirmation',
       userType: '',
       profileInfo: {},
       loginSuccessful: false,
@@ -32,8 +32,13 @@ class LoginWrapper extends React.Component {
 
   componentDidMount() {
     fire.auth().onAuthStateChanged(user => {
-      if (user) {
-        if (!user.phoneNumber) {
+      let {userInfo} = this.state
+      let {isLogged} = this.props
+      if (isLogged) {
+        return
+      }
+      if (user && !isLogged) {
+        if ((!user.phoneNumber && (!userInfo || (userInfo && userInfo.phone))) || !user.displayName) {
           this.setState({
             view: 'confirmation'
           })
@@ -43,7 +48,7 @@ class LoginWrapper extends React.Component {
           userInfo: {token: user.m, phone: user.phoneNumber, uid: user.uid},
           view: 'registration'
         })
-      } else if (!user && !this.userInfo){
+      } else if (!user && !userInfo){
         this.setState({
           view: 'confirmation'
         })
