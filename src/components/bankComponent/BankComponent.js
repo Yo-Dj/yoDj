@@ -43,6 +43,7 @@ class BankComponent extends React.Component {
 
  componentDidMount() {
    let {userInfo} = this.props
+   console.log('DID MOUNT ----> ', this.props)
     if (userInfo.card && userInfo.card !== '') {
       axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
@@ -69,7 +70,14 @@ class BankComponent extends React.Component {
   }
 
   goBack() {
-    this.props.history.push('/profile')
+    let {location} = this.props
+    console.log('BANK COMPONENT PROPS -----> ', this.props)
+    if (location.state) {
+      this.props.history.push(location.state.pastUrl)
+      return
+    } else {
+      this.props.history.push('/profile')
+    }
   }
 
   submitCard(token = {}) {
@@ -78,7 +86,6 @@ class BankComponent extends React.Component {
       axios.post(localhost + '/save', {userInfo, token})
         .then(res => {
           if (res.data) {
-            console.log('Card ADDED ----> ', res.data)
             onCardAdd(res.data.id)
             // this.props.history('/bank')
           }

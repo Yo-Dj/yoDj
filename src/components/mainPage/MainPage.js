@@ -328,8 +328,6 @@ class MainPage extends React.Component {
     }
 
    else if (activities[activities.length - 1] !== lastJoiner && fans[lastJoiner]) {
-      console.log('LAST JOINER ----> ', lastJoiner)
-      console.log('LAST JOINER REQUESTS ---> ', requests)
       activities.push(lastJoiner)
       requests.unshift({name: fans[lastJoiner].username, songRequest: false, id: lastJoiner, message: 'joined your event', img: fans[lastJoiner].imageUrl, time: now})
     }

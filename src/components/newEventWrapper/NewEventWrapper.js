@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button'
 import NumberFormat from 'react-number-format'
 import Dropdown from '../dropdown'
 import {googlePlaces} from 'src/config/CustomKeys'
-
+import CardModal from '../cardModal'
 
 class NewEventWrapper extends React.Component {
   constructor(props) {
@@ -26,7 +26,8 @@ class NewEventWrapper extends React.Component {
       tipText: '',
       tipAmount: '',
       numberSubtracted: false,
-      eventName: ''
+      eventName: '',
+      showCardModal: false
     }
     this.profileImgClicked = this.profileImgClicked.bind(this)
     this.handleName = this.handleName.bind(this)
@@ -39,7 +40,8 @@ class NewEventWrapper extends React.Component {
     this.handleScriptLoad = this.handleScriptLoad.bind(this)
     this.handlePlaceSelect = this.handlePlaceSelect.bind(this)
     this.setCursor = this.setCursor.bind(this)
-
+    this.closeCardModal = this.closeCardModal.bind(this)
+    this.openCardInfo = this.openCardInfo.bind(this)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -109,6 +111,13 @@ class NewEventWrapper extends React.Component {
   createEvent() {
     let {placeName, location, type, tipAmount, tipText} = this.state
     let {userId} = this.props
+    let {userInfo: {card}} = this.props
+    if (!card) {
+      this.setState({
+        showCardModal: true
+      })
+      return
+    }
     if (placeName !== '' && location !== '' && type !== '' && tipText !== '' ) {
       let now = new Date().getTime()
       let newRequest = {
@@ -155,22 +164,40 @@ class NewEventWrapper extends React.Component {
         })
       }
     }
+  }
 
+  closeCardModal() {
+    this.setState({
+      showCardModal: false
+    })
+  }
+
+  openCardInfo() {
+    // this.props.history.push('/bank')
+    this.props.history.push({
+      pathname:'/bank',
+      state: {pastUrl: '/new-event'}
+    })
   }
 
   render() {
     let {userInfo} = this.props
-    let {type, eventName} = this.state
+    let {type, eventName, showCardModal} = this.state
     return (
       <div className="NewEventWrapper">
         <Header imageUrl={userInfo.imageUrl} iconClick={this.profileImgClicked} isActive={false} onClick={() => {}}/>
+        <CardModal
+            isVisible={this.state.showCardModal}
+            onCloseModal={this.closeCardModal}
+            onOpenCardInfo={this.openCardInfo}
+        />
        <div className="NewEventWrapper__subheader">
          <div className="NewEventWrapper--icon-subtitle">
           <Icon onClick ={this.close}>close</Icon>
          </div>
           <div className="NewEventWrapper--subtitle">Check In</div>
        </div>
-       <div className="NewEventWrapper__container">
+       <div className={`NewEventWrapper__container${showCardModal ? ' NewEventWrapper--hide' : ''}`}>
         <h3>Event</h3>
         <div className="NewEventWrapper--icon">{eventName}</div>
           <Script url={`https://maps.googleapis.com/maps/api/js?key=${googlePlaces}&libraries=places`}

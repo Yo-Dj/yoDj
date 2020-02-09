@@ -11,6 +11,18 @@
   color: white;
   background-image: url("../../images/S-grey-fractal-bg.png");
 
+
+  &--hide {
+    opacity: 1;
+    pointer-events: none;
+    transition: all .25s ease-in-out;
+  }
+
+  &--hide-content {
+    // opacity: 0;
+    visibility:  hidden;
+  }
+  
   &__subheader {
     display: flex;
     justify-content: flex-start;
