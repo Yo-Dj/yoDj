@@ -12,7 +12,7 @@ class LoginWrapper extends React.Component {
     super(props)
     this.state = {
       userInfo: {},
-      view: '',
+      view: 'confirmation',
       userType: '',
       profileInfo: {},
       loginSuccessful: false,
@@ -32,12 +32,23 @@ class LoginWrapper extends React.Component {
 
   componentDidMount() {
     fire.auth().onAuthStateChanged(user => {
-      if (user) {
+      let {userInfo} = this.state
+      let {isLogged} = this.props
+      if (isLogged) {
+        return
+      }
+      if (user && !isLogged) {
+        if ((!user.phoneNumber && (!userInfo || (userInfo && userInfo.phone))) || !user.displayName) {
+          this.setState({
+            view: 'confirmation'
+          })
+          return;
+        }
         this.setState({
           userInfo: {token: user.m, phone: user.phoneNumber, uid: user.uid},
           view: 'registration'
         })
-      } else if (!user && !this.userInfo){
+      } else if (!user && !userInfo){
         this.setState({
           view: 'confirmation'
         })
@@ -52,14 +63,15 @@ class LoginWrapper extends React.Component {
   }
 
   addToDatabase(verificationType) {
-    let {profileInfo: {name, image}, username} = this.state
+    let {profileInfo: {name, image}, username, userInfo: {phone}} = this.state
     let userId = !this.state.userInfo.uid ? fire.auth().currentUser.uid : this.state.userInfo.uid
     firebase.database().ref(`users/${userId}`).set({
       name: name,
       imageUrl: image,
       userId: userId,
       verificationType: verificationType,
-      username: username
+      username: username,
+      phone: phone
     }, error => {
       if (!error) {
         this.setState({
@@ -80,8 +92,9 @@ class LoginWrapper extends React.Component {
         }
         this.setState({
           profileInfo
+        }, () => {
+          this.addToDatabase('twitter')
         })
-        this.addToDatabase('twitter')
       })
       .catch(error => console.log('Twitter error --> ', error)) // eslint-disable-line no-console
   }
@@ -94,10 +107,12 @@ class LoginWrapper extends React.Component {
           image: profile.picture.data.url,
           name: profile.name
         }
+        console.log('Profile Infor from Facebooks ---> ', profileInfo)
         this.setState({
           profileInfo
+        }, () => {
+          this.addToDatabase('facebook')
         })
-        this.addToDatabase('facebook')
       })
       .catch(error => console.log('Facebook Sign IN error --> ', error)) // eslint-disable-line no-console
   }
@@ -115,7 +130,6 @@ class LoginWrapper extends React.Component {
   }
 
   fanSignUp() {
-
     let {userType, username, userInfo: {phone}} = this.state
     let userId = !this.state.userInfo.uid ? fire.auth().currentUser.uid : this.state.userInfo.uid
     firebase.database().ref(`users/${userId}`).set({

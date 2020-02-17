@@ -4,6 +4,7 @@ import moment from 'moment'
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Header from '../header'
+import CardModal from '../cardModal'
 
 class FanEvent extends React.Component {
   constructor(props) {
@@ -11,13 +12,15 @@ class FanEvent extends React.Component {
     this.state = {
       timerTime: 0,
       timerStart: 0,
-
+      showCardModal: false
     }
     this.onGoBack = this.onGoBack.bind(this)
     this.onProfile = this.onProfile.bind(this)
     this.startTimer = this.startTimer.bind(this)
     this.timeFormatter = this.timeFormatter.bind(this)
     this.join = this.join.bind(this)
+    this.closeCardModal = this.closeCardModal.bind(this)
+    this.openCardInfo = this.openCardInfo.bind(this)
   }
 
   componentDidMount() {
@@ -86,11 +89,35 @@ class FanEvent extends React.Component {
   }
 
   join() {
-    this.props.onJoin(this.props.fanEvent)
+    console.log('PROPS Fan Event -----> ', this.props)
+    let {userInfo: {card}} = this.props
+    if (card) {
+      this.props.onJoin(this.props.fanEvent)
+    } else {
+      this.setState({
+        showCardModal: true
+      })
+      console.log('CARD IS NOT added')
+    }
+  }
+  
+  closeCardModal() {
+    this.setState({
+      showCardModal: false
+    })
+  }
+
+  openCardInfo() {
+    // this.props.history.push('/bank')
+    this.props.history.push({
+      pathname:'/bank',
+      state: {pastUrl: '/fan-event'}
+    })
   }
 
   render() {
     let {userInfo, fanEvent} = this.props
+    let {showCardModal} = this.state
     let event = {}
     if (fanEvent.event) {
       event = fanEvent.event
@@ -100,9 +127,15 @@ class FanEvent extends React.Component {
     let pending = fanEvent.pending ? Object.keys(fanEvent.pending).length : 0
     let attending = fanEvent.joiners ? Object.keys(fanEvent.joiners).length : 0
     let completed = fanEvent.completed ? Object.keys(fanEvent.completed).length : 0
+    let eventname = fanEvent.event ? fanEvent.event.placeName.charAt(0).toUpperCase() : ''
     return(
-      <div className="FanEvent">
+      <div className={`FanEvent${showCardModal ? ' FanEvent--hide' : ''}`}>
         <Header imageUrl={userInfo.imageUrl} iconClick={this.onProfile} isActive={false} onClick={() => {}}/>
+        <CardModal
+            isVisible={this.state.showCardModal}
+            onCloseModal={this.closeCardModal}
+            onOpenCardInfo={this.openCardInfo}
+        />
         <div className="FanEvent__subheader">
           <Icon onClick ={this.onGoBack}>close</Icon>
           <div className="FanEvent--subtitle">{event.placeName}</div>
@@ -110,7 +143,7 @@ class FanEvent extends React.Component {
        <div className="FanEvent--attendees">
           {attending} fans attending, {pending} requests pending
         </div>
-        <div className="FanEvent__main-container">
+        <div className={`FanEvent__main-container${showCardModal ? ' FanEvent--hide-content' : ''}`}>
         <div className="FanEvent__icon-container">
           <div className="FanEvent--headset">
               <Icon classes={{root: `FanEvent--headset-icon`}}>headset</Icon>
@@ -123,12 +156,12 @@ class FanEvent extends React.Component {
           <div className="FanEvent--time">{time}</div>
           <div className="FanEvent--info"> Started at {event.time}</div>
         </div>
-        <div className="FanEvent--icon" />
+        <div className="FanEvent--icon">{eventname}</div>
        </div>
-        <div className="FanEvent--requests">
+        <div className={`FanEvent--requests${showCardModal ? ' FanEvent--hide-content' : ''}`}>
           {completed} Song Request Complete
         </div>
-        <div className="FanEvent--address">
+        <div className={`FanEvent--address${showCardModal ? ' FanEvent--hide-content' : ''}`}>
           {event.address}
         </div>
         <div className="FanEvent--join">

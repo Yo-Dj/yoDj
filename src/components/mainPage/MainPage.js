@@ -34,8 +34,11 @@ class MainPage extends React.Component {
       joined: false,
       activities: [],
       fans: [],
-      acceptedSongs: []
+      acceptedSongs: [],
+      allEvents: [],
+      endedEvents: []
     }
+    this.eventsListener = null
     this.authListener = this.authListener.bind(this)
     this.getUserInfo = this.getUserInfo.bind(this)
     this.logoutUser = this.logoutUser.bind(this)
@@ -59,23 +62,23 @@ class MainPage extends React.Component {
     this.rejectRequest = this.rejectRequest.bind(this)
     this.logout = this.logout.bind(this)
     this.addCard = this.addCard.bind(this)
+    this.getAllEvents = this.getAllEvents.bind(this)
+    this.getEndedEvents = this.getEndedEvents.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
+    this.getAllEvents()
+    this.getEndedEvents()
   }
+
+  componentWillUnmount() {
+    firebase.database().ref('venues').off('value', this.eventsListener)
+  }  
 
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
-    // if (location.pathname === '/profile' && Object.keys(this.state.userInfo).length === 0) {
-    //     this.props.history.push('/home')
-    //     return
-    //   }
-    //   if (location.pathname === '/home' && prevProps.location.pathname === '/profile' && Object.keys(this.state.userInfo).length > 0 && Object.keys(prevState.userInfo).length > 0) {
-    //     console.log('Profile ----> ', this.state)
-    //     this.props.history.push('/profile')
-    //     return
-    //   }
+    const {event = {}, activities = [], requests = [], newRequest = {}, acceptedSongs = []} = this.state
       if (location.pathname === '/bank' && Object.keys(this.state.userInfo).length === 0) {
         this.props.history.push('/profile')
         return
@@ -104,21 +107,13 @@ class MainPage extends React.Component {
         return
       }
 
-      if (location.pathname ==='/accept-request' && location.state && (!this.state.newRequest.id || (this.state.newRequest.id !== location.state.request.id))) {
+      if (location.pathname ==='/accept-request' && location.state && !location.state.request.accepted && (!this.state.newRequest.id || (this.state.newRequest.id !== location.state.request.id))) {
         this.setState({
           newRequest: location.state.request
         }, () => {
           this.props.history.push('/accept-request')
         })
         return
-      }
-
-      if (location.pathname === '/accept-request' && !location.state && (!this.state.newRequest.id && this.state.acceptedSongs.length > 0)) {
-        this.setState({
-          newRequest: {...this.state.acceptedSongs[0], accepted: true}
-        }, () => {
-          this.props.history.push('/accept-request')
-        })
       }
 
       if ((prevProps.location.state  || !prevProps.location.state) && location.pathname ==='/feed' &&  this.state.requests.length === 0 && (!location.state || (location.state && location.state.requests === 0))) {
@@ -129,7 +124,7 @@ class MainPage extends React.Component {
         return
       }
 
-      if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests) {
+      if (this.state.requests.length === 0 && location.pathname === '/feed' && location.state && location.state.requests.length > 0) {
         this.setState({
           requests: location.state.requests
         })
@@ -153,6 +148,12 @@ class MainPage extends React.Component {
         })
         return
       }
+
+      if (event.joiners && activities.length === 0) {
+        // this.updateActivities(event.joiners, event)
+        // this.updateRequests(event.requests || [])
+        // console.log('SHOULD HAVE Activities ----> ', this.state)
+      }
   }
 
   authListener() {
@@ -167,7 +168,7 @@ class MainPage extends React.Component {
         this.getUserInfo(user.uid)
       }
       else {
-        this.logoutUser()
+        this.logout()
       }
     })
   }
@@ -178,25 +179,41 @@ class MainPage extends React.Component {
         this.setState({
           isLogged: false,
           userId: '',
-          userInfo: {}, 
+          userInfo: {},
         })
-        console.log('Signed Out sucks ---> ')
         this.props.history.push('/login')
     })
   }
 
   logoutUser() {
-    console.log('Logout')
-    fire.auth().signOut()
-    .then(() => {
+    // console.log('Logout')
+    // fire.auth().signOut()
+    // .then(() => {
+    //   this.setState({
+    //     isLogged: false,
+    //     userId: '',
+    //     userInfo: {}
+    //   })
+    //   this.props.history.push('/login')
+    // })
+    this.props.history.push('/profile')
+  }
+
+  getAllEvents() {
+    this.eventsListener = firebase.database().ref('venues').on('value', snapshot => {
       this.setState({
-        isLogged: false,
-        userId: '',
-        userInfo: {}
+        allEvents: snapshot.val()
       })
-      this.props.history.push('/login')
     })
-    // this.props.history.push('/profile')
+  }
+
+  getEndedEvents() {
+    firebase.database().ref(`endedEvents`).once('value').then(snapshot => {
+      let endedEvents = snapshot.val()
+      this.setState({
+        endedEvents
+      })      
+    })
   }
 
   getDjs() {
@@ -233,6 +250,14 @@ class MainPage extends React.Component {
         },{})
         this.setState({
           fans
+        }, () => {
+          const {event = {}, activities = [], requests = []} = this.state 
+          if (activities.length === 0 && event.joiners) {
+            this.updateActivities(event.joiners, event)
+          }
+          if (event.requests && Object.keys(event.requests).length > 0) {
+            this.updateRequests(event.requests)
+          }
         })
       }
     })
@@ -256,8 +281,21 @@ class MainPage extends React.Component {
     let requestsArr = requests.map(request => request.id)
     let now = new Date()
     now = now.getTime()
-    if (activities.length === 0 && Object.keys(fans).length !== 0) {
+    if (activities.length === 0 && Object.keys(fans).length !== 0 && Object.keys(joined).length > 0) {
+
       joinedArr.forEach(user => {
+        let isNewUser = requests.reduce((acc, el, index) => {
+          if (el.id === user && !el.songRequest) {
+            acc.push(index)
+          }
+          return acc
+        }, [])
+        if (isNewUser.length === 2) {
+          requests = requests.filter((req, idx) => {
+            let isOld = isNewUser.indexOf(idx)
+            return isOld === -1
+          })
+        }
         if (fans[user]) {
           activities.push(user)
           requests.unshift({name: fans[user].username, songRequest: false, id: user, message: 'joined your event', img: fans[user].imageUrl, time: now})
@@ -306,6 +344,7 @@ class MainPage extends React.Component {
     let lastAdded = requestedArr[requestedArr.length - 1]
     let requestedUser = requestedArr.length > 0 ? fans[requested[lastAdded].user] : ''
     let songRequests = requests.length - activities.length
+
     if (requestedArr.length === 0) {
       requests = requests.filter(req => !req.songRequest)
       this.setState({
@@ -322,7 +361,7 @@ class MainPage extends React.Component {
     else if (requestedArr.length > 0 && songRequests === 0) {
      songsArr.forEach((request, idx) => {
        if (fans[request.user]) {
-         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user})
+         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user, phone: fans[request.user].phone})
        }
       })
     }
@@ -337,8 +376,9 @@ class MainPage extends React.Component {
      })
    }
    else if (requestIds.indexOf(lastAdded) === -1) {
-     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: lastAdded.user})
+     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user, phone: requestedUser.phone})
     }
+  
     this.setState({
       requests
     })
@@ -359,14 +399,15 @@ class MainPage extends React.Component {
       })
     } else if (acceptedSongs.length === 0 && pendingIds.length > 0) {
       pendingSongArr.forEach((request, idx) => {
-          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true})
+          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true, fanId: request.fanId})
       })
     } else if (acceptedIds.indexOf(pendingIds[pendingIds.length - 1]) === -1) {
       let lastRequest = pendingSongArr[pendingSongArr.length - 1]
-        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true})
+        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true, fanId: lastRequest.fanId})
     }
     this.setState({
-      acceptedSongs
+      acceptedSongs,
+      newRequest: {}
     })
   }
 
@@ -401,7 +442,6 @@ class MainPage extends React.Component {
           this.updateActivities(joiners, event)
         }
         if (event.requests || songRequests !== 0) {
-
           let newSongRequests = event.requests ? event.requests : {}
           this.updateRequests(newSongRequests)
         }
@@ -428,7 +468,10 @@ class MainPage extends React.Component {
         console.log('USER DATA -----> ', data)
         if (data) {
           if (data.userType && data.userType === 'Fan') {
-            let userInfo = {username: data.username, type: 'fan', phone: data.phone, imageUrl: data.imageUrl, venue: data.venue}
+            let userInfo = {
+              username: data.username, type: 'fan', phone: data.phone, 
+              imageUrl: data.imageUrl, venue: data.venue, completed: data.completed,
+              userId: data.userId, card: data.card}
             let joined = data.venue ? true : false
             let fanEvent = {}
             this.setState({
@@ -481,17 +524,25 @@ class MainPage extends React.Component {
     let {userId, event, activities} = this.state
     firebase.database().ref(`users/${userId}/event`).remove()
     firebase.database().ref(`venues/${event.eventId}`).remove()
+    firebase.database().ref(`endedEvents/${event.eventId}`).set(event)
+    firebase.database().ref(`users/${userId}/completed/${event.eventId}`).set(true)
     activities.forEach(user => {
       firebase.database().ref(`users/${user}/venue`).once('value').then(snapshot => {
       let completedEvent = snapshot.val()
       let userRequests = completedEvent.requests ? completedEvent.requests : {requests: 0}
-      firebase.database().ref(`users/${user}/completed/${completedEvent.id}`).set(userRequests)
+      firebase.database().ref(`users/${user}/completed/${event.eventId}`).set(userRequests)
       firebase.database().ref(`users/${user}/venue`).remove()
       })
     })
+    this.getEndedEvents()
     this.setState({
       isActive: false,
-      event: {}
+      event: {},
+      requests: [],
+      activities: [],
+      acceptedSongs: [],
+      newRequest: {},
+      fans: []
     }, () => {
       this.props.history.push('/home')
     })
@@ -519,7 +570,10 @@ class MainPage extends React.Component {
       this.setState({
         newRequest: acceptedSongs[0]
       }, () => {
-        this.props.history.push('/accept-request')
+        this.props.history.push({
+          pathname: '/accept-request',
+          state: {request: {...acceptedSongs[0], accepted: true}}
+        })
       })
     }
   }
@@ -590,16 +644,19 @@ class MainPage extends React.Component {
     let {userId, userInfo} = this.state
     firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
       if (!error) {
-        console.log('Card is Added -----> ')
-        return 
+        return
       }
       console.log('ERROR ----> ', error)
     })
   }
 
   render() {
-    let {userInfo, userId, event, newRequest, requests, isActive, allDjs, fanEvent, acceptedSongs} = this.state
-    return(
+    let {userInfo, userId, event, 
+      newRequest, requests, isActive, 
+      allDjs, fanEvent, acceptedSongs, 
+      isLogged, allEvents, endedEvents} = this.state
+
+      return(
       <MuiThemeProvider theme={theme}>
         <div className="MainPage">
           <Switch>
@@ -611,6 +668,7 @@ class MainPage extends React.Component {
                     userInfo={userInfo}
                     userId={userId}
                     event={event}
+                    newRequest={newRequest}
                     requests={requests}
                     onLogout={this.logoutUser}
                     onFinish={this.finishEvent}
@@ -627,33 +685,38 @@ class MainPage extends React.Component {
                   userId={userId}
                   event={event}
                   onLogout={this.logoutUser}
+                  allEvents={allEvents}
                   djs={allDjs}
                   onFanSelect={this.addFanEvent}
                   />
                 )}/>
               <Route path="/feed" render={props =>
                 (<FeedPage
+                  acceptedSongs={acceptedSongs}
                   userInfo={userInfo}
                   isActive={this.state.isActive}
                   requests={requests}
                   onGoBack={this.goBackHome}
                   onLogout={this.logoutUser}
+                  onReject={this.rejectRequest}
                   />)} />
               <Route path='/accept-request' render={props =>
                   (<AcceptWrapper
                     userInfo={userInfo}
                     isActive={isActive}
-                    onLogout={this.logoutUser}
+                    onProfilePage={this.logoutUser}
                     onGoBack={this.goBackHome}
                     request={newRequest}
                     onAccepted={this.acceptingSong}
                     onAddRequest={this.addRequestToFirebase}
+                    onReject={this.rejectRequest}
                   />)} />
-              <Route path="/login" render={props => (<LoginWrapper />)} />
+              <Route path="/login" render={props => (<LoginWrapper isLogged={isLogged} />)} />
               <Route path="/dj-page" render={props => (
                 <SelectDj
                   userInfo={userInfo}
                   onLogout={this.logoutUser}
+                  allEvents={allEvents}
                   djs={allDjs}
                   onGoBack={this.goFanPage}
                   onFanSelect={this.addFanEvent}
@@ -680,14 +743,15 @@ class MainPage extends React.Component {
               )} />
 
                 <Route path='/profile' render={props => (
-                  <ProfilePage 
+                  <ProfilePage
                     userInfo={userInfo}
                     onLogout={this.logout}
+                    endedEvents={endedEvents}
                   />
                 )} />
 
                 <Route path='/bank' render={props => (
-                  <BankComponent 
+                  <BankComponent
                     userInfo={userInfo}
                     onCardAdd={this.addCard}
                     onLogout={this.logout}

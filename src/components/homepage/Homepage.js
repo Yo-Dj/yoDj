@@ -1,6 +1,9 @@
 import React from 'react'
 import {withRouter} from 'react-router-dom'
 import firebase from 'firebase'
+import Snackbar from '@material-ui/core/Snackbar'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 import Icon from '@material-ui/core/Icon'
 import fire from 'src/config/Fire'
 import FeedContainer from '../feedContainer'
@@ -13,7 +16,9 @@ class Homepage extends React.Component {
     this.state = {
       active: false,
       requestOpen: false,
-      requestMessage: ''
+      requestMessage: '',
+      errorMessage: '',
+      errorOpen: false
     }
     this.openProfile = this.openProfile.bind(this)
     this.activate = this.activate.bind(this)
@@ -24,6 +29,8 @@ class Homepage extends React.Component {
     this.forwardFeedPage = this.forwardFeedPage.bind(this)
     this.openDeliverPage = this.openDeliverPage.bind(this)
     this.handleRejection = this.handleRejection.bind(this)
+    this.handleErrorMessage = this.handleErrorMessage.bind(this)
+    this.handleErrorClose = this.handleErrorClose.bind(this)
   }
 
   componentDidMount() {
@@ -63,13 +70,20 @@ class Homepage extends React.Component {
     })
   }
 
+  handleErrorMessage(errorMessage) {
+    this.setState({
+      errorOpen: true,
+      errorMessage
+    })
+  }
+
   authListener() {
 
   }
 
   acceptSong(request) {
     let {requests, acceptedSongs} = this.props
-    if (acceptedSongs.length < 6) {
+    if (acceptedSongs.length < 1) {
       this.props.history.push({
         pathname:'/accept-request',
         state: {request: {...request}}
@@ -107,8 +121,14 @@ class Homepage extends React.Component {
   }
 
   handleRejection(request) {
-    console.log('Rejection is clicked')
     this.props.onReject(request)
+  }
+
+  handleErrorClose() {
+    this.setState({
+      errorOpen: false,
+      errorMessage: ''
+    })
   }
 
   render() {
@@ -129,12 +149,14 @@ class Homepage extends React.Component {
               active={this.state.active}
               event={event}
               requests={requests}
+              acceptedSongs={acceptedSongs}
               onRequestOpen={this.requestOpen}
               openRequestModal={requestOpen}
               requestMessage={requestMessage}
               onAccept={this.acceptSong}
               onForward={this.forwardFeedPage}
               onReject={this.handleRejection}
+              onError={this.handleErrorMessage}
             />
             <div className="Homepage--border" style={{boxShadow: boxShadow, backgroundColor: boxShadowColor}}/>
           </div>
@@ -145,6 +167,29 @@ class Homepage extends React.Component {
             </div>
           </div>
         </div>
+        <Snackbar
+        bodyStyle={{ backgroundColor: 'teal', color: 'coral' }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          open={this.state.errorOpen}
+          autoHideDuration={3000}
+          onClose={this.handleErrorClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{this.state.errorMessage}</span>}
+          action={[
+              <IconButton
+                key="close"
+                arial-label="Close"
+                color="inherit"
+                onClick={this.handleErrorClose}
+              >
+                <CloseIcon />
+              </IconButton>
+          ]} />
       </div>
     )
   }

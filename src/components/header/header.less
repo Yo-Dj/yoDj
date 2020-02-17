@@ -28,12 +28,13 @@
     border-radius: 50%;
     background-size: 100% 100%;
     box-shadow: 1px 2px 4px 1px yellow inset, 1px 1px 4px 3px yellow;
+    margin: auto;
   }
 
   &--offline-icon {
     background: transparent no-repeat center center;
     background-image: url("../../images/yellow-logo.png");
-    background-size: 90% 50px;
+    background-size: 150px 50px;
     width: 33%;
     height: 50px;
   }
@@ -41,8 +42,59 @@
   &--active-icon {
     background: transparent no-repeat center center;
     background-image: url("../../images/green-logo.png");
-    background-size: 90% 50px;
+    background-size: 150px 50px;
     width: 33%;
     height: 50px;
   }
 }
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .Header {
+      &__profile {
+        margin: 0;
+      }
+      
+      &--offline-icon {
+        background-size: 90% 40px;
+      }
+
+      &--active-icon { 
+        background-size: 90% 40px;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .Header {
+      &--offline-icon {
+        background-size: 90% 40px;
+      }
+
+      &--active-icon { 
+        background-size: 90% 40px;
+      }
+    }
+  }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .Header {
+      &--offline-icon {
+        background-size: 90% 50px;
+      }
+
+      &--active-icon { 
+        background-size: 90% 50px;
+      }
+    }
+  }

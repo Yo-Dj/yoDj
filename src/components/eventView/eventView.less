@@ -9,12 +9,12 @@
   flex-direction: column;
   box-sizing: border-box;
   color: white;
-  background-image: url("../../images/fractal-background.png");
+  background-image: url("../../images/S-grey-fractal-bg.png");
 
 
   &__subheader {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     height: 30px;
     padding: 5px 3px;
     align-items: center;
@@ -22,7 +22,7 @@
   }
 
   &--subtitle {
-    margin-left: 4.5em;
+    margin: auto;
     font-size: 24px;
     color: #08FF00;
     text-transform: capitalize;
@@ -33,6 +33,8 @@
     padding: 40px 20px 10px 20px;
     display: flex;
     box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
   }
 
   &--headset {
@@ -42,11 +44,12 @@
   }
 
   &--time-container {
-    flex: 2;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-size: 16px;
+    max-width: 400px;
   }
 
   &--time {
@@ -64,6 +67,12 @@
     background-size: 100% 100%;
     background-color: #555;
     border: 2px solid #08FF00;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #08FF00;
   }
 
   &--address {

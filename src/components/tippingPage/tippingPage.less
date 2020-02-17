@@ -14,7 +14,8 @@
     flex-direction: column;
     box-sizing: border-box;
     color: white;
-    background-image: url("../../images/fractal-background.png");
+    background-image: url("../../images/S-grey-fractal-bg.png");
+    overflow-y: auto;
 
     &__fan-container {
         padding: 20px 0;
@@ -101,6 +102,8 @@
         padding: 20px;
         box-sizing: border-box;
         padding-top: 0;
+        flex: 1;
+        margin-bottom: 15px;
     }
 
     &--amount {
@@ -129,17 +132,44 @@
         margin-left: 0;
     }
 
-    &--input {
-        width: 35%;
-        input  {
-            text-align: start !important;
-        }
-    }
-
     &--tip-text {
+        margin-left: 7px;
+        width: 70px;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        border-radius: 0;
+        border: none;
+        display: block;
+        box-sizing: border-box;
+        text-align: center;
+        font-size: 18px;
+        border-bottom: 1px solid white;
         color: white;
+
+        &::-webkit-input-placeholder{
+          color: #555;
+          text-align: center;
+        }
+
+        &:focus {
+          outline: none;
+        }
+
+        &:before {
+        content: "";
+        box-sizing: border-box;
         width: 100%;
-        // text-align: start !important;
+        height: 1px;
+
+        opacity: 0;
+
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-bottom: 1px solid white;
+        padding-top: 7px;
+        }
     }
 
     &--user-icon {
@@ -186,6 +216,7 @@
         align-items: center;
         padding: 15px 0;
         box-sizing: border-box;
+        justify-content: center;
     }
 
     &--music-icon {
@@ -199,7 +230,8 @@
 
     &--search-input {
         width: 75%;
-        margin: auto;
+        margin-left: 25px;
+        max-width: 400px;
         // display: flex;
         // align-items: center;
         // justify-content: center;
@@ -219,6 +251,43 @@
         margin: 10px 0;
         text-align: center;
     }
+
+    &--tip-message {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+    }
+
+    &--tip-title {
+        font-weight: bold;
+        font-size: 20px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    &--actions-container {
+        padding: 6px 0;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &--button-cancel {
+        box-sizing: border-box;
+        margin: 10px 0;
+        text-align: center;
+        margin-left: 8px;
+    }
+
+    &--cancel-btn {
+        margin-left: 8px;
+    }
+}
+
+.css-tlfecz-indicatorContainer {
+    display: none;
 }
 
 @media only screen
@@ -253,6 +322,16 @@ and (orientation: portrait) {
   }
 }
 
+.css-1n7v3ny-option {
+    color: black;
+    text-align: center;
+}
+
+.css-yt9ioa-option {
+    color: black;
+    text-align: center;
+    border-top: 1px solid #555;
+}
 
 @media only screen
   and (min-device-width: 375px)

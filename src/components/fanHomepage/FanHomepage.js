@@ -26,13 +26,14 @@ class FanHomepage extends React.Component {
     }
 
     render() {
-        let {userInfo, event, djs} = this.props
+        let {userInfo, event, djs, allEvents} = this.props
         let onlineDjs = djs.reduce((acc, el) => {
-            if (el.event) {
-                acc[el.userId] = el
+            if (el.event && allEvents && allEvents[el.event.requestId] && allEvents[el.event.requestId].tipAmount) {
+                acc[el.userId] = el 
             }
             return acc
         }, {})
+        let performingDJs = Object.values(onlineDjs)
 
         return (
             <div className="FanHomepage">
@@ -44,7 +45,7 @@ class FanHomepage extends React.Component {
                     </div>
                     <div className="FanHomepage--djs-container">
                         {
-                            djs.map((dj, index) => (
+                            performingDJs.map((dj, index) => (
                                 <div className="FanHomepage--dj" key={index} onClick={() => this.selectEvent(dj,onlineDjs[dj.userId])}>
                                     <div className="FanHomepage--icon-container">
                                         <div className="FanHomepage--headset">
