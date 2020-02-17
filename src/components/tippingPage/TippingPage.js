@@ -19,7 +19,7 @@ const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
-const localhost = 'http://localhost:8080'
+const localhost = ''
 
 class TippingPage extends React.Component {
     constructor(props) {
@@ -53,6 +53,7 @@ class TippingPage extends React.Component {
         this.handleTip = this.handleTip.bind(this)
         this.handleCancel = this.handleCancel.bind(this)
         this.sendMessage = this.sendMessage.bind(this)
+        this.payTip = this.payTip.bind(this)
     }
 
     leaveEvent() {
@@ -101,7 +102,16 @@ class TippingPage extends React.Component {
         e.target.setSelectionRange(value.length, value.length);        
     }
 
-    submit() {
+    payTip = async() => {
+        let {userInfo: {card}} = this.props
+        let tipAmount = parseFloat(this.state.tipText) * 100
+        let res = await axios.post(localhost + '/pay', {stripeAccount: card, tipAmount})
+        let {data} = res
+        console.log('RES DATA -----> ', data)
+        return data
+    }
+
+    async submit() {
         let {fanEvent, onSubmit} = this.props
         let tipAmount = parseFloat(this.state.tipText)
         let eventTip = parseFloat(fanEvent.tipAmount)
@@ -132,7 +142,8 @@ class TippingPage extends React.Component {
             tipWithNoSong
         })
         if (isError) return
-        onSubmit({tipAmount, music: this.state.searchText})
+        let paymentIntent = await this.payTip()
+        onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id})
         this.sendMessage()
         this.setState({
             isError: true,
