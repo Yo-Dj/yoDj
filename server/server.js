@@ -111,6 +111,20 @@ app.post('/upgrade-card', async (req, res) => {
   }
 })
 
+app.post('/pay', async (req, res) => {
+  try {
+    let intent = await stripe.paymentIntents.create({
+      customer: req.body.stripeAccount,
+      amount: req.body.tipAmount, 
+      currency: 'usd',
+      confirmation_method: 'manual'
+    })
+    res.json(intent)
+  } catch(e) {
+    console.log('ERROR PAy -----> ', e.message)
+    return response.send({ error: e.message})
+  }
+})
 
 app.get('/login', (req, res) => {
   console.log('CLIENT ID ----> ', SPOTIFY_CLIENT_ID)
