@@ -25,6 +25,7 @@ class AcceptWrapper extends React.Component {
 
   componentDidMount() {
     let {request} = this.props
+    console.log('PROPS ----> ', this.props)
     if (Object.keys(request).length === 0) {
       this.props.onGoBack()
       return
@@ -73,6 +74,7 @@ class AcceptWrapper extends React.Component {
   }
 
   requestCompleted() {
+    console.log('COmpleteted REQUEST ----> ', this.props.request)
     this.setState({
       request: {}
     }, () => {

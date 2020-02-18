@@ -126,6 +126,20 @@ app.post('/pay', async (req, res) => {
   }
 })
 
+app.post('/pay-confirm', async (req, res) => {
+  try {
+    stripe.paymentIntents.confirm(req.body.intentId)
+    .then(paymentIntent => {
+      console.log('PAYMENT INTEN CONFIRM ----> ', paymentIntent)
+      res.json(paymentIntent)
+    })
+    .catch(e => console.log('CONFIRM ERR ---> ', e))
+  } catch(e) {
+    console.log('CONFIRM ERR ---> ', e)
+    return response.send({ error: e.message})
+  }
+})
+
 app.get('/login', (req, res) => {
   console.log('CLIENT ID ----> ', SPOTIFY_CLIENT_ID)
   console.log('SPOTIFY CLIENT SECRET -----> ', SPOTIFY_CLIENT_SECRET)

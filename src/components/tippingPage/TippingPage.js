@@ -15,6 +15,12 @@ import AsyncSelect from 'react-select/async';
 import axios from 'axios'
 import { parse } from 'terser';
 
+
+const tempdata = [{
+    value: 'A lot by 21 Savage', label: 'A lot by 21 Savage'
+}, {
+    value: 'No Heart by 21 Savage', label: 'No Heart by 21 Savage'
+}]
 const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
@@ -192,11 +198,15 @@ class TippingPage extends React.Component {
     }
 
     async searchSong(searchText) {
-        const artists = await tidal.search(searchText, 'tracks', 5)
-        let data = artists.map(song => {
-            return `${song.title} by ${song.artist.name}`
-        })
-        return data.map(song => ({value: song, label: song}))
+        // const artists =
+        //      tidal.search(searchText, 'tracks', 5)
+        //      .then(songs => console.log('SONGS ----> ', songs))
+        //      .catch(e => console.log('Error ----> ', e))
+        // let data = artists.map(song => {
+        //     return `${song.title} by ${song.artist.name}`
+        // })
+        // return data.map(song => ({value: song, label: song}))
+        return tempdata
     }
 
      inputChange(e) {
