@@ -361,7 +361,7 @@ class MainPage extends React.Component {
     else if (requestedArr.length > 0 && songRequests === 0) {
      songsArr.forEach((request, idx) => {
        if (fans[request.user]) {
-         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tipIntentId: request.tipIntentId, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user, phone: fans[request.user].phone})
+         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tipIntentId: request.tipIntentId, payment_method:request.payment_method, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user, phone: fans[request.user].phone})
        }
       })
     }
@@ -376,7 +376,7 @@ class MainPage extends React.Component {
      })
    }
    else if (requestIds.indexOf(lastAdded) === -1) {
-     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tipIntentId: requested[lastAdded].tipIntentId, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user, phone: requestedUser.phone})
+     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tipIntentId: requested[lastAdded].tipIntentId, payment_method: requested[lastAdded].payment_method, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user, phone: requestedUser.phone})
     }
   
     this.setState({
@@ -400,11 +400,11 @@ class MainPage extends React.Component {
       })
     } else if (acceptedSongs.length === 0 && pendingIds.length > 0) {
       pendingSongArr.forEach((request, idx) => {
-          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, tipIntentId: request.tipIntentId, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true, fanId: request.fanId})
+        acceptedSongs.push({name: request.name, songRequest: true, id: request.id, tipIntentId: request.tipIntentId, payment_method: request.payment_method, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true, fanId: request.fanId})
       })
     } else if (acceptedIds.indexOf(pendingIds[pendingIds.length - 1]) === -1) {
       let lastRequest = pendingSongArr[pendingSongArr.length - 1]
-        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, tipIntentId: lastRequest.tipIntentId, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true, fanId: lastRequest.fanId})
+        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, tipIntentId: lastRequest.tipIntentId, payment_method: lastRequest.payment_method, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true, fanId: lastRequest.fanId})
     }
     this.setState({
       acceptedSongs,

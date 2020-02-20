@@ -148,8 +148,8 @@ class TippingPage extends React.Component {
         })
         if (isError) return
         let paymentIntent = await this.payTip()
-        // onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id})
-        // this.sendMessage()
+        onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id, payment_method: paymentIntent.payment_method})
+        this.sendMessage()
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
@@ -252,6 +252,7 @@ class TippingPage extends React.Component {
             pattern="\d*"
             onClick={this.setCursor}
             placeholder="0.00" />)
+    
         return (
             <div className="TippingPage" ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
