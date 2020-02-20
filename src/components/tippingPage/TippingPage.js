@@ -25,7 +25,7 @@ const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
-const localhost = ''
+  const localhost = ''
 
 class TippingPage extends React.Component {
     constructor(props) {
@@ -109,11 +109,10 @@ class TippingPage extends React.Component {
     }
 
     payTip = async() => {
-        let {userInfo: {card}} = this.props
+        let {userInfo: {card, cardId = ''}} = this.props
         let tipAmount = parseFloat(this.state.tipText) * 100
-        let res = await axios.post(localhost + '/pay', {stripeAccount: card, tipAmount})
+        let res = await axios.post(localhost + '/pay', {stripeAccount: card, cardId, tipAmount})
         let {data} = res
-        console.log('RES DATA -----> ', data)
         return data
     }
 
@@ -149,8 +148,8 @@ class TippingPage extends React.Component {
         })
         if (isError) return
         let paymentIntent = await this.payTip()
-        onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id})
-        this.sendMessage()
+        // onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id})
+        // this.sendMessage()
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',

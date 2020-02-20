@@ -86,7 +86,8 @@ class BankComponent extends React.Component {
       axios.post(localhost + '/save', {userInfo, token})
         .then(res => {
           if (res.data) {
-            onCardAdd(res.data.id)
+           let {id, default_source} = res.data
+            onCardAdd({card: id, cardId: default_source})
             // this.props.history('/bank')
           }
         })
@@ -95,8 +96,9 @@ class BankComponent extends React.Component {
       axios.post(localhost + '/upgrade-card', {userId: userInfo.card, token})
         .then(res => {
           if (res.data) {
+            let {id, default_source} = res.data
+            onCardAdd({card: id, cardId: default_source})
             console.log('CARD Updated----> ', res.data)
-            // this.props.history('/bank')
           }
         })
         .catch(e => console.log('CARD ERR ---> ', e))
