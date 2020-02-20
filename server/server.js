@@ -116,6 +116,7 @@ app.post('/pay', async (req, res) => {
     let intent = await stripe.paymentIntents.create({
       customer: req.body.stripeAccount,
       amount: req.body.tipAmount, 
+      payment_method: req.body.cardId,
       currency: 'usd',
       confirmation_method: 'manual'
     })
@@ -128,6 +129,9 @@ app.post('/pay', async (req, res) => {
 
 app.post('/pay-confirm', async (req, res) => {
   try {
+    //cus_Ghi2tCJwQM8VsD
+    // let mainPaymentIntent = await stripe.paymentIntents.retrieve(req.body.intentId)
+    // console.log('PAYMENT INTENT INFO ----> ', mainPaymentIntent)
     stripe.paymentIntents.confirm(req.body.intentId)
     .then(paymentIntent => {
       console.log('PAYMENT INTEN CONFIRM ----> ', paymentIntent)

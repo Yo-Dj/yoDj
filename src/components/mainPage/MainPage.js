@@ -472,7 +472,7 @@ class MainPage extends React.Component {
             let userInfo = {
               username: data.username, type: 'fan', phone: data.phone, 
               imageUrl: data.imageUrl, venue: data.venue, completed: data.completed,
-              userId: data.userId, card: data.card}
+              userId: data.userId, card: data.card, cardId: data.cardId}
             let joined = data.venue ? true : false
             let fanEvent = {}
             this.setState({
@@ -644,8 +644,9 @@ class MainPage extends React.Component {
 
   addCard(cardToken) {
     let {userId, userInfo} = this.state
-    firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
+    firebase.database().ref(`users/${userId}/card`).set(cardToken.card, error => {
       if (!error) {
+        firebase.database().ref(`users/${userId}/cardId`).set(cardToken.cardId)
         return
       }
       console.log('ERROR ----> ', error)
