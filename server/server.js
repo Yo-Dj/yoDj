@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8080
 const app = express()
 const {requestReceivedMessage, rejectMessage, acceptMessage} = require('./library')
 require('dotenv').config()
-
+console.log('Process.ENV ----> ', process.env.TWILIO_AUTH_TOKEN)
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
 'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']
@@ -69,7 +69,7 @@ app.post('/api/messages', (req, res, next) => {
       res.send(JSON.stringify({success: true}))
     })
     .catch(error => {
-      console.log('Messages Error ---> ', error)
+      console.log('Messages Error ---> ', error.message)
       res.send(JSON.stringify({success: false}))
     })
 })
@@ -129,10 +129,9 @@ app.post('/pay', async (req, res) => {
 
 app.post('/pay-confirm', async (req, res) => {
   try {
-    //cus_Ghi2tCJwQM8VsD
-    // let mainPaymentIntent = await stripe.paymentIntents.retrieve(req.body.intentId)
-    // console.log('PAYMENT INTENT INFO ----> ', mainPaymentIntent)
-    stripe.paymentIntents.confirm(req.body.intentId)
+    stripe.paymentIntents.confirm(req.body.intentId, {
+      payment_method: req.body.payment_method
+    })
     .then(paymentIntent => {
       console.log('PAYMENT INTEN CONFIRM ----> ', paymentIntent)
       res.json(paymentIntent)

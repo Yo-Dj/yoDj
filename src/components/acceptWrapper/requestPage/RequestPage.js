@@ -2,6 +2,9 @@ import React from 'react'
 import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Header from '../../header'
 import axios from 'axios'
 
@@ -9,10 +12,14 @@ import axios from 'axios'
 class RequestPage extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      defaultTime: 15
+    }
     this.openProfile = this.openProfile.bind(this)
     this.goBack = this.goBack.bind(this)
     this.accept = this.accept.bind(this)
     this.decline = this.decline.bind(this)
+    this.handleTimeChange = this.handleTimeChange.bind(this)
   }
 
   openProfile() {
@@ -49,6 +56,11 @@ class RequestPage extends React.Component {
     this.props.onDecline(this.props.request, {name, dj, userPhone})
   }
 
+  handleTimeChange(e) {
+    this.setState({
+      defaultTime: e.target.value
+    })
+  }
   render() {
     let {isActive, userInfo, request} = this.props
     let tip = parseFloat(request.tip).toFixed(2)
@@ -64,11 +76,25 @@ class RequestPage extends React.Component {
               <div className="RequestPage--username">{request.name}</div>
           </div>
           <div className="RequestPage--tip">$ {tip}</div>
-          <div className="RequestPage--clock-container">
+          {/* <div className="RequestPage--clock-container">
             <div className="RequestPage--clock-out">
               <div className="RequestPage--needle" />
             </div>
             <div className="RequestPage--deliver-time">ETD: 0 min</div>
+          </div> */}
+          <div className="Request--time-cont">
+          <FormControl>
+            <Select
+              value={this.state.defaultTime}
+              onChange={this.handleTimeChange}
+              classes={{root: 'RequestPage--select-form'}}
+            >
+              <MenuItem value={15}>15 Minutes</MenuItem>
+              <MenuItem value={30}>30 Minutes</MenuItem>
+              <MenuItem value={45}>45 Minutes</MenuItem>
+              <MenuItem value={60}>1 Hour</MenuItem>
+            </Select>
+          </FormControl>
           </div>
        </div>
        <div className="RequestPage__action-container">

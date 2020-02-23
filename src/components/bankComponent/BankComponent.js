@@ -71,7 +71,6 @@ class BankComponent extends React.Component {
 
   goBack() {
     let {location} = this.props
-    console.log('BANK COMPONENT PROPS -----> ', this.props)
     if (location.state) {
       this.props.history.push(location.state.pastUrl)
       return

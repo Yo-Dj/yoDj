@@ -25,7 +25,7 @@ const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
-  const localhost = ''
+  const localhost = 'http://localhost:8080'
 
 class TippingPage extends React.Component {
     constructor(props) {
@@ -96,6 +96,7 @@ class TippingPage extends React.Component {
             requestInfo: {},
             requestType: 'received'
         }
+        console.log('POST OBJ ----> ', postObj)
         axios.post(localhost + '/api/messages', {...postObj})
             .then(res => {
                 console.log('Request is send ---> ', res)
@@ -197,15 +198,15 @@ class TippingPage extends React.Component {
     }
 
     async searchSong(searchText) {
-        // const artists =
-        //      tidal.search(searchText, 'tracks', 5)
-        //      .then(songs => console.log('SONGS ----> ', songs))
-        //      .catch(e => console.log('Error ----> ', e))
+        const artists =
+             tidal.search(searchText, 'tracks', 5)
+             .then(songs => console.log('SONGS ----> ', songs))
+             .catch(e => console.log('Error ----> ', e))
         // let data = artists.map(song => {
         //     return `${song.title} by ${song.artist.name}`
         // })
         // return data.map(song => ({value: song, label: song}))
-        return tempdata
+        // return tempdata
     }
 
      inputChange(e) {

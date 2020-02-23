@@ -17,6 +17,8 @@ import FanEvent from '../fanEvent'
 import TippingPage from '../tippingPage'
 import ProfilePage from '../profilePage'
 import BankComponent from '../bankComponent'
+import TipsPage from '../tipsPage'
+
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -79,7 +81,7 @@ class MainPage extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
     const {event = {}, activities = [], requests = [], newRequest = {}, acceptedSongs = []} = this.state
-      if (location.pathname === '/bank' && Object.keys(this.state.userInfo).length === 0) {
+      if ((location.pathname === '/bank' || location.pathname === '/tips') && Object.keys(this.state.userInfo).length === 0) {
         this.props.history.push('/profile')
         return
       }
@@ -472,7 +474,7 @@ class MainPage extends React.Component {
             let userInfo = {
               username: data.username, type: 'fan', phone: data.phone, 
               imageUrl: data.imageUrl, venue: data.venue, completed: data.completed,
-              userId: data.userId, card: data.card, cardId: data.cardId}
+              userId: data.userId, card: data.card, cardId: data.cardId, tip: data.tip}
             let joined = data.venue ? true : false
             let fanEvent = {}
             this.setState({
@@ -505,8 +507,10 @@ class MainPage extends React.Component {
   }
 
   addRequestToFirebase(request) {
-    let {userId, requests, newRequest, fans, event, acceptedSongs} = this.state
+    let {userId, requests, newRequest, fans, event, acceptedSongs, userInfo} = this.state
     let now = new Date().getTime()
+    let amount = userInfo.tip ? userInfo.tip : 0
+    let tip = amount + parseInt(request.tip)
     request.completedTime = now
     firebase.database().ref(`venues/${event.eventId}/completed/${request.id}`).set(request, error => {
       if (!error) {
@@ -517,6 +521,7 @@ class MainPage extends React.Component {
         }
         firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).remove()
         firebase.database().ref(`users/${request.fanId}/venue/completed/${request.id}`).set(request)
+        firebase.database().ref(`users/${userId}/tip`).set(tip)
       }
     })
   }
@@ -760,6 +765,11 @@ class MainPage extends React.Component {
                     onLogout={this.logout}
                   />
                 )} />
+                <Route path='/tips' render={props => (
+                  <TipsPage
+                    userInfo={userInfo}
+                  />
+                )}/>
               <Redirect to="/home" />
           </Switch>
         </div>
