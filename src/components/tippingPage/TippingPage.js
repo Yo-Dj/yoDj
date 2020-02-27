@@ -198,15 +198,16 @@ class TippingPage extends React.Component {
     }
 
     async searchSong(searchText) {
-        const artists =
-             tidal.search(searchText, 'tracks', 5)
-             .then(songs => console.log('SONGS ----> ', songs))
-             .catch(e => console.log('Error ----> ', e))
+        // const artists =
+        //      tidal.search(searchText, 'tracks', 5)
+        //      .then(songs => console.log('SONGS ----> ', songs))
+        //      .catch(e => console.log('Error ----> ', e))
+             
         // let data = artists.map(song => {
         //     return `${song.title} by ${song.artist.name}`
         // })
         // return data.map(song => ({value: song, label: song}))
-        // return tempdata
+        return tempdata
     }
 
      inputChange(e) {
