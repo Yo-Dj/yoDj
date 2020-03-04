@@ -19,7 +19,31 @@ import ProfilePage from '../profilePage'
 import BankComponent from '../bankComponent'
 import TipsPage from '../tipsPage'
 
+console.log('WINndow.location.href ----> ', window.location.href)
+let getRedirectURl = () => {
+  let url = window.location.href.split('/')
+  return url.slice(0,3).join('/')
+}
+export const authEndpoint = 'https://accounts.spotify.com/authorize';
+const clientId = 'fa85bfd8d7f644849b6a417a96018ace';
+const redirectUri = getRedirectURl() + '/fan-home';
+const scopes = [
+  "user-read-currently-playing",
+  "user-read-playback-state",
+];
 
+const hash = window.location.hash
+  .substring(1)
+  .split("&")
+  .reduce(function(initial, item) {
+    if (item) {
+      var parts = item.split("=");
+      initial[parts[0]] = decodeURIComponent(parts[1]);
+    }
+    return initial;
+  }, {});
+
+window.location.hash = ''
 class MainPage extends React.Component {
   constructor(props) {
     super(props)
@@ -38,7 +62,8 @@ class MainPage extends React.Component {
       fans: [],
       acceptedSongs: [],
       allEvents: [],
-      endedEvents: []
+      endedEvents: [],
+      spotifyToken: null
     }
     this.eventsListener = null
     this.authListener = this.authListener.bind(this)
@@ -66,12 +91,20 @@ class MainPage extends React.Component {
     this.addCard = this.addCard.bind(this)
     this.getAllEvents = this.getAllEvents.bind(this)
     this.getEndedEvents = this.getEndedEvents.bind(this)
+    this.setSpotifyToken = this.setSpotifyToken.bind(this)
+    this.resetToken = this.resetToken.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
     this.getAllEvents()
     this.getEndedEvents()
+    let spotifyToken = localStorage.getItem('spotifyToken');
+    spotifyToken = spotifyToken ? spotifyToken : spotifyToken === null ? 'NOT_FOUND' : undefined
+    this.setState({
+      spotifyToken
+    })
+
   }
 
   componentWillUnmount() {
@@ -184,6 +217,12 @@ class MainPage extends React.Component {
           userInfo: {},
         })
         this.props.history.push('/login')
+    })
+  }
+
+  resetToken(token) {
+    this.setState({
+      spotifyToken: token
     })
   }
 
@@ -462,6 +501,15 @@ class MainPage extends React.Component {
     })
   }
 
+  setSpotifyToken() {
+    // console.log('SPotify TOken ---> ', spotifyToken)
+    // localStorage.setItem('spotifyToken', _token);
+    // this.setState({
+    //   spotifyToken
+    // })
+    window.location.href = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`
+  }
+
   getUserInfo(userId) {
     let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
@@ -662,7 +710,8 @@ class MainPage extends React.Component {
     let {userInfo, userId, event, 
       newRequest, requests, isActive, 
       allDjs, fanEvent, acceptedSongs, 
-      isLogged, allEvents, endedEvents} = this.state
+      isLogged, allEvents, endedEvents,
+      spotifyToken} = this.state
 
       return(
       <MuiThemeProvider theme={theme}>
@@ -736,6 +785,8 @@ class MainPage extends React.Component {
                   fanEvent={fanEvent}
                   onJoin={this.joinEvent}
                   onLogout={this.logoutUser}
+                  onSetToken={this.setSpotifyToken}
+                  spotifyToken={spotifyToken}
                 />
               )} />
               <Route path="/fan-tip" render={props => (
@@ -746,6 +797,9 @@ class MainPage extends React.Component {
                     onLeave={this.leaveEvent}
                     onSubmit={this.submitSongRequest}
                     onLogout={this.logoutUser}
+                    spotifyToken={spotifyToken}
+                    onSetToken={this.resetToken}
+                    onMakeSpotifyToken={this.setSpotifyToken}
                   />)}
                 />
               )} />
