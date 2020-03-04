@@ -25,7 +25,7 @@ const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
-  const localhost = 'http://localhost:8080'
+  const localhost = ''
 
 const hash = window.location.hash
     .substring(1)
