@@ -12,7 +12,7 @@ class FanEvent extends React.Component {
     this.state = {
       timerTime: 0,
       timerStart: 0,
-      showCardModal: false
+      showCardModal: false,
     }
     this.onGoBack = this.onGoBack.bind(this)
     this.onProfile = this.onProfile.bind(this)
@@ -89,10 +89,12 @@ class FanEvent extends React.Component {
   }
 
   join() {
-    console.log('PROPS Fan Event -----> ', this.props)
-    let {userInfo: {card}} = this.props
+    let {userInfo: {card}, spotifyToken} = this.props
     if (card) {
       this.props.onJoin(this.props.fanEvent)
+      if (!spotifyToken) {
+        this.props.onSetToken()
+      }
     } else {
       this.setState({
         showCardModal: true
