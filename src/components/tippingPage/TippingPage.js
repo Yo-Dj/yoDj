@@ -78,7 +78,7 @@ class TippingPage extends React.Component {
 
     componentDidMount() {
         let {spotifyToken, onSetToken, onMakeSpotifyToken} = this.props
-        console.log('DID')
+
         let _token = hash.access_token
         if (_token) {
             console.log('TOKEN  ------> ', _token)
@@ -231,19 +231,26 @@ class TippingPage extends React.Component {
 
     async searchSong(searchText) {
         let {spotifyToken} = this.props
-        let tracks = await axios({
-            method: 'get',
-            url: `https://api.spotify.com/v1/search?q=${searchText}&type=track&market=US&offset=0&limit=5`,
-            headers: {'Authorization': `Bearer ${spotifyToken}`}
-        })
-        if (tracks && tracks.data) {
-            let songs = tracks.data.tracks ? tracks.data.tracks.items : []
-            songs = songs.map(song => {
-                if (song.artists && song.artists.length > 0 && song.name) {
-                    return `${song.name} by ${song.artists[0].name}`
-                }
+        try {
+            let tracks = await axios({
+                method: 'get',
+                url: `https://api.spotify.com/v1/search?q=${searchText}&type=track&market=US&offset=0&limit=5`,
+                headers: {'Authorization': `Bearer ${spotifyToken}`}
             })
-            return songs.map(song => ({value: song, label: song}))
+            if (tracks && tracks.data) {
+                let songs = tracks.data.tracks ? tracks.data.tracks.items : []
+                songs = songs.map(song => {
+                    if (song.artists && song.artists.length > 0 && song.name) {
+                        return `${song.name} by ${song.artists[0].name}`
+                    }
+                })
+                return songs.map(song => ({value: song, label: song}))
+            }  
+        } catch(e) {
+            if (e.response.status === 401) {
+                this.props.onMakeSpotifyToken()
+            }
+
         }
         return tempdata
     }
