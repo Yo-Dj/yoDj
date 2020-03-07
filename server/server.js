@@ -143,55 +143,6 @@ app.post('/pay-confirm', async (req, res) => {
   }
 })
 
-app.get('/login', (req, res) => {
-  console.log('CLIENT ID ----> ', SPOTIFY_CLIENT_ID)
-  console.log('SPOTIFY CLIENT SECRET -----> ', SPOTIFY_CLIENT_SECRET)
-  // let test =   querystring.stringify({
-  //   response_type: 'code',
-  //   client_id: SPOTIFY_CLIENT_ID,
-  //   scope: 'user-read-private user-read-email',
-  //   redirect_uri
-  // })
-  // console.log('Test ----> ', test)
-  // console.log('Redirect UI ----> ', redirect_uri)
-
-  // res.redirect('https://accounts.spotify.com/authorize?' +
-  // querystring.stringify({
-  //   response_type: 'code',
-  //   client_id: SPOTIFY_CLIENT_ID,
-  //   scope: 'user-read-private user-read-email',
-  //   redirect_uri
-  // }))
-
-  // res.redirect('http://google.com')
-  // res.send({hello: 'Hello WOrld'})
-  // console.log('After QUering ')
-})
-
-app.get('/callback', (req, res) => {
-  let code = req.query.code || null
-  console.log('Callback is invoked ---> ', req.body)
-  let authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
-      code: code,
-      redirect_uri,
-      grant_type: 'authorization_code'
-    },
-    headers: {
-      'Authorization': 'Basic ' + (new Buffer(
-        SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET
-      ).toString('base64'))
-    },
-    json: true
-  }
-  request.post(authOptions, function(error, response, body) {
-    var access_token = body.access_token
-    let uri = process.env.FRONTEND_URI || 'http://localhost:3000'
-    res.redirect(uri)
-  })
-})
-
 app.listen(PORT, '0.0.0.0', () => {
   console.log('Listening to PORT ---> ', PORT)
 })

@@ -81,16 +81,12 @@ class TippingPage extends React.Component {
 
         let _token = hash.access_token
         if (_token) {
-            console.log('TOKEN  ------> ', _token)
             localStorage.setItem('spotifyToken', _token);
             onSetToken(_token)
         }
         else if (spotifyToken === 'NOT_FOUND') {
-            console.log('MAKE SPOTIFy CALL')
             onMakeSpotifyToken()
         }
-
-        
     }
     
 
@@ -128,7 +124,6 @@ class TippingPage extends React.Component {
             requestInfo: {},
             requestType: 'received'
         }
-        console.log('POST OBJ ----> ', postObj)
         axios.post(localhost + '/api/messages', {...postObj})
             .then(res => {
                 console.log('Request is send ---> ', res)
