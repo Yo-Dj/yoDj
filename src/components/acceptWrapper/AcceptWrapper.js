@@ -6,7 +6,7 @@ import RequestPage from './requestPage'
 import DeliverPage from './deliverPage'
 
 
-const localhost = 'http://localhost:8080'
+const localhost = ''
 class AcceptWrapper extends React.Component {
   constructor(props) {
     super(props)
@@ -98,10 +98,9 @@ class AcceptWrapper extends React.Component {
 
   addToFirebase() {
     let {request: {tipIntentId, payment_method}, userInfo: {card}} = this.props
-    this.props.onAddRequest(this.props.request)
     axios.post(localhost + '/pay-confirm', {intentId: tipIntentId, payment_method, userId: card})
     .then(res => {
-      console.log('CONFIRM PAYMENT ---> ', res)
+      this.props.onAddRequest(this.props.request)
     })
     .catch(e => console.log('COnfirm Payment ----> ', e))
   }
