@@ -11,6 +11,14 @@ class FanHomepage extends React.Component {
         this.selectEvent = this.selectEvent.bind(this)
     }
 
+    componentDidUpdate(prevProps) {
+        let {userInfo} = this.props
+        if (!userInfo.type && userInfo.verificationType && (userInfo.verificationType === 'facebook' || userInfo.verificationType === 'twitter')) {
+            this.props.history.push('/home')
+            return
+        }
+    }
+
     gotoSelect() {
         this.props.history.push('/dj-page')
     }

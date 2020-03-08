@@ -9,7 +9,7 @@ import Icon from '@material-ui/core/Icon'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 
-const localhost = ''
+const localhost = 'http://localhost:8080'
 export const createOptions = (fontSize, padding) => {
   return {
     style: {
