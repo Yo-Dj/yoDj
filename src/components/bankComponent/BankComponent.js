@@ -43,7 +43,6 @@ class BankComponent extends React.Component {
 
  componentDidMount() {
    let {userInfo} = this.props
-   console.log('DID MOUNT ----> ', this.props)
     if (userInfo.card && userInfo.card !== '') {
       axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
       .then(res => {
@@ -122,13 +121,13 @@ class BankComponent extends React.Component {
     let boxShadow = `1px 2px 4px 1px ${boxShadowColor} inset, 1px 1px 4px 3px ${boxShadowColor}`
     let cardExist = userCard.sources !== undefined
     if (cardExist) {
-      card.type = userCard.sources.data[0].brand
+      card.type = userCard.sources.data[0].brand.toLowerCase()
       card.last4 = userCard.sources.data[0].last4
       card.exp_year = userCard.sources.data[0].exp_year
       card.exp_month = userCard.sources.data[0].exp_month
       card.name = userCard.sources.data[0].name
     }
-    console.log('USER CARD ---> ', userCard)
+    console.log('USER CARD ---> ', card)
     return (
       <div className="BankComponent">
         <Header imageUrl={userInfo.imageUrl} iconClick={() => {}} isActive={false} onClick={() => {}}/>

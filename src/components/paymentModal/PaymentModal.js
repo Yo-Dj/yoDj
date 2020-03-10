@@ -6,68 +6,7 @@ import PaymentIcon from 'react-payment-icons'
 import { throws } from 'assert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-
-// const customSwitchColors = withStyles(theme => ({
-//   root: {
-//     width: 50,
-//     height: 20
-//   },
-//   switchBase: {
-//     padding: 1,
-//     '&$checked': {
-//       transform: 'translateX(16px)',
-//       color: theme.palette.common.white,
-//       '& + $track': {
-//         backgroundColor: '#52d869',
-//         opacity: 1,
-//         border: 'none',
-//       },
-//     }
-//   },
-//   track: {
-//     backgroundColor: theme.palette.grey[50],
-//     opacity: 1,
-//     transition: theme.transitions.create(['background-color', 'border']),
-//   },
-//   checked: {},
-//   label: {
-//     color: theme.palette.common.white,
-//   }
-// }))
-
-// const AntSwitch = withStyles(theme => ({
-//   root: {
-//     width: 28,
-//     height: 16,
-//     padding: 0,
-//     display: 'flex',
-//   },
-//   switchBase: {
-//     padding: 2,
-//     color: theme.palette.grey[500],
-//     '&$checked': {
-//       transform: 'translateX(12px)',
-//       color: theme.palette.common.white,
-//       '& + $track': {
-//         opacity: 1,
-//         backgroundColor: theme.palette.primary.main,
-//         borderColor: theme.palette.primary.main,
-//       },
-//     },
-//   },
-//   thumb: {
-//     width: 12,
-//     height: 12,
-//     boxShadow: 'none',
-//   },
-//   track: {
-//     border: `1px solid ${theme.palette.grey[500]}`,
-//     borderRadius: 16 / 2,
-//     opacity: 1,
-//     backgroundColor: theme.palette.common.white,
-//   },
-//   checked: {},
-// }))(Switch);
+import Snackbar from '@material-ui/core/Snackbar'
 
 class PaymentModal extends React.Component {
   constructor(props) {
@@ -108,11 +47,29 @@ class PaymentModal extends React.Component {
   }
 
   makePayment() {
+    let {selectedCard} = this.state
+    let {onPay} = this.props
+    if (selectedCard === null) {
+      // TO DO show snackbar error message
+    } else if (selectedCard === 'creditCard') {
+      onPay('creditCard')
+    } else if (selectedCard === 'applePay') {
 
+    }
+    this.props.onCloseModal()
   }
 
   render() {
-    let {isVisible} = this.props
+    let {isVisible, userCard} = this.props
+    let cardExist = (userCard.sources.data) !== undefined
+    let card = {}
+    if (cardExist) {
+      card.type = userCard.sources.data[0].brand.toLowerCase()
+      card.last4 = userCard.sources.data[0].last4
+      card.exp_year = userCard.sources.data[0].exp_year
+      card.exp_month = userCard.sources.data[0].exp_month
+      card.name = userCard.sources.data[0].name
+    }
     return (
       <div className={`PaymentModal${isVisible ? ' PaymentModal--visible' : ''}`}>
         <div className="PaymentModal--close-icon" onClick={this.closeModal}>
@@ -124,12 +81,12 @@ class PaymentModal extends React.Component {
             <div className={`PaymentModal--applepay${this.state.selectedCard === 'applePay' ? ' PaymentModal--selected-card' : ''}`} onClick={this.onApplePayClick} />
             <div className={`PaymentModal__creditcard`} onClick={this.onCreditCard}>
                 <PaymentIcon
-                    id='visa'
+                    id={card.type}
                     style={{ width: 100, height: 80 }}
                     className={this.state.selectedCard === 'creditCard' ? 'PaymentModal--selected-card' : ''}
                 />
                 <div className="PaymentModal--last-digits">
-                  4242
+                  {card.last4}
                 </div>
             </div>
           </div>

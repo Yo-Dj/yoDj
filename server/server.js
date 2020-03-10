@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 8080
 const app = express()
 const {requestReceivedMessage, rejectMessage, acceptMessage} = require('./library')
 require('dotenv').config()
-console.log('Process.ENV ----> ', process.env.TWILIO_AUTH_TOKEN)
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
 'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']

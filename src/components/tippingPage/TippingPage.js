@@ -26,7 +26,7 @@ const tidal = new Tidal({
     countryCode: 'US',
     limit: 1000
   })
-  const localhost = 'http://localhost:8080'
+  const localhost = ''
 
 const hash = window.location.hash
     .substring(1)
@@ -58,7 +58,8 @@ class TippingPage extends React.Component {
             searchDropdown: null,
             tipWithNoSong: false, 
             spotifyToken: null,
-            paymentModal: false
+            paymentModal: false,
+            userCard: {sources: {}}
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
@@ -77,11 +78,13 @@ class TippingPage extends React.Component {
         this.sendMessage = this.sendMessage.bind(this)
         this.payTip = this.payTip.bind(this)
         this.closePaymentModal = this.closePaymentModal.bind(this)
+        this.finishProcessingPayment = this.finishProcessingPayment.bind(this)
+        this.handlePayment = this.handlePayment.bind(this)
     }
 
     componentDidMount() {
-        let {spotifyToken, onSetToken, onMakeSpotifyToken} = this.props
-
+        let {spotifyToken, onSetToken, onMakeSpotifyToken, userInfo} = this.props
+        console.log('USER INFO -----> ', userInfo)
         let _token = hash.access_token
         if (_token) {
             localStorage.setItem('spotifyToken', _token);
@@ -90,6 +93,18 @@ class TippingPage extends React.Component {
         else if (spotifyToken === 'NOT_FOUND') {
             onMakeSpotifyToken()
         }
+
+        if (userInfo.card && userInfo.card !== '') {
+            axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
+            .then(res => {
+                console.log('Get Card ---> ', res.data)
+                this.setState({
+                    userCard: res.data
+                })
+            })
+            .catch(e => console.log('Err ----> ', e))
+        }
+
     }
     
 
@@ -194,6 +209,35 @@ class TippingPage extends React.Component {
     
     }
 
+
+    async handlePayment(paymentMethod = '') {
+        let paymentIntent
+        if (paymentMethod === 'creditCard') {
+            paymentIntent = await this.payTip()
+        }
+        console.log('Payment MEthod ----> ', paymentMethod)
+        console.log('PAayment Intent BEFORE ----> ', paymentIntent)
+        this.finishProcessingPayment(paymentIntent)
+    }
+
+    finishProcessingPayment(paymentIntent) {
+        let {isError, tipWithNoSong, paymentModal, searchText, tipText} = this.state
+        // let paymentIntent = {id: '', payment_method: ''}
+        console.log('PAYMENT INTENT ----> ', paymentIntent)
+        let tipAmount = parseFloat(tipText)
+        this.props.onSubmit({tipAmount, music: searchText, tipIntentId: paymentIntent.id, payment_method: paymentIntent.payment_method})
+        // this.sendMessage()
+        this.setState({
+            isError: true,
+            errorMessage: 'Your request successfully submitted',
+            tipText: '',
+            search: '',
+            searchText: '',
+            options: [],
+            searchDropdown: null
+        })
+    }
+
     closePaymentModal() {
         this.setState({
             paymentModal: false
@@ -286,7 +330,7 @@ class TippingPage extends React.Component {
     }
 
     render() {
-        let {paymentModal} = this.state
+        let {paymentModal, userCard} = this.state
         let {fanEvent, userInfo, allDjs} = this.props
         let eventDj = allDjs.reduce((acc, dj) => {
             if (dj.userId === fanEvent.dj) {
@@ -309,7 +353,12 @@ class TippingPage extends React.Component {
     
         return (
             <div>
-            <PaymentModal isVisible={this.state.paymentModal} onCloseModal={this.closePaymentModal} />
+            <PaymentModal 
+                isVisible={this.state.paymentModal} 
+                onCloseModal={this.closePaymentModal} 
+                onPay={this.handlePayment}
+                userCard={userCard}
+            />
             <div className={`TippingPage${paymentModal ? ' TippingPage--hide' : ''}`} ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
                 <div className="TippingPage__fan-container">
