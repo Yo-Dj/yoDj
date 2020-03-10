@@ -14,6 +14,7 @@ import ScrollToBottom, {useScrollToBottom, useSticky} from 'react-scroll-to-bott
 import AsyncSelect from 'react-select/async';
 import axios from 'axios'
 import { parse } from 'terser';
+import PaymentModal from '../paymentModal'
 
 
 const tempdata = [{
@@ -56,7 +57,9 @@ class TippingPage extends React.Component {
             numberSubtracted: false,
             searchDropdown: null,
             tipWithNoSong: false, 
-            spotifyToken: null
+            spotifyToken: null,
+            paymentModal: false,
+            userCard: {sources: {}}
         }
         this.tipChange = this.tipChange.bind(this)
         this.leaveEvent = this.leaveEvent.bind(this)
@@ -74,11 +77,14 @@ class TippingPage extends React.Component {
         this.handleCancel = this.handleCancel.bind(this)
         this.sendMessage = this.sendMessage.bind(this)
         this.payTip = this.payTip.bind(this)
+        this.closePaymentModal = this.closePaymentModal.bind(this)
+        this.finishProcessingPayment = this.finishProcessingPayment.bind(this)
+        this.handlePayment = this.handlePayment.bind(this)
     }
 
     componentDidMount() {
-        let {spotifyToken, onSetToken, onMakeSpotifyToken} = this.props
-
+        let {spotifyToken, onSetToken, onMakeSpotifyToken, userInfo} = this.props
+        console.log('USER INFO -----> ', userInfo)
         let _token = hash.access_token
         if (_token) {
             localStorage.setItem('spotifyToken', _token);
@@ -87,6 +93,18 @@ class TippingPage extends React.Component {
         else if (spotifyToken === 'NOT_FOUND') {
             onMakeSpotifyToken()
         }
+
+        if (userInfo.card && userInfo.card !== '') {
+            axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
+            .then(res => {
+                console.log('Get Card ---> ', res.data)
+                this.setState({
+                    userCard: res.data
+                })
+            })
+            .catch(e => console.log('Err ----> ', e))
+        }
+
     }
     
 
@@ -172,12 +190,43 @@ class TippingPage extends React.Component {
         this.setState({
             isError,
             errorMessage,
-            tipWithNoSong
+            tipWithNoSong,
+            paymentModal: true
         })
-        if (isError) return
-        let paymentIntent = await this.payTip()
-        onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id, payment_method: paymentIntent.payment_method})
-        this.sendMessage()
+        // if (isError) return
+        // let paymentIntent = await this.payTip()
+        // onSubmit({tipAmount, music: this.state.searchText, tipIntentId: paymentIntent.id, payment_method: paymentIntent.payment_method})
+        // this.sendMessage()
+        // this.setState({
+        //     isError: true,
+        //     errorMessage: 'Your request successfully submitted',
+        //     tipText: '',
+        //     search: '',
+        //     searchText: '',
+        //     options: [],
+        //     searchDropdown: null
+        // })
+    
+    }
+
+
+    async handlePayment(paymentMethod = '') {
+        let paymentIntent
+        if (paymentMethod === 'creditCard') {
+            paymentIntent = await this.payTip()
+        }
+        console.log('Payment MEthod ----> ', paymentMethod)
+        console.log('PAayment Intent BEFORE ----> ', paymentIntent)
+        this.finishProcessingPayment(paymentIntent)
+    }
+
+    finishProcessingPayment(paymentIntent) {
+        let {isError, tipWithNoSong, paymentModal, searchText, tipText} = this.state
+        // let paymentIntent = {id: '', payment_method: ''}
+        console.log('PAYMENT INTENT ----> ', paymentIntent)
+        let tipAmount = parseFloat(tipText)
+        this.props.onSubmit({tipAmount, music: searchText, tipIntentId: paymentIntent.id, payment_method: paymentIntent.payment_method})
+        // this.sendMessage()
         this.setState({
             isError: true,
             errorMessage: 'Your request successfully submitted',
@@ -186,6 +235,12 @@ class TippingPage extends React.Component {
             searchText: '',
             options: [],
             searchDropdown: null
+        })
+    }
+
+    closePaymentModal() {
+        this.setState({
+            paymentModal: false
         })
     }
 
@@ -275,6 +330,7 @@ class TippingPage extends React.Component {
     }
 
     render() {
+        let {paymentModal, userCard} = this.state
         let {fanEvent, userInfo, allDjs} = this.props
         let eventDj = allDjs.reduce((acc, dj) => {
             if (dj.userId === fanEvent.dj) {
@@ -296,7 +352,14 @@ class TippingPage extends React.Component {
             placeholder="0.00" />)
     
         return (
-            <div className="TippingPage" ref={el => this.tippingWrapper = el}>
+            <div>
+            <PaymentModal 
+                isVisible={this.state.paymentModal} 
+                onCloseModal={this.closePaymentModal} 
+                onPay={this.handlePayment}
+                userCard={userCard}
+            />
+            <div className={`TippingPage${paymentModal ? ' TippingPage--hide' : ''}`} ref={el => this.tippingWrapper = el}>
                 <Header imageUrl={userInfo.imageUrl} iconClick={this.openProfile} isActive={true}/>
                 <div className="TippingPage__fan-container">
                     <div className="TippingPage--icon-container">
@@ -416,6 +479,7 @@ class TippingPage extends React.Component {
                         ]
                     : []  
                 } />
+            </div>
             </div>
         )
     }

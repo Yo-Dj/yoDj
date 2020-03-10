@@ -17,6 +17,13 @@
     background-image: url("../../images/S-grey-fractal-bg.png");
     overflow-y: auto;
 
+    &--hide {
+        opacity: .2;
+        pointer-events: none;
+        transition: all .25s ease-in-out;
+    }
+    
+
     &__fan-container {
         padding: 20px 0;
         box-sizing: border-box;
