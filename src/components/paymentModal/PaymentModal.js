@@ -72,6 +72,7 @@ class PaymentModal extends React.Component {
     }
     return (
       <div className={`PaymentModal${isVisible ? ' PaymentModal--visible' : ''}`}>
+        <div className="PaymentModal__main-container">
         <div className="PaymentModal--close-icon" onClick={this.closeModal}>
             <Icon onClick ={this.closeModal}>close</Icon>
         </div>
@@ -104,6 +105,7 @@ class PaymentModal extends React.Component {
                 Pay
               </Button>
             </div>
+        </div>
         </div>
       </div>
     )
