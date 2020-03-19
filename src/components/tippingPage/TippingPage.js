@@ -80,11 +80,12 @@ class TippingPage extends React.Component {
         this.closePaymentModal = this.closePaymentModal.bind(this)
         this.finishProcessingPayment = this.finishProcessingPayment.bind(this)
         this.handlePayment = this.handlePayment.bind(this)
+        this.checkEvent = this.checkEvent.bind(this)
     }
 
     componentDidMount() {
         let {spotifyToken, onSetToken, onMakeSpotifyToken, userInfo} = this.props
-        console.log('USER INFO -----> ', userInfo)
+        this.checkEvent()
         let _token = hash.access_token
         if (_token) {
             localStorage.setItem('spotifyToken', _token);
@@ -106,7 +107,23 @@ class TippingPage extends React.Component {
         }
 
     }
+
+    componentDidUpdate(prevProps) {
+        let {userInfo} = this.props
+        let {userInfo: prevInfo} = prevProps
+        if ((prevInfo.venue && !userInfo.venue) || (prevInfo.venue && userInfo.venue && prevInfo.venue.id && !userInfo.venue.id)) {
+            this.checkEvent()
+        }
+    }
     
+
+    checkEvent() {
+        let {userInfo} = this.props
+
+        if (!userInfo.venue || (userInfo.venue && !userInfo.venue.id)) {
+            this.props.onLeave()
+        }
+    }
 
     leaveEvent() {
         this.props.onLeave()
@@ -163,6 +180,7 @@ class TippingPage extends React.Component {
     }
 
     async submit() {
+        console.log('SUBMIT BUTTON PROPS ----> ', this.props)
         let {fanEvent, onSubmit} = this.props
         let tipAmount = parseFloat(this.state.tipText)
         let eventTip = parseFloat(fanEvent.tipAmount)

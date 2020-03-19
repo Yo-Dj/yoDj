@@ -19,7 +19,6 @@ import ProfilePage from '../profilePage'
 import BankComponent from '../bankComponent'
 import TipsPage from '../tipsPage'
 
-console.log('WINndow.location.href ----> ', window.location.href)
 let getRedirectURl = () => {
   let url = window.location.href.split('/')
   return url.slice(0,3).join('/')
