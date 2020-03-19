@@ -88,10 +88,12 @@ class RequestPage extends React.Component {
               onChange={this.handleTimeChange}
               classes={{root: 'RequestPage--select-form'}}
             >
+              <MenuItem value={5}>5 Minutes</MenuItem>
+              <MenuItem value={10}>10 Minutes</MenuItem>
               <MenuItem value={15}>15 Minutes</MenuItem>
+              <MenuItem value={20}>20 Minutes</MenuItem>
+              <MenuItem value={25}>25 Minutes</MenuItem>
               <MenuItem value={30}>30 Minutes</MenuItem>
-              <MenuItem value={45}>45 Minutes</MenuItem>
-              <MenuItem value={60}>1 Hour</MenuItem>
             </Select>
           </FormControl>
           </div>
