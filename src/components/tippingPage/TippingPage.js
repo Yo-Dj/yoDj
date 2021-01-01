@@ -98,7 +98,6 @@ class TippingPage extends React.Component {
         if (userInfo.card && userInfo.card !== '') {
             axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
             .then(res => {
-                console.log('Get Card ---> ', res.data)
                 this.setState({
                     userCard: res.data
                 })
@@ -160,9 +159,9 @@ class TippingPage extends React.Component {
             requestType: 'received'
         }
         axios.post(localhost + '/api/messages', {...postObj})
-            .then(res => {
-                console.log('Request is send ---> ', res)
-            })
+            // .then(res => {
+            //     console.log('Request is send ---> ', res)
+            // })
             .catch(err => console.log('Error at Sending message ---> ', err))
     }
 
@@ -180,7 +179,6 @@ class TippingPage extends React.Component {
     }
 
     async submit() {
-        console.log('SUBMIT BUTTON PROPS ----> ', this.props)
         let {fanEvent, onSubmit} = this.props
         let tipAmount = parseFloat(this.state.tipText)
         let eventTip = parseFloat(fanEvent.tipAmount)
@@ -233,15 +231,12 @@ class TippingPage extends React.Component {
         if (paymentMethod === 'creditCard') {
             paymentIntent = await this.payTip()
         }
-        console.log('Payment MEthod ----> ', paymentMethod)
-        console.log('PAayment Intent BEFORE ----> ', paymentIntent)
         this.finishProcessingPayment(paymentIntent)
     }
 
     finishProcessingPayment(paymentIntent) {
         let {isError, tipWithNoSong, paymentModal, searchText, tipText} = this.state
         // let paymentIntent = {id: '', payment_method: ''}
-        console.log('PAYMENT INTENT ----> ', paymentIntent)
         let tipAmount = parseFloat(tipText)
         this.props.onSubmit({tipAmount, music: searchText, tipIntentId: paymentIntent.id, payment_method: paymentIntent.payment_method})
         // this.sendMessage()
