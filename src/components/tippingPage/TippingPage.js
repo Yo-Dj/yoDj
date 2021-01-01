@@ -17,17 +17,6 @@ import { parse } from 'terser';
 import PaymentModal from '../paymentModal'
 
 
-const tempdata = [{
-    value: 'A lot by 21 Savage', label: 'A lot by 21 Savage'
-}, {
-    value: 'No Heart by 21 Savage', label: 'No Heart by 21 Savage'
-}]
-const tidal = new Tidal({
-    countryCode: 'US',
-    limit: 1000
-  })
-  const localhost = ''
-
 const hash = window.location.hash
     .substring(1)
     .split("&")
@@ -96,7 +85,7 @@ class TippingPage extends React.Component {
         }
 
         if (userInfo.card && userInfo.card !== '') {
-            axios.get(localhost + '/card', {params: {cardId: userInfo.card}})
+            axios.get('/card', {params: {cardId: userInfo.card}})
             .then(res => {
                 this.setState({
                     userCard: res.data
@@ -158,7 +147,7 @@ class TippingPage extends React.Component {
             requestInfo: {},
             requestType: 'received'
         }
-        axios.post(localhost + '/api/messages', {...postObj})
+        axios.post('/api/messages', {...postObj})
             // .then(res => {
             //     console.log('Request is send ---> ', res)
             // })
@@ -173,7 +162,7 @@ class TippingPage extends React.Component {
     payTip = async() => {
         let {userInfo: {card, cardId = ''}} = this.props
         let tipAmount = parseFloat(this.state.tipText) * 100
-        let res = await axios.post(localhost + '/pay', {stripeAccount: card, cardId, tipAmount})
+        let res = await axios.post('/pay', {stripeAccount: card, cardId, tipAmount})
         let {data} = res
         return data
     }
