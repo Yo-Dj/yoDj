@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 8080
 const app = express()
 const {requestReceivedMessage, rejectMessage, acceptMessage} = require('./library')
 require('dotenv').config()
-
 let redirect_uri = 'http://localhost:8080/callback'
 var whitelist = ['http://localhost:3000',
 'https://accounts.spotify.com', 'https://yodj-8080.herokuapp.com', 'http://localhost:8080', 'http://localhost:8080/profile']
@@ -69,7 +68,7 @@ app.post('/api/messages', (req, res, next) => {
       res.send(JSON.stringify({success: true}))
     })
     .catch(error => {
-      console.log('Messages Error ---> ', error)
+      console.log('Messages Error ---> ', error.message)
       res.send(JSON.stringify({success: false}))
     })
 })
@@ -116,6 +115,7 @@ app.post('/pay', async (req, res) => {
     let intent = await stripe.paymentIntents.create({
       customer: req.body.stripeAccount,
       amount: req.body.tipAmount, 
+      payment_method: req.body.cardId,
       currency: 'usd',
       confirmation_method: 'manual'
     })
@@ -126,53 +126,20 @@ app.post('/pay', async (req, res) => {
   }
 })
 
-app.get('/login', (req, res) => {
-  console.log('CLIENT ID ----> ', SPOTIFY_CLIENT_ID)
-  console.log('SPOTIFY CLIENT SECRET -----> ', SPOTIFY_CLIENT_SECRET)
-  // let test =   querystring.stringify({
-  //   response_type: 'code',
-  //   client_id: SPOTIFY_CLIENT_ID,
-  //   scope: 'user-read-private user-read-email',
-  //   redirect_uri
-  // })
-  // console.log('Test ----> ', test)
-  // console.log('Redirect UI ----> ', redirect_uri)
-
-  // res.redirect('https://accounts.spotify.com/authorize?' +
-  // querystring.stringify({
-  //   response_type: 'code',
-  //   client_id: SPOTIFY_CLIENT_ID,
-  //   scope: 'user-read-private user-read-email',
-  //   redirect_uri
-  // }))
-
-  // res.redirect('http://google.com')
-  // res.send({hello: 'Hello WOrld'})
-  // console.log('After QUering ')
-})
-
-app.get('/callback', (req, res) => {
-  let code = req.query.code || null
-  console.log('Callback is invoked ---> ', req.body)
-  let authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
-      code: code,
-      redirect_uri,
-      grant_type: 'authorization_code'
-    },
-    headers: {
-      'Authorization': 'Basic ' + (new Buffer(
-        SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET
-      ).toString('base64'))
-    },
-    json: true
+app.post('/pay-confirm', async (req, res) => {
+  try {
+    stripe.paymentIntents.confirm(req.body.intentId, {
+      payment_method: req.body.payment_method
+    })
+    .then(paymentIntent => {
+      console.log('PAYMENT INTEN CONFIRM ----> ', paymentIntent)
+      res.json(paymentIntent)
+    })
+    .catch(e => console.log('CONFIRM ERR ---> ', e))
+  } catch(e) {
+    console.log('CONFIRM ERR ---> ', e)
+    return response.send({ error: e.message})
   }
-  request.post(authOptions, function(error, response, body) {
-    var access_token = body.access_token
-    let uri = process.env.FRONTEND_URI || 'http://localhost:3000'
-    res.redirect(uri)
-  })
 })
 
 app.listen(PORT, '0.0.0.0', () => {

@@ -73,6 +73,7 @@ class AcceptWrapper extends React.Component {
   }
 
   requestCompleted() {
+    console.log('COmpleteted REQUEST ----> ', this.props.request)
     this.setState({
       request: {}
     }, () => {
@@ -96,7 +97,12 @@ class AcceptWrapper extends React.Component {
   }
 
   addToFirebase() {
-    this.props.onAddRequest(this.props.request)
+    let {request: {tipIntentId, payment_method}, userInfo: {card}} = this.props
+    axios.post(localhost + '/pay-confirm', {intentId: tipIntentId, payment_method, userId: card})
+    .then(res => {
+      this.props.onAddRequest(this.props.request)
+    })
+    .catch(e => console.log('COnfirm Payment ----> ', e))
   }
 
   openProfile() {

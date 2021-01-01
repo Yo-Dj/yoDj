@@ -17,7 +17,32 @@ import FanEvent from '../fanEvent'
 import TippingPage from '../tippingPage'
 import ProfilePage from '../profilePage'
 import BankComponent from '../bankComponent'
+import TipsPage from '../tipsPage'
 
+let getRedirectURl = () => {
+  let url = window.location.href.split('/')
+  return url.slice(0,3).join('/')
+}
+export const authEndpoint = 'https://accounts.spotify.com/authorize';
+const clientId = 'fa85bfd8d7f644849b6a417a96018ace';
+const redirectUri = getRedirectURl() + '/fan-home';
+const scopes = [
+  "user-read-currently-playing",
+  "user-read-playback-state",
+];
+
+const hash = window.location.hash
+  .substring(1)
+  .split("&")
+  .reduce(function(initial, item) {
+    if (item) {
+      var parts = item.split("=");
+      initial[parts[0]] = decodeURIComponent(parts[1]);
+    }
+    return initial;
+  }, {});
+
+window.location.hash = ''
 class MainPage extends React.Component {
   constructor(props) {
     super(props)
@@ -36,7 +61,8 @@ class MainPage extends React.Component {
       fans: [],
       acceptedSongs: [],
       allEvents: [],
-      endedEvents: []
+      endedEvents: [],
+      spotifyToken: null
     }
     this.eventsListener = null
     this.authListener = this.authListener.bind(this)
@@ -64,12 +90,20 @@ class MainPage extends React.Component {
     this.addCard = this.addCard.bind(this)
     this.getAllEvents = this.getAllEvents.bind(this)
     this.getEndedEvents = this.getEndedEvents.bind(this)
+    this.setSpotifyToken = this.setSpotifyToken.bind(this)
+    this.resetToken = this.resetToken.bind(this)
   }
 
   componentDidMount() {
     this.authListener()
     this.getAllEvents()
     this.getEndedEvents()
+    let spotifyToken = localStorage.getItem('spotifyToken');
+    spotifyToken = spotifyToken ? spotifyToken : spotifyToken === null ? 'NOT_FOUND' : undefined
+    this.setState({
+      spotifyToken
+    })
+
   }
 
   componentWillUnmount() {
@@ -79,7 +113,7 @@ class MainPage extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     let {location} = this.props
     const {event = {}, activities = [], requests = [], newRequest = {}, acceptedSongs = []} = this.state
-      if (location.pathname === '/bank' && Object.keys(this.state.userInfo).length === 0) {
+      if ((location.pathname === '/bank' || location.pathname === '/tips') && Object.keys(this.state.userInfo).length === 0) {
         this.props.history.push('/profile')
         return
       }
@@ -182,6 +216,12 @@ class MainPage extends React.Component {
           userInfo: {},
         })
         this.props.history.push('/login')
+    })
+  }
+
+  resetToken(token) {
+    this.setState({
+      spotifyToken: token
     })
   }
 
@@ -361,7 +401,7 @@ class MainPage extends React.Component {
     else if (requestedArr.length > 0 && songRequests === 0) {
      songsArr.forEach((request, idx) => {
        if (fans[request.user]) {
-         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user, phone: fans[request.user].phone})
+         requests.unshift({name: fans[request.user].username, songRequest: true, id: request.requestId, song: request.music, tipIntentId: request.tipIntentId, payment_method:request.payment_method, tip: request.tipAmount, time: request.time, img: fans[request.user].imageUrl, fanId: request.user, phone: fans[request.user].phone})
        }
       })
     }
@@ -376,7 +416,7 @@ class MainPage extends React.Component {
      })
    }
    else if (requestIds.indexOf(lastAdded) === -1) {
-     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user, phone: requestedUser.phone})
+     requests.unshift({name: requestedUser.username, songRequest: true, id: lastAdded, song: requested[lastAdded].music, tipIntentId: requested[lastAdded].tipIntentId, payment_method: requested[lastAdded].payment_method, tip: requested[lastAdded].tipAmount, time: requested[lastAdded].time, img: requestedUser.imageUrl, fanId: songsArr[requestedArr.length - 1].user, phone: requestedUser.phone})
     }
   
     this.setState({
@@ -389,6 +429,7 @@ class MainPage extends React.Component {
     let acceptedIds = acceptedSongs.map(song => song.id)
     let pendingIds = Object.keys(pendingSongs)
     let pendingSongArr = Object.values(pendingSongs)
+    console.log('PENDING SONG ARR ----> ', pendingSongArr)
     if (pendingIds.length === 0) {
       acceptedSongs = []
     } else if (acceptedSongs.length > pendingSongArr.length) {
@@ -399,11 +440,11 @@ class MainPage extends React.Component {
       })
     } else if (acceptedSongs.length === 0 && pendingIds.length > 0) {
       pendingSongArr.forEach((request, idx) => {
-          acceptedSongs.push({name: request.name, songRequest: true, id: request.id, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true, fanId: request.fanId})
+        acceptedSongs.push({name: request.name, songRequest: true, id: request.id, tipIntentId: request.tipIntentId, payment_method: request.payment_method, song: request.song, tip: request.tip, time: request.time, img: request.img, accepted: true, fanId: request.fanId})
       })
     } else if (acceptedIds.indexOf(pendingIds[pendingIds.length - 1]) === -1) {
       let lastRequest = pendingSongArr[pendingSongArr.length - 1]
-        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true, fanId: lastRequest.fanId})
+        acceptedSongs.push({name: lastRequest.name, songRequest: true, id: lastRequest.id, tipIntentId: lastRequest.tipIntentId, payment_method: lastRequest.payment_method, song: lastRequest.song, tip: lastRequest.tip, time: lastRequest.time, img: lastRequest.img, accepted: true, fanId: lastRequest.fanId})
     }
     this.setState({
       acceptedSongs,
@@ -459,6 +500,15 @@ class MainPage extends React.Component {
     })
   }
 
+  setSpotifyToken() {
+    // console.log('SPotify TOken ---> ', spotifyToken)
+    // localStorage.setItem('spotifyToken', _token);
+    // this.setState({
+    //   spotifyToken
+    // })
+    window.location.href = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`
+  }
+
   getUserInfo(userId) {
     let uid = this.state.userId === '' ? userId : this.state.userId
     firebase.database()
@@ -471,7 +521,7 @@ class MainPage extends React.Component {
             let userInfo = {
               username: data.username, type: 'fan', phone: data.phone, 
               imageUrl: data.imageUrl, venue: data.venue, completed: data.completed,
-              userId: data.userId, card: data.card}
+              userId: data.userId, card: data.card, cardId: data.cardId, tip: data.tip}
             let joined = data.venue ? true : false
             let fanEvent = {}
             this.setState({
@@ -504,8 +554,10 @@ class MainPage extends React.Component {
   }
 
   addRequestToFirebase(request) {
-    let {userId, requests, newRequest, fans, event, acceptedSongs} = this.state
+    let {userId, requests, newRequest, fans, event, acceptedSongs, userInfo} = this.state
     let now = new Date().getTime()
+    let amount = userInfo.tip ? userInfo.tip : 0
+    let tip = amount + parseInt(request.tip)
     request.completedTime = now
     firebase.database().ref(`venues/${event.eventId}/completed/${request.id}`).set(request, error => {
       if (!error) {
@@ -516,6 +568,7 @@ class MainPage extends React.Component {
         }
         firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).remove()
         firebase.database().ref(`users/${request.fanId}/venue/completed/${request.id}`).set(request)
+        firebase.database().ref(`users/${userId}/tip`).set(tip)
       }
     })
   }
@@ -581,6 +634,7 @@ class MainPage extends React.Component {
   acceptingSong(request) {
     let {event, acceptedSongs, requests, newRequest} = this.state
     request.tipAmount = request.tip
+    console.log('Request ----> ', request)
     firebase.database().ref(`venues/${event.eventId}/pending/${request.id}`).set(request, error => {
       if (!error) {
         let index = requests.map(req => req.id).indexOf(request.id)
@@ -642,8 +696,9 @@ class MainPage extends React.Component {
 
   addCard(cardToken) {
     let {userId, userInfo} = this.state
-    firebase.database().ref(`users/${userId}/card`).set(cardToken, error => {
+    firebase.database().ref(`users/${userId}/card`).set(cardToken.card, error => {
       if (!error) {
+        firebase.database().ref(`users/${userId}/cardId`).set(cardToken.cardId)
         return
       }
       console.log('ERROR ----> ', error)
@@ -654,7 +709,8 @@ class MainPage extends React.Component {
     let {userInfo, userId, event, 
       newRequest, requests, isActive, 
       allDjs, fanEvent, acceptedSongs, 
-      isLogged, allEvents, endedEvents} = this.state
+      isLogged, allEvents, endedEvents,
+      spotifyToken} = this.state
 
       return(
       <MuiThemeProvider theme={theme}>
@@ -728,6 +784,8 @@ class MainPage extends React.Component {
                   fanEvent={fanEvent}
                   onJoin={this.joinEvent}
                   onLogout={this.logoutUser}
+                  onSetToken={this.setSpotifyToken}
+                  spotifyToken={spotifyToken}
                 />
               )} />
               <Route path="/fan-tip" render={props => (
@@ -738,6 +796,9 @@ class MainPage extends React.Component {
                     onLeave={this.leaveEvent}
                     onSubmit={this.submitSongRequest}
                     onLogout={this.logoutUser}
+                    spotifyToken={spotifyToken}
+                    onSetToken={this.resetToken}
+                    onMakeSpotifyToken={this.setSpotifyToken}
                   />)}
                 />
               )} />
@@ -757,6 +818,11 @@ class MainPage extends React.Component {
                     onLogout={this.logout}
                   />
                 )} />
+                <Route path='/tips' render={props => (
+                  <TipsPage
+                    userInfo={userInfo}
+                  />
+                )}/>
               <Redirect to="/home" />
           </Switch>
         </div>

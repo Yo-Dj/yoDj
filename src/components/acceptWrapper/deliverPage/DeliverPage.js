@@ -73,6 +73,7 @@ class DeliverPage extends React.Component {
   }
 
   clickOnComplete() {
+    console.log('COMPLETED')
     this.props.onCompleteGoBack()
   }
 

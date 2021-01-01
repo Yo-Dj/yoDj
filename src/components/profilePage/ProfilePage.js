@@ -24,6 +24,7 @@ class ProfilePage extends React.Component {
     this.handleBank = this.handleBank.bind(this)
     this.handleSettings = this.handleSettings.bind(this)
     this.goBack = this.goBack.bind(this)
+    this.handleTips = this.handleTips.bind(this)
   }
 
   goBack() {
@@ -51,6 +52,11 @@ class ProfilePage extends React.Component {
     console.log('Handle Bank')
     this.props.history.push('/bank')
 
+  }
+
+  handleTips() {
+    console.log('Handle Tips is clicked')
+    this.props.history.push('/tips')
   }
 
   handleSettings() {
@@ -102,21 +108,13 @@ class ProfilePage extends React.Component {
             {userInfo.verificationType ? <div className={`ProfilePage--${userInfo.verificationType}`}/> : null }
           </div>
         </div>
-        <div className="ProfilePage--rating">
-          <StarRatings
-            rating={4.5}
-            starDimension="20"
-            starSpacing="5px"
-            starRatedColor="white"
-            starEmptyColor="#555"
-          />
-          <div className="ProfilePage--rating-num">17 ratings</div>
-        </div>
         <div className="ProfilePage--bank-buttons">
           <Button variant="contained" color="primary" classes={{root: 'ProfilePage--money', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="dollar-sign" /><div className="ProfilePage--money-text">Bank</div></Button>
-          <div className="ProfilePage--tip-wrapper">
-            <Button variant="contained" color="primary" classes={{root: 'ProfilePage--tip', label: 'ProfilePage--money-label'}} onClick={this.handleBank}><FontAwesomeIcon icon="clock" /><div className="ProfilePage--money-text">Bank</div></Button>
-          </div>
+          {userInfo.verificationType 
+          ? <div className="ProfilePage--tip-wrapper">
+              <Button variant="contained" color="primary" classes={{root: 'ProfilePage--tip', label: 'ProfilePage--money-label'}} onClick={this.handleTips}><FontAwesomeIcon icon="clock" /><div className="ProfilePage--money-text">Tips</div></Button>
+            </div>
+          : null}
         </div>
         <div className="ProfilePage--events-num">{`${completedEvents.length} ${eventsText}`}</div>
         <div className="ProfilePage__events-container">
